@@ -1,0 +1,53 @@
+/* Page Container */
+.newUser-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f0f2f5;
+}
+
+/* Card Styling */
+.newUser-card {
+  width: 450px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background: white;
+  text-align: center;
+}
+
+/* Title */
+.newUser-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #032212;
+  margin-bottom: 20px;
+}
+
+/* Form Styling */
+.newUser-form .ant-form-item-label > label {
+  font-weight: 600;
+  color: #032212;
+}
+
+.newUser-form input,
+.newUser-form .ant-select-selector {
+  border-radius: 6px;
+  height: 40px;
+}
+
+/* Button Styling */
+.newUser-submit-button {
+  width: 100%;
+  height: 45px;
+  font-size: 16px;
+  background: #032212;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  transition: 0.3s ease-in-out;
+}
+
+.newUser-submit-button:hover {
+  background: #054d34;
+}

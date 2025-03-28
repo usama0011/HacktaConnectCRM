@@ -1,0 +1,61 @@
+/* Main Container */
+.reporting-container {
+  width: 100%;
+  padding: 24px;
+  background: #f0f2f5;
+  min-height: 100vh;
+}
+
+/* Page Title */
+.reporting-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #032212;
+  margin-bottom: 20px;
+}
+
+/* Filters Section */
+.reporting-filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.reporting-select {
+  width: 200px;
+  border-radius: 6px;
+}
+
+.reporting-generate-button {
+  background: #032212;
+  color: white;
+  border-radius: 6px;
+  border: none;
+}
+
+.reporting-generate-button:hover {
+  background: #054d34;
+}
+
+/* Card Styling */
+.reporting-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styling */
+.reporting-card .ant-table-thead > tr > th {
+  background: #032212 !important;
+  color: white !important;
+}
+
+/* Icons */
+.reporting-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  color: #032212;
+}

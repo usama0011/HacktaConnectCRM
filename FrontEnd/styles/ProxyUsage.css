@@ -1,0 +1,40 @@
+.proxy-usage-container {
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  background: #f0f2f5;
+}
+
+.proxy-usage-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.proxy-usage-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.proxy-usage-card h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.proxy-usage-table .ant-table-thead > tr > th {
+  background: #032212;
+  color: white;
+}
+
+.proxy-usage-table .ant-table {
+  border-radius: 10px;
+}
+
+.proxy-usage-chart {
+  width: 100%;
+  height: 300px;
+}

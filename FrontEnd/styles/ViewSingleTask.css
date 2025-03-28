@@ -1,0 +1,174 @@
+.task-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.task-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  background: white;
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.task-title {
+  font-weight: bold;
+}
+
+.task-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.task-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.finish-task-btn {
+  background: #032212;
+  color: white;
+}
+
+.finish-task-btn:hover {
+  background: #032212;
+}
+
+.comments-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  background: white;
+}
+
+.comments-title {
+  font-weight: bold;
+}
+
+.comment-input {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.comment-input .ant-input {
+  flex: 1;
+}
+
+.comments-list .ant-comment {
+  padding: 10px 0;
+}
+
+/* ============================= */
+/* Comments Section */
+/* ============================= */
+.comments-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  background: white;
+}
+
+.comments-title {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Comment Input */
+.comment-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.comment-input .ant-input-textarea {
+  flex-grow: 1;
+}
+
+.add-comment-btn {
+  background: #032212;
+  color: white;
+}
+
+.add-comment-btn:hover {
+  background: #012714;
+}
+
+/* Comment List */
+.comments-list {
+  margin-top: 10px;
+}
+
+.comments-list .ant-comment {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.comments-list .ant-comment-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.comments-list .ant-comment-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Reply Input */
+.reply-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  margin-left: 50px; /* Indent reply */
+}
+
+.reply-input .ant-input-textarea {
+  flex-grow: 1;
+}
+
+.add-reply-btn {
+  background: #032212;
+  color: white;
+}
+
+.add-reply-btn:hover {
+  background: #032212;
+}
+
+/* Nested Comment Styling */
+.nested-comment {
+  background: #eef2f5;
+  padding: 8px;
+  border-radius: 6px;
+  margin-left: 50px; /* Indent nested comments */
+  margin-top: 8px;
+}
+
+.nested-comment .ant-comment-content {
+  font-size: 14px;
+}
+
+.nested-comment .ant-comment-actions {
+  font-size: 12px;
+}

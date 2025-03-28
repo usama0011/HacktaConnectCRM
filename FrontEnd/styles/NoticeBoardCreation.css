@@ -1,0 +1,63 @@
+/* Main Container */
+.noticeboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f0f2f5;
+}
+
+/* Card Styling */
+.noticeboard-card {
+  width: 500px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background: white;
+  text-align: center;
+}
+
+/* Title */
+.noticeboard-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #032212;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Form Styling */
+.noticeboard-form .ant-form-item-label > label {
+  font-weight: 600;
+  color: #032212;
+}
+
+.noticeboard-form input,
+.noticeboard-form .ant-select-selector,
+.noticeboard-form .ant-picker {
+  border-radius: 6px;
+  height: 40px;
+}
+
+/* Date Picker */
+.noticeboard-date {
+  width: 100%;
+}
+
+/* Button Styling */
+.noticeboard-submit-button {
+  width: 100%;
+  height: 45px;
+  font-size: 16px;
+  background: #032212;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  transition: 0.3s ease-in-out;
+}
+
+.noticeboard-submit-button:hover {
+  background: #054d34;
+}

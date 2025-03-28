@@ -1,0 +1,75 @@
+/* Main Container */
+.salary-container {
+  width: 100%;
+  padding: 24px;
+  background: #f0f2f5;
+  min-height: 100vh;
+}
+
+/* Page Title */
+.salary-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #032212;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Filters Section */
+.salary-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.salary-search,
+.salary-date,
+.salary-select {
+  width: 200px;
+  border-radius: 6px;
+}
+
+.salary-generate-button {
+  background: #032212;
+  color: white;
+  border-radius: 6px;
+  border: none;
+}
+
+.salary-generate-button:hover {
+  background: #054d34;
+}
+
+/* Card Styling */
+.salary-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.salary-card h3 {
+  font-size: 18px;
+  color: #032212;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Download Buttons */
+.salary-download-button {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 6px;
+  height: 40px;
+}
+
+/* Table Styling */
+.salary-card .ant-table-thead > tr > th {
+  background: #032212 !important;
+  color: white !important;
+}

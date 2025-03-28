@@ -1,0 +1,32 @@
+.qcpoints-container {
+  padding: 20px;
+}
+
+.qcpoints-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-name {
+  font-weight: bold;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #f0f2f5;
+  font-weight: bold;
+  text-align: center;
+}
+
+.ant-table-tbody > tr > td {
+  text-align: left;
+}
+
+.qc-actions {
+  text-align: center;
+}

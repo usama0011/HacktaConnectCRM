@@ -1,0 +1,233 @@
+/* Main Layout */
+.user-dashboard-layout {
+  min-height: 100vh;
+  display: flex;
+  max-width: 1500px;
+  width: 100%;
+  margin: 0px auto;
+}
+
+/* Sidebar */
+.user-dashboard-sider {
+  background: #032212;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  transition: width 0.3s ease-in-out;
+}
+
+.user-dashboard-sider .ant-layout-sider-trigger {
+  background: #032212;
+  margin-bottom: 50px;
+  left: 0;
+}
+
+.user-logo {
+  height: 64px;
+  margin: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Custom Menu */
+.custom-user-menu {
+  background-color: #032212;
+  border-right: none;
+}
+
+.custom-user-menu .ant-menu-item,
+.custom-user-menu .ant-menu-submenu-title {
+  color: #fff;
+}
+
+.custom-user-menu .ant-menu-item-selected {
+  background-color: white !important;
+  color: black !important;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+}
+
+/* Header */
+.user-dashboard-header {
+  background: #032212;
+  color: white;
+  display: flex;
+  position: sticky;
+  top: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 64px;
+}
+
+.toggle-sidebar-btn {
+  color: white;
+  font-size: 18px;
+}
+
+/* Content */
+.user-dashboard-content {
+  transition: margin-left 0.3s ease-in-out;
+  padding: 50px 20px;
+}
+
+.user-dashboard-sider.ant-layout-sider-collapsed
+  + .ant-layout
+  .user-dashboard-content {
+  margin-left: 80px;
+}
+
+/* Navbar */
+.user-navbar {
+  height: 64px;
+  background: #032212;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Ensures navbar stays on top */
+}
+.user-dashboard-sider.ant-layout-sider-collapsed + .ant-layout .user-navbar {
+  margin-left: 80px;
+}
+/* Left Side - Logo */
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.navbar-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+/* Center - Search Bar */
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.search-bar {
+  width: 60%;
+  max-width: 500px;
+  border-radius: 20px;
+}
+
+/* Right Side - Icons & Logout */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar-icon {
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.navbar-icon:hover {
+  color: black;
+}
+
+.navbar-avatar {
+  cursor: pointer;
+}
+
+.navbar-logout {
+  background: white;
+  border: none;
+  color: black;
+  border-radius: 20px;
+  padding: 5px 15px;
+}
+
+.navbar-logout:hover {
+  background: #032212;
+  color: white;
+}
+
+/* Dashboard Cards */
+.user-dashboard-container {
+  padding: 20px;
+}
+
+.user-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.user-card:hover {
+  transform: scale(1.05);
+}
+
+.user-card .ant-statistic-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.progress-row {
+  margin-top: 20px;
+}
+
+.progress-row .ant-card {
+  text-align: center;
+  padding: 15px;
+}
+
+/* Wavy Bottom Design */
+.wave-container {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 90%;
+  height: 120px;
+  overflow: hidden;
+}
+
+.dashboard-bottom-wave {
+  width: 100%;
+  height: 100%;
+}
+
+/* Icon Styling */
+.icon-container {
+  font-size: 36px;
+  color: #032212;
+  margin-bottom: 10px;
+}
+
+.card-icon {
+  font-size: 36px;
+}

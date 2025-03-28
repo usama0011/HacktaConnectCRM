@@ -1,0 +1,119 @@
+.user-task-container {
+  display: flex;
+  justify-content: center;
+}
+
+.user-task-card {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  background: white;
+}
+
+.user-task-title {
+  color: #032212;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.assign-task-btn {
+  width: 100%;
+  background: #032212;
+  color: white;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.assign-task-btn:hover {
+  background: #054d34;
+}
+
+/* Date Time Fields */
+.date-time-container {
+  display: flex;
+  gap: 15px;
+}
+
+.date-time-container .ant-form-item {
+  flex: 1;
+}
+
+/* Task Summary Character Count */
+.char-count {
+  display: block;
+  text-align: right;
+  color: #888;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+/* Task Planning Options */
+.task-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 15px 0;
+}
+
+.task-options .ant-checkbox-wrapper {
+  font-size: 14px;
+}
+
+.user-task-title {
+  color: #032212;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.user-task-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  background: white;
+}
+
+.assign-task-btn {
+  width: 100%;
+  background: #032212;
+  color: white;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.assign-task-btn:hover {
+  background: #054d34;
+}
+
+/* Date Time Fields */
+.date-time-container {
+  display: flex;
+  gap: 15px;
+}
+
+.date-time-container .ant-form-item {
+  flex: 1;
+}
+
+/* Task Summary Character Count */
+.char-count {
+  display: block;
+  text-align: right;
+  color: #888;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-task-card {
+    max-width: 100%;
+  }
+
+  .date-time-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

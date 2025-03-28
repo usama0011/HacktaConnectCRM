@@ -1,0 +1,51 @@
+/* Main Container */
+.myrecord-container {
+  padding: 40px;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+/* Page Title */
+.myrecord-title {
+  text-align: center;
+  color: #032212;
+  font-weight: bold;
+}
+
+/* Subtitle */
+.myrecord-subtext {
+  display: block;
+  text-align: center;
+  color: #5a5a5a;
+  margin-bottom: 30px;
+}
+
+/* Filters */
+.myrecord-filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.myrecord-filters input,
+.myrecord-filters .ant-select {
+  width: 48%;
+}
+
+/* Records Card */
+.myrecord-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Table */
+.ant-table-thead > tr > th {
+  background: #032212 !important;
+  color: white !important;
+}
+
+.ant-table-tbody > tr:hover {
+  background: rgba(3, 34, 18, 0.1);
+}
