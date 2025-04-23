@@ -8,9 +8,9 @@ dotenv.config();
 const router = express.Router();
 
 const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_KEY, // ✅ Match this to your .env
-  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_IDD,
+  secretAccessKey: process.env.AWS_SECRET_KEYY, // ✅ Match this to your .env
+  region: process.env.AWS_REGIONN,
 });
 
 const storage = multer.memoryStorage();
