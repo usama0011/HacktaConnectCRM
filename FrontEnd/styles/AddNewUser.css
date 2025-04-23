@@ -1,19 +1,39 @@
 /* Page Container */
 .newUser-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f0f2f5;
+  flex-direction: column;
+  width: 100%;
 }
 
 /* Card Styling */
 .newUser-card {
-  width: 450px;
-  padding: 30px;
+  width: 100%;
+  padding: 10px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   background: white;
   text-align: center;
+}
+.newuserbuttons {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: white;
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.newuserbuttons:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.03);
+  color: #ffffff;
 }
 
 /* Title */
@@ -26,7 +46,7 @@
 
 /* Form Styling */
 .newUser-form .ant-form-item-label > label {
-  font-weight: 600;
+  font-weight: bold;
   color: #032212;
 }
 
@@ -34,6 +54,7 @@
 .newUser-form .ant-select-selector {
   border-radius: 6px;
   height: 40px;
+  background: transparent !important;
 }
 
 /* Button Styling */
@@ -41,7 +62,7 @@
   width: 100%;
   height: 45px;
   font-size: 16px;
-  background: #032212;
+  background: #fecb45 !important;
   color: white;
   border-radius: 6px;
   border: none;

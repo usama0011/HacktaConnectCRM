@@ -1,34 +1,43 @@
 import Attendance from "../models/attendanceModel.js";
 
 // **Mark User Attendance**
+// controllers/attendanceController.js
 export const markAttendance = async (req, res) => {
-  const { userId } = req.body;
+  const { userId, username } = req.body;
 
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // Check if today's attendance already exists
     let attendance = await Attendance.findOne({ userId, date: today });
 
     if (!attendance) {
+      // ✅ Only create if no record for today
       attendance = new Attendance({
         userId,
-        username: req.user.username,
-        status: "Present",
+        username,
+        date: today,
         checkInTime: new Date(),
       });
 
       await attendance.save();
+      return res.status(201).json({
+        message: "Attendance marked for today",
+        attendance,
+      });
     } else {
-      attendance.checkOutTime = new Date();
-      await attendance.save();
+      // ⚠️ Already submitted
+      return res.status(200).json({
+        message: "Attendance already marked for today",
+        attendance,
+      });
     }
-
-    res.json({ message: "Attendance marked successfully", attendance });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error marking attendance", error: error.message });
+    res.status(500).json({
+      message: "Error marking attendance",
+      error: error.message,
+    });
   }
 };
 

@@ -1,57 +1,40 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+// src/context/UserContext.jsx
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-// Create the UserContext
-export const UserContext = createContext();
+// Create context
+const UserContext = createContext();
+
+// Hook to access context
+export const useUserContext = () => useContext(UserContext);
 
 // Provider component
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    // Load user data from localStorage on initial render
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  const [token, setToken] = useState(() => {
-    // Load token from localStorage on initial render
-    return localStorage.getItem("token");
-  });
+  const [token, setToken] = useState(
+    () => localStorage.getItem("token") || null
+  );
 
-  // Function to update user and token
-  const updateUserContext = (newUser, newToken) => {
-    setUser(newUser);
-    setToken(newToken);
-
-    // Save to localStorage
-    localStorage.setItem("user", JSON.stringify(newUser));
-    localStorage.setItem("token", newToken);
+  const login = (userData, token) => {
+    setUser(userData);
+    setToken(token);
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
   };
 
-  // Function to clear user and token (e.g., on logout)
-  const clearUserContext = () => {
+  const logout = () => {
     setUser(null);
     setToken(null);
-
-    // Remove from localStorage
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   };
 
   return (
-    <UserContext.Provider
-      value={{ user, token, updateUserContext, clearUserContext }}
-    >
+    <UserContext.Provider value={{ user, token, login, logout }}>
       {children}
     </UserContext.Provider>
   );
-};
-
-// Custom hook to use the UserContext
-export const useUserContext = () => {
-  const context = useContext(UserContext);
-
-  if (!context) {
-    throw new Error("useUserContext must be used within a UserProvider");
-  }
-
-  return context;
 };

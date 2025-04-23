@@ -8,7 +8,11 @@ import {
   Modal,
   Input,
 } from "antd";
-import { UserOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  EditOutlined,
+  CalendarOutlined,
+} from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import "../../styles/IPSubmission.css";
@@ -34,7 +38,10 @@ const dummyData = {
     { date: "2024-03-03", clicks: 22, sessions: 9 },
   ],
 };
-
+//In View Report There is also show an Calender .
+//By Default tha date comes from parent page .
+//JOining Date in Front of User Avatar .
+//Date,  Shift ,
 const SingleUserIPReport = () => {
   const { userId } = useParams();
   const [selectedMonth, setSelectedMonth] = useState(moment());
@@ -96,9 +103,19 @@ const SingleUserIPReport = () => {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
-          Edit
-        </Button>
+        <>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Button
+              style={{ marginRight: "10px" }}
+              onClick={() => handleEdit(record)}
+            >
+              Edit History
+            </Button>
+            <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
+              Edit
+            </Button>
+          </div>
+        </>
       ),
     },
   ];
@@ -106,12 +123,10 @@ const SingleUserIPReport = () => {
   return (
     <div className="ipreport-container">
       {/* User Info Section */}
-      <DatePicker
-        picker="month"
-        value={selectedMonth}
-        onChange={(date) => setSelectedMonth(date)}
-        className="date-filter"
-      />
+      <div className="static-month-display">
+        <CalendarOutlined style={{ marginRight: 8 }} />
+        <span className="static-month-text">April 2025</span>
+      </div>
       <br />
       <br />
       <div className="user-info-header">

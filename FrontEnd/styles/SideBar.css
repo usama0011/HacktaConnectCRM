@@ -1,0 +1,158 @@
+.bitrix-sidebar {
+  background: transparent;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  z-index: 100;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+.sidebar-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Expanded Sidebar */
+.bitrix-sidebar.expanded {
+  width: 300px !important; /* ← updated from 220px */
+  background: white;
+  backdrop-filter: blur(8px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease-in-out;
+}
+/* Collapsed Sidebar */
+.bitrix-sidebar:not(.expanded) {
+  width: 70px !important;
+  backdrop-filter: blur(6px);
+  background-color: white;
+}
+/* Logo Section */
+.sidebar-logo {
+  padding: 12px 0;
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.sidebar-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+/* Menu */
+.bitrix-menu {
+  background: transparent !important;
+  border-right: none;
+  padding-top: 20px;
+}
+
+/* Menu Items (default state) */
+.bitrix-menu .ant-menu-item,
+.bitrix-menu .ant-menu-submenu-title {
+  color: black !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* Hovered Menu Item */
+.bitrix-menu .ant-menu-item:hover,
+.bitrix-menu .ant-menu-submenu-title:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: black !important;
+}
+
+/* Active/Selected Menu Item */
+.bitrix-menu .ant-menu-item-selected {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: black !important;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* Popup Submenu (when expanded) */
+.ant-menu-submenu-popup {
+  background: rgba(20, 50, 100, 0.95) !important;
+  backdrop-filter: blur(6px);
+  border-radius: 6px;
+}
+.ant-menu-submenu-popup .ant-menu-item {
+  color: black !important;
+}
+.ant-menu-submenu-popup .ant-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Ensure inline submenu (opened within sidebar) matches gradient theme */
+.bitrix-menu .ant-menu-submenu > .ant-menu {
+  background: transparent !important;
+}
+
+/* Submenu items */
+.bitrix-menu .ant-menu-submenu .ant-menu-item {
+  color: black !important;
+  background: transparent !important;
+  padding-left: 40px !important; /* indent for child items */
+  transition: background 0.3s ease;
+}
+
+/* Hover effect for submenu items */
+.bitrix-menu .ant-menu-submenu .ant-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: black !important;
+}
+
+/* Selected submenu item */
+.bitrix-menu .ant-menu-submenu .ant-menu-item-selected {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  font-weight: 600;
+  color: black !important;
+}
+.sidebariconspecial {
+  color: black !important;
+}
+/* Enable vertical scrolling inside sidebar but hide scrollbar */
+.bitrix-sidebar .ant-layout-sider-children {
+  overflow-y: auto;
+  height: 100%;
+  scrollbar-width: none; /* Firefox */
+}
+.bitrix-sidebar .ant-layout-sider-children::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+/* Footer section fixed to bottom */
+.admin-sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #eee;
+  background: white;
+}
+/* Logout button */
+.admin-logout-btn {
+  width: 100%;
+  background-color: #003c2f;
+  color: white;
+  font-weight: 500;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.admin-logout-btn:hover {
+  background-color: #02543d;
+}
+.sidebar-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+.sidebar-scrollable::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}

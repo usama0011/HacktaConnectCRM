@@ -1,0 +1,182 @@
+.crm-features-wrapper {
+  font-family: "Inter", sans-serif;
+  color: #111;
+  background: #fff;
+}
+
+/* ============ HERO SECTION ============ */
+.crm-features-hero {
+  background: linear-gradient(90deg, #003c2f, #9139d1);
+  color: white;
+  padding: 80px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.hero-content {
+  max-width: 500px;
+}
+.hero-content h5 {
+  background: white;
+  color: #9139d1;
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.hero-content h1 {
+  font-size: 38px;
+  margin: 10px 0;
+}
+.hero-content p {
+  margin: 10px 0 20px;
+}
+.hero-buttons {
+  display: flex;
+  gap: 14px;
+}
+.hero-btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.hero-btn.primary {
+  background: #fff;
+  color: #003c2f;
+}
+.hero-btn.secondary {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+.hero-image img {
+  max-width: 300px;
+  height: auto;
+}
+
+/* ============ FEATURES OVERVIEW ============ */
+.crm-features-overview {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 60px 20px;
+  background: #fff;
+}
+.feature-box {
+  width: 220px;
+  text-align: center;
+  padding: 20px;
+}
+.feature-box img {
+  width: 40px;
+  height: 40px;
+}
+.feature-box h3 {
+  margin: 12px 0 8px;
+  font-size: 18px;
+}
+.feature-box p {
+  font-size: 14px;
+  color: #666;
+}
+.feature-box span {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #003c2f;
+  font-weight: 600;
+}
+
+/* ============ APP DESIGN FEATURES ============ */
+.crm-app-details {
+  padding: 60px 20px;
+  text-align: center;
+}
+.crm-app-details h2 {
+  font-size: 28px;
+}
+.crm-app-details p {
+  font-size: 14px;
+  color: #777;
+  margin: 10px 0 30px;
+}
+.app-details-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+.feature-list {
+  list-style: none;
+  text-align: left;
+  padding: 0;
+  max-width: 240px;
+}
+.feature-list li {
+  margin-bottom: 18px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.feature-list img {
+  width: 20px;
+  height: 20px;
+}
+.app-image img {
+  width: 180px;
+  height: auto;
+}
+
+/* ============ RESPONSIVENESS ============ */
+@media (max-width: 1024px) {
+  .crm-features-hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-image {
+    margin-top: 30px;
+  }
+
+  .crm-features-overview {
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .app-details-wrapper {
+    flex-direction: column;
+  }
+
+  .feature-list {
+    max-width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 28px;
+  }
+
+  .feature-box {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .feature-list li {
+    justify-content: center;
+  }
+
+  .app-image img {
+    width: 140px;
+  }
+}

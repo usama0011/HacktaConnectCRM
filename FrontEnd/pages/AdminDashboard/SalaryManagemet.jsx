@@ -1,184 +1,77 @@
-import React, { useState } from "react";
+import React from "react";
+import { Card, Col, Row, Button } from "antd";
 import {
-  Card,
-  Table,
-  Tag,
-  Button,
-  Select,
-  Input,
-  DatePicker,
-  Row,
-  Col,
-} from "antd";
-import {
-  DownloadOutlined,
-  FileExcelOutlined,
-  FilePdfOutlined,
   DollarCircleOutlined,
-  BarChartOutlined,
+  SettingOutlined,
+  CalculatorOutlined,
 } from "@ant-design/icons";
-import "chart.js/auto";
-import { Line } from "react-chartjs-2";
+import { useNavigate } from "react-router-dom";
 import "../../styles/SalaryManagement.css";
 
-const { Option } = Select;
+const salaryCards = [
+  {
+    title: "Salary Sheet",
+    subtitle: "Track and manage all salary reports",
+    icon: "", // add custom icon URL if needed
+    iconComponent: <DollarCircleOutlined />,
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8cmVwb3J0fGVufDB8fDB8fHww",
+    link: "/admin/dashboard/downloadsalaryworker",
+    buttonText: "View",
+  },
+  {
+    title: "View Agents Salary Record",
+    subtitle: "Manage salary structures and payment plans",
+    icon: "", // optional image icon URL
+    iconComponent: <SettingOutlined />,
+    image:
+      "https://images.unsplash.com/photo-1575016244395-9270b671d66c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nzh8fHNhbGFyeSUyMHJlY29yZHxlbnwwfHwwfHx8MA%3D%3D",
+    link: "/admin/dashboard/restemploysalary",
+    buttonText: "Manage Salaries",
+  },
+  {
+    title: "Agents Salary Calculator",
+    subtitle: "Setup and edit salary formulas",
+    icon: "",
+    iconComponent: <CalculatorOutlined />,
+    image:
+      "https://img.freepik.com/free-photo/cropped-view-professional-serious-finance-manager-holding-calculator-hands-checking-company-month-s-profits_176420-7931.jpg?ga=GA1.1.1696791716.1743911361&semt=ais_country_boost&w=740",
+    link: "/admin/dashboard/salaryformula",
+    buttonText: "Manage Calculator",
+  },
+];
 
 const SalaryManagement = () => {
-  const [search, setSearch] = useState("");
-
-  // Dummy Salary Data
-  const salaryData = [
-    {
-      key: "1",
-      employee: "John Doe",
-      department: "Engineering",
-      amount: "$5000",
-      status: "Paid",
-      date: "April 2024",
-    },
-    {
-      key: "2",
-      employee: "Alice Smith",
-      department: "Marketing",
-      amount: "$4200",
-      status: "Pending",
-      date: "April 2024",
-    },
-    {
-      key: "3",
-      employee: "Robert Johnson",
-      department: "HR",
-      amount: "$3800",
-      status: "Paid",
-      date: "April 2024",
-    },
-    {
-      key: "4",
-      employee: "Emily Davis",
-      department: "Finance",
-      amount: "$5300",
-      status: "Pending",
-      date: "April 2024",
-    },
-  ];
-
-  const columns = [
-    {
-      title: "Employee",
-      dataIndex: "employee",
-      key: "employee",
-      render: (text) => <b>{text}</b>,
-    },
-    { title: "Department", dataIndex: "department", key: "department" },
-    {
-      title: "Salary Amount",
-      dataIndex: "amount",
-      key: "amount",
-      render: (text) => <Tag color="blue">{text}</Tag>,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={status === "Paid" ? "green" : "red"}>{status}</Tag>
-      ),
-    },
-    { title: "Month", dataIndex: "date", key: "date" },
-    {
-      title: "Actions",
-      key: "action",
-      render: () => (
-        <Button type="primary" size="small">
-          Details
-        </Button>
-      ),
-    },
-  ];
-
-  // Chart Data (Salary Trends)
-  const lineChartData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Total Salaries Paid ($)",
-        data: [20000, 21000, 23000, 25000, 24000, 26000],
-        borderColor: "#1890ff",
-        backgroundColor: "rgba(24, 144, 255, 0.2)",
-        tension: 0.4,
-      },
-    ],
-  };
+  const navigate = useNavigate();
 
   return (
-    <div className="salary-container">
-      <h2 className="salary-title">
-        <DollarCircleOutlined /> Salary & Accounts Management
-      </h2>
-
-      {/* Filters and Actions */}
-      <div className="salary-filters">
-        <Input
-          placeholder="Search Employee..."
-          onChange={(e) => setSearch(e.target.value)}
-          className="salary-search"
-        />
-        <DatePicker picker="month" className="salary-date" />
-        <Select placeholder="Select Status" className="salary-select">
-          <Option value="all">All</Option>
-          <Option value="paid">Paid</Option>
-          <Option value="pending">Pending</Option>
-        </Select>
-        <Button type="primary" className="salary-generate-button">
-          <FileExcelOutlined /> Generate Report
-        </Button>
-      </div>
-
+    <div className="salary-management-container">
+      <h1 className="salary-management-title">Salary Management Dashboard</h1>
       <Row gutter={[24, 24]}>
-        {/* Salary Trends Graph */}
-        <Col xs={24} md={12}>
-          <Card className="salary-card">
-            <h3>
-              <BarChartOutlined /> Salary Trends
-            </h3>
-            <Line data={lineChartData} />
-          </Card>
-        </Col>
-
-        {/* Download Reports */}
-        <Col xs={24} md={12}>
-          <Card className="salary-card">
-            <h3>
-              <DownloadOutlined /> Download Reports
-            </h3>
-            <Button
-              type="primary"
-              icon={<FileExcelOutlined />}
-              className="salary-download-button"
-            >
-              Download Excel
-            </Button>
-            <Button
-              type="danger"
-              icon={<FilePdfOutlined />}
-              className="salary-download-button"
-            >
-              Download PDF
-            </Button>
-          </Card>
-        </Col>
+        {salaryCards.map((card, index) => (
+          <Col key={index} xs={24} sm={12} md={8}>
+            <Card className="salary-card" hoverable>
+              <img
+                src={card.image}
+                alt="Preview"
+                className="salary-card-image"
+              />
+              <div className="salary-card-content">
+                <div className="salary-card-icon">{card.iconComponent}</div>
+                <h3 className="salary-card-title">{card.title}</h3>
+                <p className="salary-card-subtitle">{card.subtitle}</p>
+                <Button
+                  className="mainslaryamanbutton"
+                  onClick={() => navigate(card.link)}
+                  type="primary"
+                >
+                  {card.buttonText}
+                </Button>
+              </div>
+            </Card>
+          </Col>
+        ))}
       </Row>
-      <br />
-
-      {/* Salary Table */}
-      <Card className="salary-card">
-        <h3>Salary Records</h3>
-        <Table
-          columns={columns}
-          dataSource={salaryData}
-          pagination={{ pageSize: 4 }}
-        />
-      </Card>
     </div>
   );
 };

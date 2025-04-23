@@ -1,0 +1,123 @@
+.salaryRecord-container {
+  padding: 40px;
+}
+
+.salaryRecord-heading {
+  font-size: 28px;
+  font-weight: 700;
+  color: #003c2f;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.salaryRecord-filterCard {
+  background: #fff;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 60, 47, 0.05);
+}
+
+.salaryRecord-select,
+.salaryRecord-datePicker {
+  width: 100%;
+  margin-top: 6px;
+}
+.ageintsalaryrecordtable {
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.ageintsalaryrecordtable::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.salaryRecord-tableCard {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.ageintsalaryrecordtable .ant-table {
+  min-width: 1400px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.ageintsalaryrecordtable .ant-table-thead > tr > th {
+  background-color: #003c2f; /* deep green */
+  color: #ffffff; /* white text */
+  font-weight: 600;
+  font-size: 13px;
+  border-right: none !important; /* 💥 remove the right border */
+  padding: 12px;
+  text-align: left;
+}
+
+.ageintsalaryrecordtable .ant-table-tbody > tr > td {
+  font-size: 14px;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  text-align: left !important;
+}
+
+.ageintsalaryrecordtable .ant-table-tbody > tr:hover > td {
+  background-color: #f9fbfc;
+}
+.ageintsalaryrecordtable .ant-table-cell {
+  border-right: none !important;
+}
+.salary-summary-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: #f9fbfa;
+  padding: 16px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 60, 47, 0.06);
+}
+
+.salary-card-title {
+  margin: 0;
+  color: #003c2f;
+  font-weight: 600;
+}
+
+.salary-card-salary {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.top-agents-wrapper {
+  margin-top: 40px;
+}
+
+.top-agents-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #003c2f;
+  margin-bottom: 20px;
+}
+
+.top-agent-card {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 6px rgba(0, 60, 47, 0.05);
+}
+
+.top-agent-name {
+  font-weight: 600;
+  color: #003c2f;
+  margin-bottom: 4px;
+}
+
+.top-agent-salary {
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 500;
+}
+.ageintsalaryrecordtable .ant-table-sticky-scroll {
+  box-shadow: inset 5px 0 5px -5px rgba(0, 0, 0, 0.1);
+}

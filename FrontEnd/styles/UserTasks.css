@@ -1,42 +1,67 @@
 .user-tasks-container {
-  padding: 20px;
+  padding: 40px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .user-tasks-title {
-  color: #032212;
-  font-weight: bold;
-  margin-bottom: 20px;
+  color: #003c2f;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
 }
 
 .user-tasks-subtext {
-  color: #5a5a5a;
-  margin-bottom: 20px;
   display: block;
+  color: #5a5a5a;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 24px;
 }
 
-.ant-table {
-  border-radius: 10px;
+.user-tasks-table {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 60, 47, 0.1);
+  overflow: hidden;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-.ant-table-thead > tr > th {
-  background: #f5f5f5;
-  font-weight: bold;
+.user-tasks-table .ant-table {
+  border-radius: 12px;
 }
 
-.ant-table-tbody > tr > td {
-  padding: 12px 16px;
+.user-tasks-table .ant-table-thead > tr > th {
+  background-color: #003c2f !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 14px 18px;
+  text-transform: uppercase;
 }
 
-.ant-badge-status {
-  display: flex;
-  align-items: center;
+.user-tasks-table .ant-table-tbody > tr > td {
+  padding: 14px 18px;
+  font-size: 14px;
 }
 
-.ant-btn-link {
-  font-weight: bold;
+.user-tasks-table .ant-table-tbody > tr:hover > td {
+  background-color: #f3fef6;
 }
 
 .ant-avatar {
   border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.task-link-btn {
+  font-weight: 600;
+  color: #003c2f !important;
+  padding: 0;
+}
+
+.task-link-btn:hover {
+  color: #1e634e !important;
 }

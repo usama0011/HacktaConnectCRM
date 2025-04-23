@@ -1,5 +1,9 @@
 import express from "express";
-import { submitIPData, getUserIPData } from "../controllers/ipController.js";
+import {
+  submitIPData,
+  getUserIPData,
+  getAllIPData,
+} from "../controllers/ipController.js";
 import {
   authMiddleware,
   adminMiddleware,
@@ -8,9 +12,10 @@ import {
 const router = express.Router();
 
 // Submit Daily Clicks & Sessions
-router.post("/submit", authMiddleware, submitIPData);
+router.post("/submit", submitIPData);
+router.get("/", getAllIPData);
 
 // Get User's IP Submission Data
-router.get("/:userId", authMiddleware, getUserIPData);
+router.get("/:userId", getUserIPData);
 
 export default router;

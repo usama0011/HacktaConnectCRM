@@ -1,0 +1,81 @@
+.daily-ip-container {
+  padding: 30px 20px;
+  max-width: 1400px;
+  margin: auto;
+}
+
+.daily-ip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.daily-ip-picker {
+  min-width: 200px;
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+.edit-history-card {
+  margin-bottom: 20px;
+  border-left: 4px solid #4387ff;
+  box-shadow: 0px 4px 12px rgba(0, 60, 47, 0.06);
+}
+
+.edit-history-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.modal-fields > * {
+  margin-bottom: 12px;
+}
+.user-table-singipoidsfisodf .ant-table-tbody > tr > td {
+  text-align: left !important;
+}
+.modal-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.modal-fields {
+  margin-top: 10px;
+}
+
+.modal-history-section {
+  margin-top: 24px;
+}
+
+.history-item {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+.history-item {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.history-item:first-child {
+  border-left: 4px solid #4387ff;
+}

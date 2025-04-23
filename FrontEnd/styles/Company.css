@@ -1,0 +1,160 @@
+.crm-company-wrapper {
+  font-family: "Inter", sans-serif;
+  color: #111;
+  background: #fff;
+}
+
+/* ========== HERO SECTION ========== */
+.crm-company-hero {
+  text-align: center;
+  padding: 60px 20px;
+}
+.crm-subtitle {
+  color: #003c2f;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.crm-company-hero h1 {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+.crm-company-hero .highlight {
+  background: #d3ff37;
+  color: #003c2f;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.crm-company-hero .crm-desc {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #555;
+}
+
+/* ========== CARDS SECTION ========== */
+.crm-company-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 40px;
+}
+.crm-company-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.card-meta {
+  padding: 16px;
+}
+.card-meta .category {
+  color: #003c2f;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.card-meta .title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.card-meta .desc {
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+.read-btn {
+  background: #003c2f;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ========== CTA GREEN SECTION ========== */
+.crm-cta-green {
+  background: #003c2f;
+  padding: 50px 20px;
+  text-align: center;
+}
+.crm-cta-green h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: white !important;
+}
+.crm-cta-green .highlight {
+  background: white;
+  color: #003c2f;
+  padding: 0 6px;
+  border-radius: 4px;
+}
+.crm-cta-green p {
+  max-width: 600px;
+  margin: 12px auto 20px;
+  color: white;
+}
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.quote-btn {
+  background: white;
+  color: black;
+  font-weight: 600;
+  border: none;
+}
+.phone {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #003c2f;
+}
+
+/* ========== FAQ SECTION ========== */
+.crm-faq {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 60px 20px;
+  gap: 40px;
+  align-items: center;
+}
+.faq-left {
+  flex: 1;
+  text-align: center;
+}
+.counter-box h1 {
+  font-size: 48px;
+  color: #003c2f;
+  margin: 0;
+}
+.counter-box p {
+  color: #555;
+}
+.faq-image {
+  width: 100%;
+  max-width: 300px;
+  margin-top: 20px;
+}
+.faq-right {
+  flex: 1;
+  max-width: 500px;
+}
+.faq-right h2 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+.faq-right p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .crm-faq {
+    flex-direction: column;
+  }
+  .cta-buttons {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,131 @@
+.CRM-stats-orders-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+/* Statistics Card */
+.CRM-statistics-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 20px 24px;
+  flex: 1 1 35%;
+  max-width: 460px;
+}
+
+.CRM-statistics-card h2 {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.CRM-more-link {
+  float: right;
+  font-size: 13px;
+  color: green;
+  cursor: pointer;
+}
+
+.CRM-legend {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+.CRM-legend li {
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.CRM-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.CRM-morning {
+  background: #28a745;
+}
+.CRM-evening {
+  background: #ffc107;
+}
+.CRM-night {
+  background: #ff7043;
+}
+.CRM-allshifts {
+  background: #6f42c1;
+}
+
+/* Donut chart wrapper (center it) */
+.recharts-responsive-container {
+  margin: 0 auto;
+}
+
+/* ===================== Users Table ===================== */
+
+.CRM-orders-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 20px 24px;
+  flex: 1 1 63%;
+}
+
+.CRM-orders-card h2 {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+/* Override Ant Design table */
+.CRM-orders-table .ant-table {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: none !important;
+}
+
+/* Table header */
+.CRM-orders-table .ant-table-thead > tr > th {
+  background-color: transparent !important;
+  color: black !important;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px;
+}
+
+/* Table cells */
+.CRM-orders-table .ant-table-tbody > tr > td {
+  font-size: 14px;
+  padding: 12px;
+  vertical-align: middle;
+}
+
+/* Row hover */
+.CRM-orders-table .ant-table-tbody > tr:hover > td {
+  background-color: black;
+}
+
+/* Avatar and username inline */
+.CRM-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .CRM-statistics-card,
+  .CRM-orders-card {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .CRM-orders-table .ant-table-thead > tr > th {
+    font-size: 13px;
+  }
+}

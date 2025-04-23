@@ -1,75 +1,67 @@
-/* Main Container */
-.salary-container {
-  width: 100%;
-  padding: 24px;
-  background: #f0f2f5;
-  min-height: 100vh;
+.salary-management-container {
+  padding: 40px;
 }
 
-/* Page Title */
-.salary-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #032212;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Filters Section */
-.salary-filters {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.salary-search,
-.salary-date,
-.salary-select {
-  width: 200px;
-  border-radius: 6px;
-}
-
-.salary-generate-button {
-  background: #032212;
-  color: white;
-  border-radius: 6px;
-  border: none;
-}
-
-.salary-generate-button:hover {
-  background: #054d34;
-}
-
-/* Card Styling */
-.salary-card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.salary-management-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #003c2f;
   text-align: center;
+  margin-bottom: 30px;
 }
 
-.salary-card h3 {
-  font-size: 18px;
-  color: #032212;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.salary-card {
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  padding: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease;
+  height: 100%;
 }
 
-/* Download Buttons */
-.salary-download-button {
-  display: block;
+.salary-card:hover {
+  transform: translateY(-6px);
+}
+
+.salary-card-image {
   width: 100%;
-  margin-top: 10px;
-  border-radius: 6px;
-  height: 40px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  border-bottom: 2px solid #f0f0f0;
 }
 
-/* Table Styling */
-.salary-card .ant-table-thead > tr > th {
-  background: #032212 !important;
-  color: white !important;
+.salary-card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.salary-card-icon {
+  font-size: 30px;
+  color: #003c2f;
+}
+
+.salary-card-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #003c2f;
+}
+
+.salary-card-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #777;
+}
+.mainslaryamanbutton {
+  background-color: #003c2f !important;
+  width: 100%;
+  border-radius: none !important;
+  height: 38px;
+  font-weight: bold;
 }

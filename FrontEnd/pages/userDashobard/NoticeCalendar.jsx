@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { Calendar, Badge, Card, Typography, Modal, List } from "antd";
+import {
+  CalendarOutlined,
+  NotificationOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
 import "../../styles/NoticeCalendar.css";
 
 const { Title, Text } = Typography;
@@ -15,7 +20,6 @@ const NoticeCalendar = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedNotices, setSelectedNotices] = useState([]);
 
-  // Renders notices inside each date cell
   const dateCellRender = (value) => {
     const dateKey = value.format("YYYY-MM-DD");
     return (
@@ -29,7 +33,6 @@ const NoticeCalendar = () => {
     );
   };
 
-  // Opens the modal with the selected date's notices
   const openModal = (dateKey) => {
     if (notices[dateKey]) {
       setSelectedDate(dateKey);
@@ -40,20 +43,23 @@ const NoticeCalendar = () => {
 
   return (
     <div className="noticecalendar-container">
-      <Title level={2} className="noticecalendar-title">
-        Notice & Events Calendar
-      </Title>
-      <Text className="noticecalendar-subtext">
-        Stay updated with upcoming notices, announcements, and events.
-      </Text>
+      <div className="noticecalendar-header">
+        <Title level={2} className="noticecalendar-title">
+          <CalendarOutlined style={{ marginRight: 10 }} />
+          Notice & Events Calendar
+        </Title>
+        <Text className="noticecalendar-subtext">
+          <InfoCircleOutlined style={{ marginRight: 6 }} />
+          Stay updated with upcoming notices, announcements, and events.
+        </Text>
+      </div>
 
       <Card className="noticecalendar-card">
-        <Calendar dateCellRender={dateCellRender} />
+        <Calendar dateCellRender={dateCellRender} fullscreen={true} />
       </Card>
 
-      {/* Modal for Notice Details */}
       <Modal
-        title={`Notices for ${selectedDate}`}
+        title={`🗓️ Notices for ${selectedDate}`}
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}

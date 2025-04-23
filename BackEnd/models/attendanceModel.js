@@ -13,8 +13,8 @@ const attendanceSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["Present", "Absent", "Late", "RotationOff", "Leave"], // Attendance status
-      default: "Present",
+      enum: ["pending", "Present", "Absent", "Late", "RotationOff", "Leave"], // Attendance statusa
+      default: "pending",
     },
     checkInTime: { type: Date, default: null }, // Stores login timestamp
     checkOutTime: { type: Date, default: null }, // Stores logout timestamp

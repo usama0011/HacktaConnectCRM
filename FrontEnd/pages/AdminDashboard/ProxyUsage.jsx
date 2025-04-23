@@ -1,139 +1,97 @@
 import React from "react";
-import { Table, Card, Row, Col, Tag } from "antd";
-import { Line } from "react-chartjs-2";
-import "chart.js/auto";
-import moment from "moment";
+import { Card, Row, Col, Typography, Button, Avatar } from "antd";
+import { useNavigate } from "react-router-dom";
+import { CrownOutlined } from "@ant-design/icons";
 import "../../styles/ProxyUsage.css";
 
+const { Title, Text } = Typography;
+
 const ProxyUsage = () => {
-  // Dummy usage data for SmartProxy, MangoProxy, and Geonode
-  const usageData = [
+  const navigate = useNavigate();
+
+  const proxies = [
     {
       platform: "SmartProxy",
       totalUsage: 50,
-      proxies: [
-        {
-          proxyIp: "134.209.10.10",
-          location: "USA",
-          usage: 20,
-          status: "Active",
-        },
-        {
-          proxyIp: "134.209.10.11",
-          location: "Canada",
-          usage: 10,
-          status: "Active",
-        },
-      ],
+      color: "#4a6cf7",
+      route: "/admin/dashboard/proxy/smart",
+      proxyURL:
+        "https://images.smartproxy.com/smartproxy_logo_t_0b8821572f/smartproxy_logo_t_0b8821572f.png",
+      image:
+        "https://img.freepik.com/free-vector/wireframe-chain-with-digital-code-lock-blockchain-cyber-security-safe-privacy-concept_127544-953.jpg?ga=GA1.1.1696791716.1743911361&semt=ais_hybrid&w=740", // Image URL left empty for later
     },
     {
       platform: "MangoProxy",
       totalUsage: 35,
-      proxies: [
-        {
-          proxyIp: "193.110.45.12",
-          location: "Germany",
-          usage: 15,
-          status: "Inactive",
-        },
-        {
-          proxyIp: "193.110.45.13",
-          location: "France",
-          usage: 20,
-          status: "Active",
-        },
-      ],
+      color: "#facc15",
+      route: "/admin/dashboard/proxy/mango",
+      proxyURL:
+        "https://images.smartproxy.com/smartproxy_logo_t_0b8821572f/smartproxy_logo_t_0b8821572f.png",
+      image:
+        "https://img.freepik.com/free-vector/wireframe-chain-with-digital-code-lock-blockchain-cyber-security-safe-privacy-concept_127544-953.jpg?ga=GA1.1.1696791716.1743911361&semt=ais_hybrid&w=740",
     },
     {
       platform: "Geonode",
       totalUsage: 42,
-      proxies: [
-        {
-          proxyIp: "207.154.21.22",
-          location: "UK",
-          usage: 12,
-          status: "Active",
-        },
-        {
-          proxyIp: "207.154.21.23",
-          location: "India",
-          usage: 30,
-          status: "Active",
-        },
-      ],
-    },
-  ];
-
-  // Chart Data (Dummy Monthly GB usage)
-  const chartData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-    datasets: usageData.map((provider) => ({
-      label: `${provider.platform} (GB)`,
-      data: [
-        Math.floor(Math.random() * 10 + 5),
-        Math.floor(Math.random() * 10 + 10),
-        Math.floor(Math.random() * 10 + 15),
-        Math.floor(Math.random() * 10 + 10),
-        Math.floor(Math.random() * 10 + 20),
-        Math.floor(Math.random() * 10 + 10),
-        Math.floor(Math.random() * 10 + 15),
-      ],
-      borderColor:
-        provider.platform === "SmartProxy"
-          ? "#032212"
-          : provider.platform === "MangoProxy"
-          ? "#d48806"
-          : "#722ed1",
-      backgroundColor: "transparent",
-      tension: 0.4,
-    })),
-  };
-
-  // Columns for proxy detail table
-  const columns = [
-    { title: "Proxy IP", dataIndex: "proxyIp", key: "proxyIp" },
-    { title: "Location", dataIndex: "location", key: "location" },
-    {
-      title: "Usage (GB)",
-      dataIndex: "usage",
-      key: "usage",
-      render: (text) => `${text} GB`,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={status === "Active" ? "green" : "red"}>{status}</Tag>
-      ),
+      color: "#a855f7",
+      route: "/admin/dashboard/proxy/geo",
+      proxyURL:
+        "https://images.smartproxy.com/smartproxy_logo_t_0b8821572f/smartproxy_logo_t_0b8821572f.png",
+      image:
+        "https://img.freepik.com/free-vector/wireframe-chain-with-digital-code-lock-blockchain-cyber-security-safe-privacy-concept_127544-953.jpg?ga=GA1.1.1696791716.1743911361&semt=ais_hybrid&w=740",
     },
   ];
 
   return (
-    <div className="proxy-usage-container">
-      <h2 className="proxy-usage-title">Proxy Usage Dashboard</h2>
-
-      {/* Usage Graph */}
-      <Card className="proxy-usage-card" style={{ marginBottom: 24 }}>
-        <h3>Monthly Proxy Usage by Provider</h3>
-        <Line data={chartData} />
-      </Card>
-
-      {/* Table per provider */}
-      <Row gutter={[16, 16]}>
-        {usageData.map((provider, index) => (
-          <Col xs={24} md={8} key={index}>
-            <Card className="proxy-usage-card">
-              <h3>{provider.platform}</h3>
-              <p>
-                <strong>Total Usage:</strong> {provider.totalUsage} GB
-              </p>
-              <Table
-                columns={columns}
-                dataSource={provider.proxies.map((p, i) => ({ ...p, key: i }))}
-                pagination={false}
-                size="small"
+    <div className="proxy-dashboard-container">
+      <div className="CRM-leaderboard-ribbon">
+        <div className="CRM-ribbon-left" />
+        <div className="CRM-ribbon-center">PROXY USAGE</div>
+        <div className="CRM-ribbon-right" />
+      </div>
+      <br />
+      <Row gutter={[24, 24]}>
+        {proxies.map((proxy, idx) => (
+          <Col xs={24} sm={12} md={8} key={idx}>
+            <Card className="CRM-overview-card" hoverable>
+              <img
+                src={proxy.image}
+                alt={proxy.platform}
+                className="proxy-img"
               />
+              <div className="CRM-card-content">
+                <div className="CRM-card-text">
+                  <p className="CRM-card-title">{proxy.platform}</p>
+                  <h2 className="CRM-card-value">{proxy.totalUsage} GB</h2>
+                  <p className="CRM-card-change CRM-positive">
+                    Daily Usage: 12AM - 12PM
+                  </p>
+                </div>
+                <Avatar src={proxy.image} size={48} />
+              </div>
+              <div className="CRM-card-banner">
+                <div className="CRM-banner-left">
+                  <Avatar
+                    className="CRM-banner-avatar"
+                    src={proxy.image}
+                    alt="avatar"
+                  />
+                  <span className="CRM-banner-name">{proxy.platform}</span>
+                </div>
+                <div className="CRM-banner-points">
+                  <span className="CRM-points-icon">🪙</span>
+                  <span className="CRM-banner-score">
+                    {proxy.totalUsage} GB
+                  </span>
+                </div>
+              </div>
+              <Button
+                type="primary"
+                className="proxy-view-btn"
+                onClick={() => navigate(proxy.route)}
+              >
+                Full Report
+              </Button>
             </Card>
           </Col>
         ))}

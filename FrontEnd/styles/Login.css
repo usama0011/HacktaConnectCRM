@@ -21,7 +21,7 @@
 }
 
 .login-welcome {
-  color: #032212;
+  color: #003c2f;
   font-weight: bold;
 }
 
@@ -46,6 +46,7 @@
 .login-form input {
   height: 40px;
   border-radius: 6px;
+  background-color: transparent !important;
 }
 
 /* Remember Me & Forgot Password */
@@ -57,7 +58,7 @@
 }
 
 .forgot-password {
-  color: #032212;
+  color: #003c2f;
   cursor: pointer;
 }
 
@@ -69,7 +70,7 @@
 .login-button {
   width: 100%;
   height: 45px;
-  background: #032212;
+  background: #003c2f;
   color: white;
   border-radius: 6px;
   font-size: 16px;
@@ -106,7 +107,7 @@
 /* Right Section - Illustration */
 .login-illustration {
   width: 50%;
-  background: #032212;
+  background: #003c2f;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,7 +119,7 @@
 .illustration-img {
   max-width: 80%;
   border-radius: 10px;
-  border: 5px solid white;
+  border: 5px solid rgb(242, 245, 248);
   display: block;
 }
 
@@ -174,4 +175,122 @@
   left: 10%;
   width: 80px;
   height: 80px;
+}
+
+/* ===================== RESPONSIVE ===================== */
+
+/* Tablets and Small Desktops */
+@media (max-width: 1024px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .login-form-container,
+  .login-illustration {
+    width: 100%;
+    padding: 30px 20px;
+  }
+
+  .login-form-container {
+    order: 2;
+  }
+
+  .login-illustration {
+    order: 1;
+    padding: 30px 20px;
+  }
+
+  .illustration-img {
+    max-width: 100%;
+  }
+
+  .svg-container {
+    justify-content: center;
+  }
+
+  .svg-shape {
+    display: none; /* Optional: hide shapes for smaller screens */
+  }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+  .login-form-container {
+    padding: 20px 15px;
+  }
+  .login-logo {
+    width: 60px !important;
+    height: auto;
+  }
+  .login-welcome {
+    font-size: 24px;
+  }
+
+  .login-subtext {
+    font-size: 14px;
+  }
+
+  .login-card {
+    max-width: 100%;
+    padding: 0px;
+  }
+
+  .login-form input {
+    font-size: 14px;
+  }
+
+  .login-button,
+  .google-login {
+    font-size: 14px;
+    height: 40px;
+  }
+
+  .login-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .forgot-password {
+    align-self: flex-end;
+  }
+
+  .login-illustration {
+    padding: 10px;
+  }
+
+  .illustration-img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 480px) {
+  .login-welcome {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .login-subtext {
+    text-align: center;
+  }
+
+  .login-card {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .login-options {
+    gap: 8px;
+  }
+
+  .login-logo {
+    width: 40px;
+    margin-bottom: 8px;
+  }
+
+  .signup-text {
+    font-size: 13px;
+  }
 }

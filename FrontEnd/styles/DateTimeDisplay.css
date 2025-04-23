@@ -1,0 +1,28 @@
+/* src/styles/DateTimeDisplay.css */
+
+.datetime-widget {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  color: black;
+  font-weight: 500;
+  font-family: "Segoe UI", sans-serif;
+  backdrop-filter: blur(6px);
+}
+
+.datetime-date,
+.datetime-time {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+
+.datetime-icon {
+  color: #003c2f !important;
+  font-size: 18px;
+  margin-right: 8px;
+}

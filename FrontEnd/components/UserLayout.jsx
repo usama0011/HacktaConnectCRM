@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Layout, Menu, Tooltip, Input, Button, Avatar } from "antd";
+import { Layout, Menu, Tooltip, Input, Button, Avatar, Dropdown } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import {
   DashboardOutlined,
@@ -14,6 +14,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   SearchOutlined,
+  AppstoreAddOutlined,
   QuestionCircleOutlined,
 } from "@ant-design/icons";
 import MainWebSiteLogo from "../src/assets/mainlogo.jpeg";
@@ -24,30 +25,51 @@ const { Header, Sider, Content } = Layout;
 const UserLayout = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false); // ✅ Add this state
 
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
   };
+  const avatarMenu = (
+    <Menu>
+      <Menu.Item key="settings" icon={<SettingOutlined />}>
+        <span onClick={() => navigate("/user/dashboard/settings")}>
+          Settings
+        </span>
+      </Menu.Item>
+      <Menu.Item key="logout" icon={<LogoutOutlined />}>
+        <span onClick={handleLogout}>Logout</span>
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
-    <Layout className="user-dashboard-layout">
+    <Layout
+      className="user-dashboard-layout"
+      style={{ minHeight: "100vh", position: "relative" }}
+    >
       {/* Sidebar */}
       <Sider
-        className="user-dashboard-sider"
+        width={260}
+        collapsedWidth={70}
+        trigger={null}
         collapsible
-        collapsed={collapsed}
-        onCollapse={setCollapsed}
+        collapsed={!isExpanded}
+        onMouseEnter={() => setIsExpanded(true)}
+        onMouseLeave={() => setIsExpanded(false)}
+        className={`bitrix-sidebar ${isExpanded ? "expanded" : ""}`}
       >
-        <div className="user-logo">
-          {!collapsed ? "Hackta CRM" : <MenuFoldOutlined />}
+        <div className="sidebar-logo">
+          <img src={MainWebSiteLogo} alt="Logo" />
         </div>
 
         <Menu
-          className="custom-user-menu"
+          className="bitrix-menu"
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
+          inlineCollapsed={!isExpanded}
         >
           <Menu.Item key="1" icon={<DashboardOutlined />}>
             <Link to="/user/dashboard">Dashboard</Link>
@@ -80,49 +102,47 @@ const UserLayout = () => {
             <Link to="/user/dashboard/faqs">Faqs</Link>
           </Menu.Item>
         </Menu>
+
+        <div className="user-sidebar-footer">
+          <Button
+            className="user-logout-btn"
+            icon={<LogoutOutlined />}
+            onClick={handleLogout}
+          >
+            {isExpanded && "Logout"}
+          </Button>
+        </div>
       </Sider>
 
       {/* Main Layout */}
-      <Layout>
-        {/* Header */}
-        <Header className="user-navbar">
-          <div className="navbar-left">
-            <img src={MainWebSiteLogo} alt="Logo" className="navbar-logo" />
-            <span className="navbar-title">Hackta Connect CRM</span>
+
+      {/* Content */}
+      <Content className="user-dashboard-content">
+        <Header className="custom-user-header">
+          <div className="header-left">
+            <h2>Welcome Usama!</h2>
           </div>
-          <div className="navbar-center">
+
+          <div className="header-center">
             <Input
-              className="search-bar"
-              placeholder="Search..."
+              className="header-search"
+              placeholder="Search here..."
               prefix={<SearchOutlined />}
             />
           </div>
-          <div className="navbar-right">
-            <Tooltip title="Help">
-              <QuestionCircleOutlined className="navbar-icon" />
-            </Tooltip>
-            <Tooltip title="Profile">
+
+          <div className="header-right">
+            <Dropdown overlay={avatarMenu} trigger={["click"]}>
               <Avatar
                 src="https://img.icons8.com/?size=60&id=FZQamLEORsJ1&format=png"
-                className="navbar-avatar"
+                className="header-avatar"
+                style={{ cursor: "pointer" }}
               />
-            </Tooltip>
-            <Button
-              type="primary"
-              icon={<LogoutOutlined />}
-              onClick={handleLogout}
-              className="navbar-logout"
-            >
-              Logout
-            </Button>
+            </Dropdown>
           </div>
         </Header>
-
-        {/* Content */}
-        <Content className="user-dashboard-content">
-          <Outlet />
-        </Content>
-      </Layout>
+        <Outlet />
+      </Content>
     </Layout>
   );
 };

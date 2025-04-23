@@ -1,0 +1,85 @@
+/* Container */
+.download-salary-container {
+  padding: 40px;
+  min-height: 100vh;
+}
+
+/* Page Heading */
+.download-salary-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #003c2f;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* Form Card */
+.download-salary-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+}
+
+.download-salary-card label {
+  font-weight: 600;
+  color: #003c2f;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Button Wrapper */
+.download-button-wrapper {
+  margin-top: 30px;
+  text-align: right;
+}
+
+/* Table Card */
+.download-salary-table {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+/* Table Header Styling */
+.download-salary-table .ant-table-thead > tr > th {
+  background-color: #003c2f;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px;
+}
+
+/* Table Row Styling */
+.download-salary-table .ant-table-tbody > tr > td {
+  padding: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #f0f0f0;
+  text-align: left !important;
+}
+
+/* Row Hover */
+.download-salary-table .ant-table-tbody > tr:hover > td {
+  background-color: #f5f8f6;
+}
+
+/* Inputs and Selects */
+.download-salary-card .ant-input,
+.download-salary-card .ant-select-selector,
+.download-salary-card .ant-picker {
+  border-radius: 8px;
+  height: 40px;
+}
+
+/* Button */
+.download-button-wrapper .ant-btn {
+  background-color: #003c2f;
+  border-color: #003c2f;
+  font-weight: 600;
+}
+
+.download-button-wrapper .ant-btn:hover {
+  background-color: #005343;
+  border-color: #005343;
+}

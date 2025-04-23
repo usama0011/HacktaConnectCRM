@@ -1,0 +1,55 @@
+.single-task-container {
+  width: 100%;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.single-task-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.single-task-image {
+  width: 140px !important;
+  padding: 10px;
+  height: 140px !important;
+  object-fit: cover;
+}
+
+.ant-typography h4 {
+  display: flex;
+  border-top: 1px solid #f0f0f0;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.ant-typography p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+}
+
+.ant-tag {
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.ant-divider {
+  margin: 18px 0;
+}
+
+p {
+  font-size: 14px;
+  margin: 6px 0;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.single-task-card .ant-avatar {
+  margin-right: 8px;
+}

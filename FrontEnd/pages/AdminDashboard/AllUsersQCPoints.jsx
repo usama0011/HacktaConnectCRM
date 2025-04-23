@@ -1,55 +1,68 @@
-import React, { useState } from "react";
-import { Table, Typography, Avatar, Button, DatePicker } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  Typography,
+  Avatar,
+  Button,
+  DatePicker,
+  message,
+  Row,
+  Col,
+  Card,
+} from "antd";
+import {
+  UserOutlined,
+  FileSearchOutlined,
+  FundOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import axios from "axios";
 import "../../styles/QCPoints.css";
+import ProjectInfoCard from "../../components/ProjectInfoCard";
 
 const { Title, Text } = Typography;
-
-// Dummy User Data with Total QC Points
-const dummyUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    avatar: "https://i.pravatar.cc/50?u=johndoe",
-    totalPoints: 120,
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    avatar: "https://i.pravatar.cc/50?u=janesmith",
-    totalPoints: 110,
-  },
-  {
-    id: 3,
-    name: "Emily Johnson",
-    avatar: "https://i.pravatar.cc/50?u=emily",
-    totalPoints: 98,
-  },
-  {
-    id: 4,
-    name: "Michael Brown",
-    avatar: "https://i.pravatar.cc/50?u=michael",
-    totalPoints: 135,
-  },
-];
 
 const AllUsersQCPoints = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(moment());
+  const [topUsers, setTopUsers] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Handle Calendar Selection (Year & Month)
+  // Handle Date Change (Year & Month)
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    console.log("Fetching data for:", date.format("YYYY-MM"));
-    // API Call can be added here to fetch filtered data
   };
 
-  // Table Columns
+  // Fetch QC Points from backend
+  const fetchMonthlyQC = async (dateValue = selectedDate) => {
+    try {
+      setLoading(true);
+      const year = dateValue.format("YYYY");
+      const month = dateValue.format("MM");
+
+      const res = await axios.get(
+        `http://localhost:5000/api/qcpoints/monthly-summary?year=${year}&month=${month}`
+      );
+      setUsers(res.data.summary);
+      setTopUsers(res.data.top5); // <- Update this inside your API response handler
+    } catch (err) {
+      console.error("Failed to fetch monthly QC data", err);
+      message.error("Failed to load QC Points");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const columns = [
     {
-      title: "User",
+      title: (
+        <>
+          <UserOutlined style={{ marginRight: 6 }} />
+          User
+        </>
+      ),
       dataIndex: "name",
       key: "name",
       render: (text, record) => (
@@ -60,56 +73,105 @@ const AllUsersQCPoints = () => {
       ),
     },
     {
-      title: "Total QC Points",
+      title: (
+        <>
+          <FundOutlined style={{ marginRight: 6 }} />
+          Total QC Points
+        </>
+      ),
       dataIndex: "totalPoints",
       key: "totalPoints",
       render: (points) => <Text strong>{points}</Text>,
     },
     {
-      title: "View QC Points",
-      key: "actions",
-      render: (_, record) => (
-        <Button
-          type="primary"
-          onClick={() =>
-            navigate(
-              `/admin/dashboard/qcpoints/user/${
-                record.id
-              }?date=${selectedDate.format("YYYY-MM")}`
-            )
-          }
-        >
-          View Details
-        </Button>
+      title: (
+        <>
+          <FileSearchOutlined style={{ marginRight: 6 }} />
+          View QC Points
+        </>
       ),
+      key: "actions",
+      render: (_, record) => {
+        console.log(record);
+        return (
+          <Button
+            type="primary"
+            onClick={() =>
+              navigate(
+                `/admin/dashboard/qcpoints/user/${
+                  record.name
+                }?date=${selectedDate.format("YYYY-MM")}`
+              )
+            }
+          >
+            View Details
+          </Button>
+        );
+      },
     },
   ];
+  useEffect(() => {
+    fetchMonthlyQC(selectedDate);
+  }, []);
 
   return (
     <div className="qcpoints-container">
-      <Title level={2} className="qcpoints-title">
-        All Users QC Points
-      </Title>
+      <ProjectInfoCard
+        titleproject="All Users Qc Points"
+        projectdes="Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore voluptates nobis voluptatum obcaecati blanditiis totam magni enim quam commodi saepe!"
+      />
 
-      {/* Date Picker for Year & Month Selection */}
       <div className="date-filter">
-        <Text style={{ marginRight: "10px" }}>Select Year & Month:</Text>
+        <Text style={{ marginRight: "10px", color: "white" }}>
+          Select Year & Month:
+        </Text>
         <DatePicker
           picker="month"
           value={selectedDate}
           onChange={handleDateChange}
           className="calendar-picker"
+          disabledDate={(current) =>
+            current && current > moment().endOf("month")
+          }
         />
       </div>
       <br />
-      <br />
-
+      {topUsers.length > 0 && (
+        <>
+          <Title style={{ color: "white" }} level={3}>
+            🏆 Top 5 Performers of the Month
+          </Title>
+          <Row gutter={[16, 16]}>
+            {topUsers.map((user, index) => (
+              <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4}>
+                <Card className="top-performer-card" bordered hoverable>
+                  <div style={{ textAlign: "center" }}>
+                    <Avatar
+                      size={64}
+                      src={user.avatar}
+                      icon={<UserOutlined />}
+                      style={{ marginBottom: 10 }}
+                    />
+                    <Title level={5} style={{ margin: 0 }}>
+                      {user.name}
+                    </Title>
+                    <Text type="secondary">QC Points: {user.totalPoints}</Text>
+                  </div>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+          <br />
+        </>
+      )}
       <Table
         columns={columns}
-        dataSource={dummyUsers}
-        rowKey="id"
-        pagination={{ pageSize: 5 }}
+        dataSource={users}
+        loading={loading}
+        rowKey="_id"
+        pagination={{ pageSize: 20 }}
         bordered
+        className="qupointsAddTable"
       />
     </div>
   );

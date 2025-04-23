@@ -214,7 +214,6 @@ const ViewSingleTask = () => {
           </Button>
         </div>
         {/* List of Comments */}
-        ChatSection
       </Card>
     </div>
   );

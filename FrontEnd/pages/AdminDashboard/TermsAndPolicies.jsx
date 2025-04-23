@@ -134,6 +134,7 @@ const TermsAndPolicies = () => {
         <h3 className="terms-subtitle">
           <FileTextOutlined /> Existing Policies
         </h3>
+        <br />
         <Table
           columns={columns}
           dataSource={policies}

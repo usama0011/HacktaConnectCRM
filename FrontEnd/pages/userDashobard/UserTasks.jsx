@@ -1,21 +1,10 @@
 import React, { useState } from "react";
-import {
-  Table,
-  Avatar,
-  Badge,
-  Button,
-  Typography,
-  Space,
-  Dropdown,
-  Menu,
-} from "antd";
+import { Table, Avatar, Badge, Button, Typography, Space, Tooltip } from "antd";
 import {
   FileTextOutlined,
   CalendarOutlined,
   UserOutlined,
   CheckCircleOutlined,
-  CloseCircleOutlined,
-  ClockCircleOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import "../../styles/UserTasks.css";
@@ -26,7 +15,6 @@ const UserTasks = () => {
   const navigate = useNavigate();
   const [selectedTask, setSelectedTask] = useState(null);
 
-  // Dummy Task Data (Fetched from Admin Assigned Tasks)
   const tasks = [
     {
       key: "1",
@@ -46,42 +34,60 @@ const UserTasks = () => {
     },
   ];
 
-  // Handle Task Click - Navigate to Task Details Page
   const handleTaskClick = (task) => {
     navigate(`/user/dashboard/tasks/${task.key}`, { state: { task } });
   };
 
-  // Define Table Columns
   const columns = [
     {
-      title: "Task Name",
+      title: (
+        <span>
+          <FileTextOutlined /> Task Name
+        </span>
+      ),
       dataIndex: "title",
       key: "title",
       render: (text, record) => (
-        <Button type="link" onClick={() => handleTaskClick(record)}>
+        <Button
+          type="link"
+          className="task-link-btn"
+          onClick={() => handleTaskClick(record)}
+        >
           {text}
         </Button>
       ),
     },
     {
-      title: "Active",
+      title: (
+        <span>
+          <CalendarOutlined /> Active
+        </span>
+      ),
       dataIndex: "dueDate",
       key: "dueDate",
       render: (date) => (
-        <>
-          <CalendarOutlined style={{ marginRight: 5 }} />
+        <Text>
+          <CalendarOutlined style={{ marginRight: 6 }} />
           {date}
-        </>
+        </Text>
       ),
     },
     {
-      title: "Deadline",
+      title: (
+        <span>
+          <CheckCircleOutlined /> Deadline
+        </span>
+      ),
       dataIndex: "status",
       key: "status",
-      render: () => <Badge status="default" text="No deadline" />,
+      render: () => <Badge status="default" text="No Deadline" />,
     },
     {
-      title: "Created By",
+      title: (
+        <span>
+          <UserOutlined /> Created By
+        </span>
+      ),
       dataIndex: "assignedBy",
       key: "assignedBy",
       render: (user) => (
@@ -92,7 +98,11 @@ const UserTasks = () => {
       ),
     },
     {
-      title: "Assignee",
+      title: (
+        <span>
+          <UserOutlined /> Assignee
+        </span>
+      ),
       dataIndex: "assignee",
       key: "assignee",
       render: (user) => (
@@ -110,14 +120,16 @@ const UserTasks = () => {
         All Tasks
       </Title>
       <Text className="user-tasks-subtext">
-        View and manage your assigned tasks.
+        View and manage your assigned tasks with ease.
       </Text>
 
       <Table
+        className="user-tasks-table"
         columns={columns}
         dataSource={tasks}
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 5 }}
         rowSelection={{ type: "checkbox" }}
+        bordered
       />
     </div>
   );

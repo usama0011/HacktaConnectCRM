@@ -1,10 +1,9 @@
+/* ========== Container ========== */
 .user-manager-container {
-  padding: 24px;
-  background: #f0f2f5;
   min-height: 100vh;
 }
 
-/* Header */
+/* ========== Header ========== */
 .user-header {
   display: flex;
   justify-content: space-between;
@@ -15,7 +14,7 @@
 .user-title {
   font-size: 24px;
   font-weight: bold;
-  color: #032212;
+  color: #1e293b; /* Updated from dark green to modern dark blue */
 }
 
 .user-actions {
@@ -24,30 +23,52 @@
 }
 
 .user-search {
-  border-radius: 6px;
+  border-radius: 10px;
   width: 250px;
+  border: none;
+  background-color: white;
+}
+.user-search > input {
+  background-color: transparent !important;
 }
 
+/* ========== New Button ========== */
 .user-new-button {
-  background: #032212;
+  background: #4a6cf7;
   color: white;
-  border-radius: 6px;
+  border-radius: 10px;
+  border: none;
+  padding: 6px 16px;
+  font-weight: 500;
 }
 
 .user-new-button:hover {
-  background: #054d34;
+  background: #1e40af;
+  color: white;
 }
 
-/* Table */
-.user-table .ant-table-thead > tr > th {
-  background: #032212 !important;
-  color: white !important;
-}
-
+/* ========== Table ========== */
 .user-table .ant-table {
-  border-radius: 10px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
+/* Table Header */
+.user-table .ant-table-thead > tr > th {
+  background: transparent !important;
+  color: black !important;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 13px;
+}
+
+/* Hover row */
+.user-table .ant-table-tbody > tr:hover > td {
+  background: #f9fbfd;
+}
+
+/* ========== User Info Column ========== */
 .user-info {
   display: flex;
   align-items: center;
@@ -55,12 +76,35 @@
 }
 
 .user-name {
-  font-weight: bold;
-  color: #032212;
+  font-weight: 600;
+  color: #1e293b;
 }
 
 .user-role {
   font-size: 12px;
-  color: gray;
+  color: #94a3b8;
   margin: 0;
+}
+
+.delete-confirm-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.delete-confirm-footer .ant-btn {
+  flex: 1;
+}
+
+/* Targets buttons in the confirmation modal */
+.ant-modal-confirm .ant-modal-confirm-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.ant-modal-confirm .ant-btn {
+  flex: 1;
+}
+.addnewuserfronres {
+  background-color: #003c2f;
 }

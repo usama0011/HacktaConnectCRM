@@ -1,0 +1,33 @@
+/* ChatBox.css */
+.chat-box {
+  margin-top: 2rem;
+  background-color: #f8f8f8;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.chat-messages {
+  max-height: 300px;
+  overflow-y: auto;
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.chat-message-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start !important;
+  gap: 10px;
+  background-color: #fcfcfc;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #eee;
+}
+
+.chat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}

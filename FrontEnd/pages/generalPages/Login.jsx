@@ -1,13 +1,68 @@
-import React from "react";
-import { Card, Form, Input, Button, Typography, Checkbox } from "antd";
+import React, { useState } from "react";
+import { Card, Form, Input, Button, Typography, Checkbox, message } from "antd";
 import { LockOutlined, UserOutlined, GoogleOutlined } from "@ant-design/icons";
 import "../../styles/Login.css";
 import MainWebSiteLogo from "../../src/assets/mainlogo.jpeg";
 import LoginBanner from "../../src/assets/loginbanner.jpg";
-
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useUserContext } from "../../context/UserContext";
 const { Title, Text } = Typography;
 
 const Login = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useUserContext();
+
+  const handleLogin = async (values) => {
+    try {
+      setLoading(true);
+
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        username: values.email,
+        password: values.password,
+      });
+
+      const { user, token } = res.data;
+
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+      login(user, token);
+
+      message.success("Login successful!");
+
+      // ✅ Attempt to mark attendance
+      try {
+        await axios.post("http://localhost:5000/api/attendance/mark", {
+          userId: user._id,
+          username: user.username,
+        });
+      } catch (err) {
+        console.warn(
+          "Attendance marking skipped:",
+          err.response?.data?.message
+        );
+      }
+
+      // ✅ Role-based navigation
+      const adminRoles = [
+        "superadmin",
+        "hr",
+        "floormanager",
+        "assistancefloormanager",
+      ];
+      if (adminRoles.includes(user.role)) {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/user/dashboard");
+      }
+    } catch (error) {
+      message.error(error?.response?.data?.message || "Login failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-container">
       {/* Left Section - Login Form */}
@@ -19,7 +74,12 @@ const Login = () => {
         <Text className="login-subtext">Please enter your details</Text>
 
         <Card className="login-card">
-          <Form layout="vertical" className="login-form">
+          <Form
+            requiredMark={false}
+            layout="vertical"
+            className="login-form"
+            onFinish={handleLogin}
+          >
             {/* Email Input */}
             <Form.Item
               label="Email address"
@@ -51,7 +111,12 @@ const Login = () => {
 
             {/* Login Button */}
             <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-button">
+              <Button
+                disabled={loading}
+                type="primary"
+                htmlType="submit"
+                className="login-button"
+              >
                 Sign in
               </Button>
             </Form.Item>

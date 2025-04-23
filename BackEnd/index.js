@@ -5,8 +5,15 @@ import cors from "cors";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import userTrackingRoute from "./routes/userTracking.js"; // Adjust path if needed
+import chatRoutes from "./routes/chatRoutes.js";
+import qcpointsRoute from "./routes/qcPointRoutes.js";
+
+import uploadRoutes from "./routes/uploadroute.js";
+import salaryCalculator from "./routes/agentSalaryFormulaRoutes.js";
 
 // Import all route files
+import taskRoutes from "./routes/taskRoutes.js";
+
 import authRoutes from "./routes/authRoutes.js";
 import ipRoutes from "./routes/ipRoutes.js";
 import salaryRoutes from "./routes/salaryRoutes.js";
@@ -28,7 +35,7 @@ app.use(morgan("dev"));
 // MongoDB Connection
 mongoose
   .connect(
-    "mongodb+srv://usama226390:usama226390@cluster0.dy53h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://za5232208:za5232208@hacktanewcrmdb.cyoxrvc.mongodb.net/?retryWrites=true&w=majority&appName=HacktaNewCRMDB"
   )
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
@@ -41,7 +48,13 @@ app.get("/", (req, res) => {
 // **Register API Routes**
 app.use("/api/auth", authRoutes); // Authentication (Signup, Login, Logout)
 app.use("/api/tracking", userTrackingRoute); // Your /api/track-user route
+app.use("/api/qcpoints", qcpointsRoute); // Your /api/track-user route
+app.use("/api/upload", uploadRoutes);
 app.use("/api/ip", ipRoutes); // IP Submission (Clicks & Sessions)
+app.use("/api/tasks", taskRoutes);
+app.use("/api/salaryformula", salaryCalculator);
+app.use("/api/chat", chatRoutes);
+
 app.use("/api/salary", salaryRoutes); // Salary Management (Draft, Edit, Finalize)
 app.use("/api/reports", reportRoutes); // User Reports (By Year, Month, Day)
 app.use("/api/attendance", attendanceRoutes); // Attendance Tracking (Check-in, Check-out)

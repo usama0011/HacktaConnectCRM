@@ -1,0 +1,86 @@
+.right-dashboard-panel {
+  width: 100%;
+  max-width: 350px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 20px;
+}
+
+.panel-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(67, 135, 254, 0.2);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+
+.panel-card .ant-card-head {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.panel-card .ant-card-head-title {
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-card .ant-list-item-meta-title {
+  font-weight: 600;
+  color: #fff !important;
+}
+
+.panel-card .ant-list-item-meta-description {
+  color: #f0f0f0;
+}
+
+.panel-card .ant-btn-link {
+  color: whitesmoke !important;
+  padding: 0;
+  text-align: center;
+  width: 100%;
+  text-decoration: underline;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.status-text {
+  font-weight: 500;
+}
+.status-texts {
+  color: #ffffff !important;
+}
+.status-text.pending {
+  color: #faad14 !important;
+}
+.status-text.approved {
+  color: #52c41a !important;
+}
+.status-text.rejected {
+  color: #ff4d4f !important;
+}
+
+.right-dashboard-panel .panel-card .ant-list {
+  max-height: 260px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: white !important;
+}
+
+.right-dashboard-panel .panel-card .ant-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.right-dashboard-panel .panel-card .ant-list::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.right-dashboard-panel .panel-card .ant-list::-webkit-scrollbar-thumb {
+  background-color: white !important;
+  border-radius: 10px;
+}

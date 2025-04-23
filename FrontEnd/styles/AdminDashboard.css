@@ -1,289 +1,134 @@
 .admin-dashboard-layout {
   min-height: 100vh;
-  display: flex; /* Ensure the layout stays aligned */
-  position: relative;
-}
-
-.admin-dashboard-layout .ant-layout {
-  margin-left: 200px; /* Match the fixed sidebar width */
-}
-
-.admin-logo {
-  height: 64px;
-  margin: 16px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #ffffff;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  background-color: #f6f6f6;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
-.customlinkfontsize {
-  font-size: 14px !important; /* Adjust font size as needed */
+.admin-dashboard-content {
+  margin-left: 80px;
+  padding: 24px;
 }
 
-.ant-menu-item {
-  margin: 0;
+.custom-admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
   padding: 0 20px;
-}
-
-.ant-menu-item-selected {
-  background-color: #1890ff !important;
-  color: #ffffff !important;
-}
-
-.ant-menu-item a {
-  color: inherit;
-  font-size: 14px;
-}
-
-.ant-menu-item .anticon {
-  margin-right: 8px;
-}
-
-.custom-admin-menu {
-  background-color: #032212; /* Menu background */
-}
-
-.custom-admin-menu .ant-menu-item {
-  color: #fff; /* Default text color */
-}
-
-.custom-admin-menu .ant-menu-item-selected {
-  background-color: white !important; /* Active item background */
-  color: black !important; /* Active item text color */
-}
-
-.custom-admin-menu .customlinkfontsize {
-  font-size: 14px; /* Adjust font size */
-  color: inherit; /* Inherit text color */
-  text-decoration: none; /* Remove underline */
-}
-
-.dashboard-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center; /* Aligns items to the left */
-}
-
-/* Wavy Cards */
-.wavy-card {
-  position: relative;
-  border-radius: 15px;
-  overflow: hidden;
-  text-align: center;
-  padding: 20px;
-  color: black;
-  height: 180px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-}
-
-.wavy-card:hover {
-  transform: scale(1.05);
-}
-
-.wavy-card h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.wavy-card p {
-  font-size: 14px;
-}
-
-/* SVG Wave Effect */
-.mysvgcard {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 40px;
-}
-
-.admin-dashboard-layout {
-  min-height: 100vh;
-  display: flex;
-}
-
-.admin-dashboard-sider {
-  background: #032212;
-  padding-left: 10px;
-  padding-right: 10px;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  transition: width 0.3s ease-in-out;
-}
-
-.admin-dashboard-sider .ant-layout-sider-trigger {
-  background: #032212;
-  margin-bottom: 50px;
-  left: 0;
-}
-
-.admin-logo {
-  height: 64px;
-  margin: 16px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.custom-admin-menu {
-  background-color: #032212;
-  border-right: none;
-}
-
-.custom-admin-menu .ant-menu-item,
-.custom-admin-menu .ant-menu-submenu-title {
-  color: #fff;
-}
-
-.custom-admin-menu .ant-menu-item-selected {
-  background-color: white !important;
-  color: black !important;
-}
-
-/* Sidebar Footer */
-.sidebar-footer {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  width: 100%;
-}
-
-/* Header */
-.admin-dashboard-header {
-  background: #032212;
-  color: white;
-  display: flex;
+  background: transparent; /* subtle glass background */
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
   position: sticky;
   top: 0;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  height: 64px;
 }
 
-.toggle-sidebar-btn {
-  color: white;
-  font-size: 18px;
-}
-
-/* Content */
-.admin-dashboard-content {
-  padding: 24px;
-  background: #f0f2f5;
-  transition: margin-left 0.3s ease-in-out;
-}
-
-.admin-dashboard-sider.ant-layout-sider-collapsed
-  + .ant-layout
-  .admin-dashboard-content {
-  margin-left: 80px;
-}
-
-.admin-navbar {
-  height: 64px;
-  background: #032212;
+/* Left Section */
+.header-left {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 12px;
+}
+.header-left > h2 {
+  color: #003c2f !important;
 }
 
-/* Left Side - Logo */
-.navbar-left {
-  display: flex;
-  align-items: center;
-}
-
-.navbar-logo {
+.header-avatar {
+  width: 40px;
   height: 40px;
-  margin-right: 10px;
+  border-radius: 50%;
+  border: 2px solid black;
 }
 
-.navbar-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: white;
+.header-welcome {
+  color: black;
+  font-weight: 500;
+  font-size: 16px;
 }
 
-/* Center - Search Bar */
-.navbar-center {
+/* Center Section */
+.header-center {
   flex: 1;
   display: flex;
   justify-content: center;
 }
 
-.search-bar {
+.header-search {
   width: 60%;
-  max-width: 500px;
+  max-width: 400px;
   border-radius: 20px;
+  padding-left: 12px;
+  border: none;
+  outline: none;
+  background-color: white !important;
+  color: black;
+  transition: all 0.3s ease;
 }
 
-/* Right Side - Icons & Logout */
-.navbar-right {
+.header-search input {
+  background: transparent !important;
+  color: black;
+}
+
+.header-search input::placeholder {
+  color: black;
+}
+
+/* Right Section */
+.header-right {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 16px;
 }
 
-.navbar-icon {
+.header-icon {
   font-size: 20px;
-  color: white;
+  color: black !important;
   cursor: pointer;
-  transition: color 0.2s ease-in-out;
+  transition: color 0.3s;
 }
 
-.navbar-icon:hover {
+.header-icon:hover {
+  color: #31bdea;
+}
+
+.header-logout-btn {
+  background-color: #fcc844;
   color: black;
-}
-
-.navbar-avatar {
-  cursor: pointer;
-}
-
-.navbar-logout {
-  background: white;
   border: none;
-  color: black;
-  border-radius: 20px;
-  padding: 5px 15px;
+  padding: 5px 16px;
+  font-weight: 500;
+  transition: background 0.3s;
 }
 
-.navbar-logout:hover {
-  background: #032212;
-}
+@media (max-width: 768px) {
+  .custom-admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    height: auto;
+    padding: 12px;
+  }
 
-/* Icon Styling */
-.icon-container {
-  font-size: 36px;
-  color: #032212;
-  margin-bottom: 10px;
-}
+  .header-left h1 {
+    font-size: 18px;
+  }
 
-.card-icon {
-  font-size: 36px;
-}
-/* Positioning the Wave */
-.wave-container {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 90%;
-  height: 120px;
-  overflow: hidden;
-}
+  .header-center {
+    width: 100%;
+    justify-content: flex-start;
+  }
 
-.dashboard-bottom-wave {
-  width: 100%;
-  height: 100%;
+  .header-search {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }

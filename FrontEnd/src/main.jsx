@@ -58,6 +58,27 @@ import AllUsersIPReport from "../pages/AdminDashboard/AllUsersIPReport.jsx";
 import SingleUserIPReport from "../pages/AdminDashboard/SingleUserIPReport.jsx";
 import AllUsersAttendance from "../pages/AdminDashboard/AllUsersAttendance.jsx";
 import SingleUserAttendance from "../pages/AdminDashboard/SingleUserAttendance.jsx";
+import SmartProxy from "../pages/AdminDashboard/SmartProxy.jsx";
+import MangoProxy from "../pages/AdminDashboard/MangoProxy.jsx";
+import ProxyGeo from "../pages/AdminDashboard/ProxyGeo.jsx";
+import ViewUserTaskCreations from "../pages/AdminDashboard/ViewUserTaskCreations.jsx";
+import SingleTaskItem from "../pages/AdminDashboard/SingleTaskItem.jsx";
+import AgentsSalaryRecord from "../pages/AdminDashboard/CreateRestEmployesSalary.jsx";
+import SalaryFormulaForm from "../pages/AdminDashboard/SalaryFormulaForm.jsx";
+import AttandanceManagementtAdmin from "../pages/AdminDashboard/AttandanceManagementt.jsx";
+import AgentDailyIPReports from "../pages/AdminDashboard/AgentDailyIPReports.jsx";
+import OfficeAgentsSalaryFormula from "../pages/AdminDashboard/OfficeAgentsSalaryFormula.jsx";
+import WFHSalaryFormula from "../pages/AdminDashboard/WFHSalaryFormula.jsx";
+import AgentSalaryAggrigation from "../pages/AdminDashboard/CreateAgentsSalary.jsx";
+import DownloadSalaryReports from "../pages/AdminDashboard/DownloadSalaryReports.jsx";
+import AttandanceDownloadReports from "../pages/AdminDashboard/AttandanceDownloadReports.jsx";
+import QCPointsDownloadReports from "../pages/AdminDashboard/QCPointsDownloadReports.jsx";
+import RegisteredUsersDownlaodReports from "../pages/AdminDashboard/RegisteredUsersDownlaodReports.jsx";
+import AgentsIPsReportsDownload from "../pages/AdminDashboard/AgentsIPsReportsDownload.jsx";
+import ProxyReportsDownlaod from "../pages/AdminDashboard/ProxyReportsDownlaod.jsx";
+import DownloadSalaryWokers from "../pages/AdminDashboard/DownloadSalaryWokers.jsx";
+import Features from "../pages/generalPages/Features.jsx";
+import Company from "../pages/generalPages/Company.jsx";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -83,6 +104,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/" element={<App />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/company" element={<Company />} />
 
           {/* User Dashboard Grouped Under UserLayout */}
           <Route
@@ -122,7 +145,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="ipreportsusers" element={<AllUsersIPReport />} />
             <Route path="allusersattandance" element={<AllUsersAttendance />} />
             <Route
-              path="attendance/user/:userId/:year/:month"
+              path="attendance/user/:username/"
               element={<SingleUserAttendance />}
             />
 
@@ -133,14 +156,38 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="addqcpointform" element={<QCPoints />} />
             <Route path="announcements" element={<Announcements />} />
             <Route path="attendance" element={<AttendanceManagement />} />
-            <Route path="taskcreation" element={<UserTaskCreation />} />
+            <Route path="newtask" element={<UserTaskCreation />} />
+            <Route
+              path="viewtaskcreation"
+              element={<ViewUserTaskCreations />}
+            />
             <Route path="addnewuser" element={<AddNewUser />} />
+            <Route path="agentsalary" element={<AgentSalaryAggrigation />} />
+            <Route
+              path="downloadsalaryworker"
+              element={<DownloadSalaryWokers />}
+            />
+            <Route path="restemploysalary" element={<AgentsSalaryRecord />} />
             <Route path="calendar" element={<CalendarManagement />} />
+            <Route
+              path="adminsideattandance"
+              element={<AttandanceManagementtAdmin />}
+            />
             <Route path="helpcenter" element={<HelpCenterManagement />} />
+            <Route path="dailyipreport" element={<AgentDailyIPReports />} />
+            <Route
+              path="officeagentsalaryformula"
+              element={<OfficeAgentsSalaryFormula />}
+            />
+            <Route path="wfhsalaryformula" element={<WFHSalaryFormula />} />
             <Route path="manageusers" element={<ManagerUsers />} />
             <Route path="noticeboard" element={<NoticeBoardCreation />} />
             <Route path="notifications" element={<NotificationsCreation />} />
+            <Route path="singletask/:taskId" element={<SingleTaskItem />} />
             <Route path="performancemetrics" element={<PerformanceMetrics />} />
+            <Route path="proxy/smart" element={<SmartProxy />} />
+            <Route path="proxy/mango" element={<MangoProxy />} />
+            <Route path="proxy/geo" element={<ProxyGeo />} />
             <Route path="proxyusage" element={<ProxyUsage />} />
             <Route path="reporting" element={<Reporting />} />
             <Route path="AllQCPoints" element={<AllUsersQCPoints />} />
@@ -149,9 +196,36 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               element={<SingleUserQCPoints />}
             />
             <Route path="reportsgenerate" element={<ReportsGenerate />} />
+            <Route path="salaryformula" element={<SalaryFormulaForm />} />
             <Route path="salarymanagement" element={<SalaryManagement />} />
             <Route path="settings" element={<SettingsAdmin />} />
             <Route path="termsandpolicies" element={<TermsAndPolicies />} />
+
+            <Route
+              path="downloadsalaryreports"
+              element={<DownloadSalaryReports />}
+            />
+            <Route
+              path="attandancedownloadreports"
+              element={<AttandanceDownloadReports />}
+            />
+            <Route
+              path="qcpointsdownlaod"
+              element={<QCPointsDownloadReports />}
+            />
+            <Route
+              path="registedusersdownlaodreports"
+              element={<RegisteredUsersDownlaodReports />}
+            />
+            <Route
+              path="agentreportsipsdownlaod"
+              element={<AgentsIPsReportsDownload />}
+            />
+            <Route
+              path="downlaodproxyreports"
+              element={<ProxyReportsDownlaod />}
+            />
+
             <Route
               path="viewsinglesalary"
               element={<ViewSingleSalaryStatement />}

@@ -12,6 +12,8 @@ const ipSchema = new mongoose.Schema(
     date: { type: Date, required: true, default: Date.now }, // Stores the date of submission
     clicks: { type: Number, default: 0 }, // Total clicks submitted
     sessions: { type: Number, default: 0 }, // Total sessions submitted
+    status: { type: String, required: true },
+   
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields

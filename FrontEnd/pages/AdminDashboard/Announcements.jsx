@@ -115,6 +115,7 @@ const Announcements = () => {
         </h3>
 
         <Form
+          requiredMark={false}
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
