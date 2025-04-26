@@ -1,116 +1,102 @@
-import IP from "../models/ipmodel.js";
-import Salary from "../models/salaryModel.js";
 import User from "../models/usermodel.js";
+import IP from "../models/ipmodel.js";
+import QCPoint from "../models/qcPointModel.js";
+import moment from "moment";
 
-// **Step 1: Save Draft Salary for Review**
-export const saveDraftSalary = async (req, res) => {
+// Salary Formula Settings
+const SESSION_RATE = 500; // Rs per session
+const CLICK_RATE = 5; // Rs per click
+const ABSENT_FINE = 500; // Rs per absent day
+const QC_BONUS_THRESHOLD = 80; // QC Points threshold
+const QC_BONUS_AMOUNT = 3000; // Rs bonus for QC Points
+
+export const calculateSalaries = async (req, res) => {
   try {
-    const today = new Date();
-    const month = `${today.getFullYear()}-${today.getMonth() + 1}`; // YYYY-MM format
+    const { shift, agentType, startDate, endDate } = req.query;
 
-    const users = await User.find();
+    // Step 1: Fetch Users
+    const userQuery = {};
+    if (shift) userQuery.shift = shift;
+    if (agentType) userQuery.agentType = agentType;
 
-    for (const user of users) {
-      const ipData = await IP.find({ userId: user._id });
+    const users = await User.find(userQuery);
 
-      let totalClicks = 0;
-      let totalSessions = 0;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-      ipData.forEach((entry) => {
-        totalClicks += entry.clicks;
-        totalSessions += entry.sessions;
-      });
-
-      let salary = calculateSalary(totalClicks, totalSessions);
-
-      const existingSalary = await Salary.findOne({ userId: user._id, month });
-
-      if (!existingSalary) {
-        const salaryRecord = new Salary({
+    const salaries = await Promise.all(
+      users.map(async (user) => {
+        // Step 2: Fetch IPs
+        const ips = await IP.find({
           userId: user._id,
-          username: user.username,
-          month,
-          totalClicks,
-          totalSessions,
-          totalSalary: salary,
-          status: "Pending", // Allowing admin review before finalizing
+          date: { $gte: start, $lte: end },
         });
 
-        await salaryRecord.save();
-      }
-    }
+        const totalSessions = ips.reduce(
+          (acc, ip) => acc + (ip.sessions || 0),
+          0
+        );
+        const totalClicks = ips.reduce((acc, ip) => acc + (ip.clicks || 0), 0);
 
-    res.json({
-      message:
-        "Draft salary report saved. Admin can review & edit before finalizing.",
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Salary draft generation failed",
-      error: error.message,
-    });
-  }
-};
+        // Step 3: Fetch QC Points
+        const qcPointsRecords = await QCPoint.find({
+          userId: user._id,
+          date: { $gte: start, $lte: end },
+        });
 
-// **Step 2: Update Draft Salary (Allow Admin to Modify Data)**
-export const updateSalary = async (req, res) => {
-  try {
-    const { salaryId } = req.params;
-    const { totalClicks, totalSessions, totalSalary } = req.body;
+        const totalQcPoints = qcPointsRecords.reduce((acc, record) => {
+          const values = record;
+          const total =
+            (values.time === "1" ? 1 : 0) +
+            (values.profilePattern === "1" ? 1 : 0) +
+            (values.pacePerHour === "1" ? 1 : 0) +
+            (values.perHourReport === "1" ? 1 : 0) +
+            (values.workingBehavior === "1" ? 1 : 0);
+          return acc + total;
+        }, 0);
 
-    const updatedSalary = await Salary.findByIdAndUpdate(
-      salaryId,
-      { totalClicks, totalSessions, totalSalary },
-      { new: true }
+        const qcBonus =
+          totalQcPoints >= QC_BONUS_THRESHOLD ? QC_BONUS_AMOUNT : 0;
+
+        // Step 4: Calculate absent days
+        const absenties = ips.filter((ip) => ip.status === "Absent").length;
+        const absentFine = absenties * ABSENT_FINE;
+
+        // Step 5: Calculate Salary
+        const baseSalary =
+          totalSessions * SESSION_RATE + totalClicks * CLICK_RATE;
+        const bonus = 0; // Assume manual bonus (if needed later)
+
+        const netSalary = baseSalary + qcBonus + bonus - absentFine;
+
+        return {
+          key: user._id,
+          name: user.username,
+          avatar: user.userImage || "",
+          bankName: user.bankName || "",
+          accountTitle: user.accountTitle || "",
+          accountNo: user.bankNumber || "",
+          joiningDate: user.joiningDate
+            ? moment(user.joiningDate).format("YYYY-MM-DD")
+            : "",
+          cnic: user.cnic || "",
+          sessions: totalSessions,
+          clicks: totalClicks,
+          totalIps: totalSessions + totalClicks,
+          salary: baseSalary,
+          absenties,
+          absentFine,
+          qcPoints: totalQcPoints,
+          qcBonus,
+          bonus,
+          netSalary,
+        };
+      })
     );
 
-    res.json({ message: "Salary record updated successfully", updatedSalary });
+    res.json(salaries);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error updating salary record", error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
-};
-
-// **Step 3: Finalize Salary After Review**
-export const finalizeSalary = async (req, res) => {
-  try {
-    const { month } = req.params;
-
-    await Salary.updateMany(
-      { month, status: "Pending" },
-      { status: "Finalized" }
-    );
-
-    res.json({ message: `Salary for ${month} has been finalized and locked.` });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error finalizing salary", error: error.message });
-  }
-};
-
-// **Get User Salary History**
-export const getUserSalaryHistory = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const salaryRecords = await Salary.find({ userId }).sort({ month: -1 });
-
-    res.json({ success: true, salaryRecords });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: error.message });
-  }
-};
-
-// **Salary Calculation Logic**
-const calculateSalary = (clicks, sessions) => {
-  if (clicks >= 2350 || clicks >= 2000) return 35000;
-  if (clicks >= 1500 || sessions >= 2500) return 35000;
-  if (clicks >= 1000 && sessions >= 3000) return 35000;
-  if (clicks + sessions >= 5000) return 35000;
-  if (clicks === 0) return sessions * 6;
-
-  return clicks * 15 + sessions * 6;
 };

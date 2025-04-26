@@ -118,11 +118,6 @@ const UserTaskCreation = () => {
 
   return (
     <div className="user-task-container">
-      <ProjectInfoCard
-        titleproject="Task Assignment"
-        projectdes=" Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ducimus libero unde debitis ipsam magnam in asperiores nesciunt minima natus cumque."
-      />
-      <br />
       <Card className="user-task-card">
         <Title level={2} className="user-task-title">
           Task Assignment

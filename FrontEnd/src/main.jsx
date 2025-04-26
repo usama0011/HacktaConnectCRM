@@ -79,6 +79,7 @@ import ProxyReportsDownlaod from "../pages/AdminDashboard/ProxyReportsDownlaod.j
 import DownloadSalaryWokers from "../pages/AdminDashboard/DownloadSalaryWokers.jsx";
 import Features from "../pages/generalPages/Features.jsx";
 import Company from "../pages/generalPages/Company.jsx";
+import GeneralSalaryCaculator from "../pages/AdminDashboard/GeneralSalaryCaculator.jsx";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -168,6 +169,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               element={<DownloadSalaryWokers />}
             />
             <Route path="restemploysalary" element={<AgentsSalaryRecord />} />
+            <Route
+              path="generalsalarycalculator"
+              element={<GeneralSalaryCaculator />}
+            />
             <Route path="calendar" element={<CalendarManagement />} />
             <Route
               path="adminsideattandance"

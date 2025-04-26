@@ -1,0 +1,149 @@
+/* GeneralSalaryCalculator.css */
+
+/* Container */
+.generalSalary-container {
+  padding: 24px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* Main Heading */
+.generalSalary-heading {
+  font-size: 28px;
+  font-weight: bold;
+  color: #003c2f;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Filters Card */
+.generalSalary-filterCard {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 60, 47, 0.1);
+  padding: 24px;
+}
+
+/* Range Picker */
+.generalSalary-rangePicker {
+  width: 100%;
+}
+
+/* Select */
+.generalSalary-select {
+  width: 100%;
+}
+
+/* Top Cards */
+.generalSalary-topCards {
+  margin-top: 24px;
+}
+
+/* Single Card */
+.generalSalary-card {
+  background: white !important;
+  color: black !important;
+  border-radius: 12px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Card Title */
+.generalSalary-cardTitle {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: black !important;
+}
+
+/* Card Value */
+.generalSalary-cardValue {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}
+
+/* Table Section */
+.generalSalary-tableWrapper {
+  margin-top: 32px;
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 60, 47, 0.1);
+}
+
+/* Avatar in Table */
+.generalSalary-avatar {
+  background-color: #003c2f;
+}
+
+/* Total Salary Footer Row */
+.generalSalary-totalRow {
+  font-weight: bold;
+  font-size: 18px;
+  color: #003c2f;
+  background: #e6f7f1;
+}
+
+.generalSalary-totalLabel {
+  text-align: right;
+  padding-right: 24px;
+}
+.generalSalary-applyBtn {
+  background-color: #003c2f;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.generalSalary-applyBtn:hover {
+  background-color: #005c46;
+}
+
+.generalSalary-topCards {
+  margin-top: 24px;
+}
+
+.generalSalary-card {
+  background: #003c2f;
+  color: white;
+  text-align: center;
+  border-radius: 12px;
+}
+
+.generalSalary-cardTitle {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.generalSalary-cardValue {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.generalSalary-tableWrapper {
+  margin-top: 32px;
+}
+
+.generalSalary-totalRow {
+  font-weight: bold;
+  font-size: 18px;
+  background: #e6f7f1;
+}
+
+.generalSalary-totalLabel {
+  text-align: right;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .generalSalary-heading {
+    font-size: 22px;
+  }
+  .generalSalary-filterCard {
+    padding: 16px;
+  }
+}

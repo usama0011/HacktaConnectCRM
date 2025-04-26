@@ -52,11 +52,6 @@ const ViewUserTaskCreations = () => {
 
   return (
     <div className="task-view-container">
-      <ProjectInfoCard
-        titleproject="View All Tasks"
-        projectdes="A modern dashboard to browse and review assigned tasks. Toggle between card or list view."
-      />
-
       <div className="task-header-row">
         <div className="left" style={{ color: "white" }}>
           {isGrid ? "Grid View" : "List View"}

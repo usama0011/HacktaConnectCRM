@@ -7,9 +7,9 @@ import morgan from "morgan";
 import userTrackingRoute from "./routes/userTracking.js"; // Adjust path if needed
 import chatRoutes from "./routes/chatRoutes.js";
 import qcpointsRoute from "./routes/qcPointRoutes.js";
-
+import wfhSalaryFormulaRoutes from "./routes/wfhSalaryFormulaRoutes.js";
 import uploadRoutes from "./routes/uploadroute.js";
-import salaryCalculator from "./routes/agentSalaryFormulaRoutes.js";
+import salaryCalculatorOfficeAgents from "./routes/salaryFormulaOfficeagentsroute.js";
 
 // Import all route files
 import taskRoutes from "./routes/taskRoutes.js";
@@ -52,7 +52,8 @@ app.use("/api/qcpoints", qcpointsRoute); // Your /api/track-user route
 app.use("/api/upload", uploadRoutes);
 app.use("/api/ip", ipRoutes); // IP Submission (Clicks & Sessions)
 app.use("/api/tasks", taskRoutes);
-app.use("/api/salaryformula", salaryCalculator);
+app.use("/api/salaryformulaofficeagents", salaryCalculatorOfficeAgents);
+app.use("/api/wfhformula", wfhSalaryFormulaRoutes);
 app.use("/api/chat", chatRoutes);
 
 app.use("/api/salary", salaryRoutes); // Salary Management (Draft, Edit, Finalize)

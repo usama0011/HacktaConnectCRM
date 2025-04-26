@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   Col,
@@ -6,9 +6,12 @@ import {
   Statistic,
   Avatar,
   Button,
+  DatePicker,
   Progress,
   Table,
 } from "antd";
+import dayjs from "dayjs";
+
 import {
   RiseOutlined,
   DollarCircleOutlined,
@@ -17,13 +20,19 @@ import {
   ArrowRightOutlined,
 } from "@ant-design/icons";
 import "../../styles/UserDashboard.css";
+const { RangePicker } = DatePicker;
+
 import DateTimeDisplay from "../../components/DateTimeDisplay";
 import ComputerIcon from "../../src/assets/computer.png";
 import ComputerClick from "../../src/assets/click.png";
 import ComputerPoints from "../../src/assets/point.png";
 import { Column } from "@ant-design/plots";
+import axios from "axios";
 
 const UserDashboard = () => {
+  const [selectedRange, setSelectedRange] = React.useState([]);
+  const [recentTasks, setRecentTasks] = useState([]);
+
   // Mock 30-day data (replace with real backend data)
   const ipData = [
     { date: "Mar 21", totalIPs: 104 },
@@ -84,17 +93,22 @@ const UserDashboard = () => {
       totalIPs: { alias: "Total IPs" },
     },
   };
-
   const columns = [
     {
-      title: "Task Image",
+      title: "Image",
       dataIndex: "taskImage",
       key: "taskImage",
       render: (url) => (
         <img
-          src={url || ""}
+          src={url || "https://via.placeholder.com/40"}
           alt="task"
-          style={{ width: 40, height: 40, borderRadius: 8, objectFit: "cover" }}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 8,
+            objectFit: "cover",
+            border: "1px solid #f0f0f0",
+          }}
         />
       ),
     },
@@ -103,80 +117,111 @@ const UserDashboard = () => {
       dataIndex: "taskSummary",
       key: "taskSummary",
       render: (text) => (
-        <span style={{ fontWeight: 500 }}>{text.slice(0, 50)}...</span>
+        <span
+          style={{
+            fontWeight: 500,
+            maxWidth: 220,
+            display: "inline-block",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+          title={text}
+        >
+          {text || "No summary"}
+        </span>
       ),
     },
     {
       title: "Assignee",
       dataIndex: "assignee",
       key: "assignee",
+      render: (name) => <span style={{ fontWeight: 500 }}>{name}</span>,
     },
     {
       title: "Start",
       dataIndex: "startDate",
       key: "startDate",
-      render: (date) => new Date(date).toLocaleDateString(),
+      render: (date) =>
+        date ? new Date(date).toLocaleDateString("en-GB") : "—",
     },
     {
       title: "Deadline",
       dataIndex: "deadline",
       key: "deadline",
-      render: (date) => new Date(date).toLocaleDateString(),
+      render: (date) =>
+        date ? new Date(date).toLocaleDateString("en-GB") : "—",
     },
     {
       title: "Duration",
       dataIndex: "duration",
       key: "duration",
-    },
-  ];
-  const dataSource = [
-    {
-      key: 1,
-      taskImage:
-        "https://img.freepik.com/free-vector/3d-cartoon-style-checklist-with-green-checkmark-icon-list-with-completed-tasks-white-background-flat-vector-illustration-success-productivity-management-achievement-concept_778687-983.jpg?ga=GA1.1.1696791716.1743911361&semt=ais_hybrid&w=740",
-      taskSummary: "Fix login API and ensure role-based auth works.",
-
-      assignee: "Umer Farooq",
-      startDate: new Date("2025-04-15"),
-      deadline: new Date("2025-04-20"),
-      duration: "5 days",
-    },
-    {
-      key: 2,
-      taskImage:
-        "https://img.freepik.com/free-vector/3d-cartoon-style-checklist-with-green-checkmark-icon-list-with-completed-tasks-white-background-flat-vector-illustration-success-productivity-management-achievement-concept_778687-983.jpg?ga=GA1.1.1696791716.1743911361&semt=ais_hybrid&w=740",
-      taskSummary: "Design dashboard UI for admin panel.",
-      assignee: "Fatima Noor",
-      startDate: new Date("2025-04-17"),
-      deadline: new Date("2025-04-22"),
-      duration: "5 days",
-    },
-    {
-      key: 3,
-      taskImage:
-        "https://img.freepik.com/free-vector/3d-cartoon-style-checklist-with-green-checkmark-icon-list-with-completed-tasks-white-background-flat-vector-illustration-success-productivity-management-achievement-concept_778687-983.jpg?ga=GA1.1.1696791716.1743911361&semt=ais_hybrid&w=740",
-      taskSummary: "Integrate chat feature with Socket.io",
-      assignee: "Ali Raza",
-      startDate: new Date("2025-04-18"),
-      deadline: new Date("2025-04-23"),
-      duration: "5 days",
-    },
-    {
-      key: 4,
-      taskImage:
-        "https://img.freepik.com/free-vector/3d-cartoon-style-checklist-with-green-checkmark-icon-list-with-completed-tasks-white-background-flat-vector-illustration-success-productivity-management-achievement-concept_778687-983.jpg?ga=GA1.1.1696791716.1743911361&semt=ais_hybrid&w=740",
-      taskSummary: "Integrate chat feature with Socket.io",
-      assignee: "Ali Raza",
-      startDate: new Date("2025-04-18"),
-      deadline: new Date("2025-04-23"),
-      duration: "5 days",
+      render: (text) => <span>{text || "—"}</span>,
     },
   ];
 
+  useEffect(() => {
+    const fetchRecentTasks = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/tasks/all"); // your GET all tasks endpoint
+        const latestFive = res.data.slice(0, 5); // just pick first 5 (already sorted from backend)
+        setRecentTasks(latestFive);
+        console.log(latestFive);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
+    fetchRecentTasks();
+  }, []);
   return (
     <div className="overview-containsser">
       <DateTimeDisplay />
       <br />
+      <div style={{ marginTop: 10, marginBottom: 20 }}>
+        <RangePicker
+          onChange={(dates) => setSelectedRange(dates)}
+          format="MMM DD, YYYY"
+          style={{ width: "100%", maxWidth: 500 }}
+          separator="→"
+          presets={[
+            {
+              label: "This Week",
+              value: [dayjs().startOf("week"), dayjs().endOf("week")],
+            },
+            {
+              label: "Last Week",
+              value: [
+                dayjs().subtract(1, "week").startOf("week"),
+                dayjs().subtract(1, "week").endOf("week"),
+              ],
+            },
+            {
+              label: "This Month",
+              value: [dayjs().startOf("month"), dayjs().endOf("month")],
+            },
+            {
+              label: "Last Month",
+              value: [
+                dayjs().subtract(1, "month").startOf("month"),
+                dayjs().subtract(1, "month").endOf("month"),
+              ],
+            },
+          ]}
+          allowClear
+          showTime={false}
+          defaultPickerValue={[dayjs().subtract(1, "month"), dayjs()]}
+          picker="date"
+          placement="bottomLeft"
+          disabledDate={(current) => current && current > dayjs().endOf("day")}
+          getPopupContainer={(trigger) => trigger.parentNode}
+          // 👇 Display 2 months side-by-side
+          panelRender={(panelNode) => (
+            <div style={{ display: "flex", gap: 20 }}>{panelNode}</div>
+          )}
+        />
+      </div>
+
       <Row gutter={[24, 24]}>
         <Col xs={24} sm={12} md={8}>
           <Card className="dash-card dash-purple">
@@ -240,22 +285,20 @@ const UserDashboard = () => {
           </Card>
         </Col>
       </Row>
-      <Row gutter={[24, 24]} style={{ marginTop: 20 }}>
-        <Col xs={24} md={24}>
-          <Card className="dash-card">
-            <div className="card-header">
-              <span style={{ fontWeight: "bold" }}>Recent Tasks</span>
-              <Button className="dash-share-btn">Share</Button>
-            </div>
-            <Table
-              className="dash-store-table"
-              dataSource={dataSource}
-              columns={columns}
-              pagination={false}
-            />
-          </Card>
-        </Col>
-      </Row>
+      <Table
+        className="dash-store-table"
+        dataSource={recentTasks.map((task, index) => ({
+          key: index,
+          taskImage: task.taskImage,
+          taskSummary: task.taskSummary,
+          assignee: task.assignee,
+          startDate: new Date(task.startDate).toLocaleDateString(),
+          deadline: new Date(task.deadline).toLocaleDateString(),
+          duration: task.duration,
+        }))}
+        columns={columns}
+        pagination={false}
+      />
     </div>
   );
 };

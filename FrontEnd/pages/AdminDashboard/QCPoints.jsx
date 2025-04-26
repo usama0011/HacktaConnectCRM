@@ -51,6 +51,7 @@ const QCPoints = () => {
       pacePerHour: user.pacePerHour || "",
       perHourReport: user.perHourReport || "",
       workingBehavior: user.workingBehavior || "",
+      attendanceStatus: user.attendanceStatus || "pending", // ✅ added
     };
     form.setFieldsValue(values);
     setFieldValues(values);

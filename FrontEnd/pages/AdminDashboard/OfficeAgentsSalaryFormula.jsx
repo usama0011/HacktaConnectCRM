@@ -1,7 +1,16 @@
-import React, { useState } from "react";
-import { Form, InputNumber, Button, Card, Row, Col, Divider } from "antd";
+import React, { useState, useEffect } from "react";
+import {
+  Form,
+  InputNumber,
+  Button,
+  Card,
+  Row,
+  Col,
+  Divider,
+  message,
+} from "antd";
+import axios from "axios";
 import "../../styles/OfficeAgentsSalaryFormula.css";
-// Import these at the top
 import {
   DollarCircleOutlined,
   ThunderboltOutlined,
@@ -13,9 +22,52 @@ import {
 const OfficeAgentsSalaryFormula = () => {
   const [form] = Form.useForm();
   const [salaryDetails, setSalaryDetails] = useState(null);
+  const [isEditing, setIsEditing] = useState(false); // Track if editing existing
 
-  const handleFinish = (values) => {
-    setSalaryDetails(values);
+  // Fetch the existing formula on load
+  const fetchFormula = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/salaryformulaofficeagents"
+      );
+      if (res.data.success) {
+        const data = res.data.formula;
+        form.setFieldsValue(data);
+        setSalaryDetails(data);
+        setIsEditing(true); // means formula exists already
+      }
+    } catch (error) {
+      console.log("No existing formula or error fetching:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchFormula();
+  }, []);
+
+  const handleFinish = async (values) => {
+    try {
+      if (isEditing) {
+        // Update existing formula
+        await axios.put(
+          "http://localhost:5000/api/salaryformulaofficeagents",
+          values
+        );
+        message.success("Formula updated successfully!");
+      } else {
+        // Create new formula
+        await axios.post(
+          "http://localhost:5000/api/salaryformulaofficeagents",
+          values
+        );
+        message.success("Formula created successfully!");
+      }
+      setSalaryDetails(values);
+      setIsEditing(true);
+    } catch (error) {
+      console.error(error);
+      message.error("Failed to save formula");
+    }
   };
 
   return (
@@ -75,74 +127,30 @@ const OfficeAgentsSalaryFormula = () => {
             QC Points Reward
           </Divider>
           <Row gutter={24}>
-            <Col span={6}>
-              <Form.Item
-                label={
-                  <span>
-                    <TrophyOutlined /> 110 - 119
-                  </span>
-                }
-                name="qc110_119"
-                rules={[{ required: true }]}
-              >
-                <InputNumber className="salaryFormula-input" />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                label={
-                  <span>
-                    <TrophyOutlined /> 120 - 129
-                  </span>
-                }
-                name="qc120_129"
-                rules={[{ required: true }]}
-              >
-                <InputNumber className="salaryFormula-input" />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                label={
-                  <span>
-                    <TrophyOutlined /> 130- 139
-                  </span>
-                }
-                name="qc130_139"
-                rules={[{ required: true }]}
-              >
-                <InputNumber className="salaryFormula-input" />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                label={
-                  <span>
-                    <TrophyOutlined /> 140 - 149
-                  </span>
-                }
-                name="qc140_149"
-                rules={[{ required: true }]}
-              >
-                <InputNumber className="salaryFormula-input" />
-              </Form.Item>
-            </Col>
+            {[
+              "qc110_119",
+              "qc120_129",
+              "qc130_139",
+              "qc140_149",
+              "qc150_plus",
+            ].map((field, idx) => (
+              <Col span={6} key={field}>
+                <Form.Item
+                  label={
+                    <span>
+                      <TrophyOutlined />{" "}
+                      {field.replace("qc", "").replace("_", " - ")}
+                    </span>
+                  }
+                  name={field}
+                  rules={[{ required: true }]}
+                >
+                  <InputNumber className="salaryFormula-input" />
+                </Form.Item>
+              </Col>
+            ))}
           </Row>
-          <Row gutter={24}>
-            <Col span={6}>
-              <Form.Item
-                label={
-                  <span>
-                    <TrophyOutlined /> 150+
-                  </span>
-                }
-                name="qc150_plus"
-                rules={[{ required: true }]}
-              >
-                <InputNumber className="salaryFormula-input" />
-              </Form.Item>
-            </Col>
-          </Row>
+
           <Divider
             orientation="left"
             plain
@@ -165,6 +173,7 @@ const OfficeAgentsSalaryFormula = () => {
               </Form.Item>
             </Col>
           </Row>
+
           <Divider
             orientation="left"
             plain
@@ -187,13 +196,14 @@ const OfficeAgentsSalaryFormula = () => {
               </Form.Item>
             </Col>
           </Row>
+
           <Form.Item>
             <Button
               type="primary"
               htmlType="submit"
               className="salaryFormula-submitBtn"
             >
-              Save Formula
+              {isEditing ? "Update Formula" : "Save Formula"}
             </Button>
           </Form.Item>
         </Form>

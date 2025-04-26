@@ -17,6 +17,12 @@ const salaryFormulas = [
     link: "/admin/dashboard/wfhsalaryformula",
     icon: <img src={HomeIcon} alt="icon" className="formula-icon" />,
   },
+  {
+    title: "Salary Calculator",
+    description: "Setup formula for remote/work-from-home agents.",
+    link: "/admin/dashboard/generalsalarycalculator",
+    icon: <img src={HomeIcon} alt="icon" className="formula-icon" />,
+  },
 ];
 
 const SalaryFormulaForm = () => {

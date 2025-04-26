@@ -1,5 +1,14 @@
-import React, { useState } from "react";
-import { Form, InputNumber, Button, Card, Row, Col, Divider } from "antd";
+import React, { useState, useEffect } from "react";
+import {
+  Form,
+  InputNumber,
+  Button,
+  Card,
+  Row,
+  Col,
+  Divider,
+  message,
+} from "antd";
 import {
   DollarCircleOutlined,
   ThunderboltOutlined,
@@ -7,14 +16,47 @@ import {
   FrownOutlined,
 } from "@ant-design/icons";
 import "../../styles/WFHSalaryFormula.css";
+import axios from "axios";
 
 const WFHSalaryFormula = () => {
   const [form] = Form.useForm();
   const [formulaDetails, setFormulaDetails] = useState(null);
+  const [isUpdate, setIsUpdate] = useState(false);
 
-  const handleFinish = (values) => {
-    setFormulaDetails(values);
+  const handleFinish = async (values) => {
+    try {
+      if (isUpdate) {
+        // If formula exists, PUT to update
+        await axios.put("http://localhost:5000/api/wfhformula", values);
+        message.success("WFH Formula Updated Successfully!");
+      } else {
+        // Else POST to create
+        await axios.post("http://localhost:5000/api/wfhformula", values);
+        message.success("WFH Formula Saved Successfully!");
+      }
+      setFormulaDetails(values);
+      setIsUpdate(true);
+    } catch (error) {
+      message.error("Failed to save WFH Salary Formula");
+    }
   };
+
+  const fetchExistingFormula = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/wfhformula");
+      if (res.data.success && res.data.formula) {
+        form.setFieldsValue(res.data.formula);
+        setFormulaDetails(res.data.formula);
+        setIsUpdate(true);
+      }
+    } catch (error) {
+      console.log("No existing WFH formula found");
+    }
+  };
+
+  useEffect(() => {
+    fetchExistingFormula();
+  }, []);
 
   return (
     <div className="wfhFormula-container">
@@ -60,6 +102,7 @@ const WFHSalaryFormula = () => {
               </Form.Item>
             </Col>
           </Row>
+
           <Divider orientation="left" plain className="wfhFormula-sectionTitle">
             Bonus Fields
           </Divider>
@@ -78,8 +121,9 @@ const WFHSalaryFormula = () => {
               </Form.Item>
             </Col>
           </Row>
+
           <Divider orientation="left" plain className="wfhFormula-sectionTitle">
-            Duduction
+            Deduction
           </Divider>
           <Row gutter={24}>
             <Col span={6}>
@@ -103,7 +147,7 @@ const WFHSalaryFormula = () => {
               htmlType="submit"
               className="wfhFormula-submitBtn"
             >
-              Save Formula
+              {isUpdate ? "Update Formula" : "Save Formula"}
             </Button>
           </Form.Item>
         </Form>

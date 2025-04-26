@@ -4,42 +4,14 @@ import { UserOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import "../../styles/Attendance.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const { Title, Text } = Typography;
 
-const dummyUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    avatar: "https://i.pravatar.cc/50?u=johndoe",
-    attendance: {
-      today: { checkIn: "09:05 AM", status: "Present" },
-      month: {
-        present: 18,
-        absent: 3,
-        late: 2,
-        total: 30,
-      },
-    },
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    avatar: "https://i.pravatar.cc/50?u=janesmith",
-    attendance: {
-      today: { checkIn: "", status: "Absent" },
-      month: {
-        present: 15,
-        absent: 10,
-        late: 3,
-        total: 30,
-      },
-    },
-  },
-];
-
 const AllUsersAttendance = () => {
   const [selectedDate, setSelectedDate] = useState(moment());
+  const [users, setUsers] = useState([]);
+
   const navigate = useNavigate();
   const columns = [
     {
@@ -101,6 +73,41 @@ const AllUsersAttendance = () => {
       render: (record) => <strong>{record.attendance.month.total}</strong>,
     },
   ];
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      try {
+        const res = await fetch("/api/attendance/all"); // Update this to your actual API route
+        const data = await res.json();
+
+        // Format each user
+        const formatted = data.map((item, index) => ({
+          id: index + 1,
+          name: item.username,
+          avatar: `https://i.pravatar.cc/50?u=${item.username}`,
+          attendance: {
+            today: {
+              checkIn: item.checkInTime
+                ? moment(item.checkInTime).format("hh:mm A")
+                : "",
+              status: item.status,
+            },
+            month: {
+              present: item.present || 0, // Replace with real values if available
+              absent: item.absent || 0,
+              late: item.late || 0,
+              total: item.total || 30, // Assume 30 for now
+            },
+          },
+        }));
+
+        setUsers(formatted);
+      } catch (error) {
+        console.error("Failed to fetch attendance", error);
+      }
+    };
+
+    fetchAttendance();
+  }, []);
 
   return (
     <div className="attendance-container">
@@ -117,7 +124,7 @@ const AllUsersAttendance = () => {
 
       <Table
         columns={columns}
-        dataSource={dummyUsers}
+        dataSource={users} // ✅ updated
         rowKey="id"
         pagination={{ pageSize: 5 }}
         bordered

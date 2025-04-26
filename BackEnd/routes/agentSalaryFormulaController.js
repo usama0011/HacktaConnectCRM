@@ -1,6 +1,4 @@
-// controllers/agentSalaryFormulaController.js
-import AgentSalaryFormula from "../models/AgentSalaryFormula.js";
-
+import SalaryFormulaOfficeAgents from "../models/OfficeAgentSalaryFormula.js";
 export const getFormula = async (req, res) => {
   try {
     const formula = await AgentSalaryFormula.findOne();

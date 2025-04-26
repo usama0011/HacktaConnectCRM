@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Card,
-  Row,
-  Col,
-  Select,
-  DatePicker,
-  Avatar,
-  Input,
-  Space,
-} from "antd";
+import { Table, Card, Row, Col, Select, DatePicker, Avatar, Space } from "antd";
 import {
   UserOutlined,
-  SearchOutlined,
   BankOutlined,
   IdcardOutlined,
   DollarCircleOutlined,
@@ -25,83 +14,34 @@ import {
   GiftOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
+import axios from "axios";
 import "../../styles/AgentsSalaryRecord.css";
 
 const { Option } = Select;
-const { MonthPicker } = DatePicker;
+const { RangePicker } = DatePicker;
 
 const AgentsSalaryRecord = () => {
-  const dummyData = [
-    {
-      key: "1",
-      name: "Ahsan Ali",
-      avatar: "",
-      bankName: "HBL",
-      accountTitle: "Ahsan Ali",
-      accountNo: "1234567890",
-      joiningDate: "2022-05-12",
-      cnic: "35201-1234567-1",
-      sessions: 22,
-      clicks: 101,
-      totalIps: 123,
-      salary: 42000,
-      absenties: 1,
-      absentFine: 500,
-      qcPoints: 145,
-      qcBonus: 3000,
-      bonus: 1000,
-      netSalary: 43500,
-    },
-    {
-      key: "2",
-      name: "Ahsan Ali",
-      avatar: "",
-      bankName: "HBL",
-      accountTitle: "Ahsan Ali",
-      accountNo: "1234567890",
-      joiningDate: "2022-05-12",
-      cnic: "35201-1234567-1",
-      sessions: 22,
-      clicks: 101,
-      totalIps: 123,
-      salary: 42000,
-      absenties: 1,
-      absentFine: 500,
-      qcPoints: 145,
-      qcBonus: 3000,
-      bonus: 1000,
-      netSalary: 43500,
-    },
-    {
-      key: "3",
-      name: "Ahsan Ali",
-      avatar: "",
-      bankName: "HBL",
-      accountTitle: "Ahsan Ali",
-      accountNo: "1234567890",
-      joiningDate: "2022-05-12",
-      cnic: "35201-1234567-1",
-      sessions: 22,
-      clicks: 101,
-      totalIps: 123,
-      salary: 42000,
-      absenties: 1,
-      absentFine: 500,
-      qcPoints: 145,
-      qcBonus: 3000,
-      bonus: 1000,
-      netSalary: 43500,
-    },
-  ];
   const [filters, setFilters] = useState({
     shift: "",
     agentType: "",
-    month: moment(),
+    startDate: moment().startOf("month"),
+    endDate: moment().endOf("month"),
   });
-  const [visibleData, setVisibleData] = useState(dummyData);
+  const [visibleData, setVisibleData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleFilterChange = (field, value) => {
     setFilters({ ...filters, [field]: value });
+  };
+
+  const handleDateRangeChange = (dates) => {
+    if (dates) {
+      setFilters({
+        ...filters,
+        startDate: dates[0],
+        endDate: dates[1],
+      });
+    }
   };
 
   const columns = [
@@ -114,8 +54,8 @@ const AgentsSalaryRecord = () => {
       dataIndex: "name",
       key: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
-      fixed: "left", // 👈 make it sticky
-      width: 220, // 👈 required for fixed columns
+      fixed: "left",
+      width: 220,
       render: (text, record) => (
         <Space>
           <Avatar src={record.avatar} icon={<UserOutlined />} />
@@ -265,19 +205,29 @@ const AgentsSalaryRecord = () => {
   ];
 
   useEffect(() => {
-    let filtered = [...dummyData];
+    const fetchSalaryData = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          `http://localhost:5000/api/salaries/calculate`,
+          {
+            params: {
+              shift: filters.shift,
+              agentType: filters.agentType,
+              startDate: filters.startDate.format("YYYY-MM-DD"),
+              endDate: filters.endDate.format("YYYY-MM-DD"),
+            },
+          }
+        );
+        setVisibleData(res.data);
+      } catch (error) {
+        console.error("Failed to fetch salary data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (filters.shift) {
-      filtered = filtered.filter((item) => item.shift === filters.shift);
-    }
-    if (filters.agentType) {
-      filtered = filtered.filter(
-        (item) => item.agentType === filters.agentType
-      );
-    }
-
-    // You can filter by month later if needed using filters.month
-    setVisibleData(filtered);
+    fetchSalaryData();
   }, [filters]);
 
   return (
@@ -316,18 +266,18 @@ const AgentsSalaryRecord = () => {
             </Select>
           </Col>
           <Col xs={24} sm={8}>
-            <label>Select Month</label>
-            <MonthPicker
-              value={filters.month}
-              onChange={(date) => handleFilterChange("month", date)}
+            <label>Select Date Range</label>
+            <RangePicker
+              value={[filters.startDate, filters.endDate]}
+              onChange={handleDateRangeChange}
+              format="YYYY-MM-DD"
               className="salaryRecord-datePicker"
-              placeholder="Select Month"
-              format="MMMM YYYY"
             />
           </Col>
         </Row>
       </Card>
       <br />
+
       <div className="top-agents-wrapper">
         <h2 className="top-agents-title">🏆 Top 5 Agents</h2>
         <Row gutter={[24, 24]}>
@@ -353,15 +303,17 @@ const AgentsSalaryRecord = () => {
             ))}
         </Row>
       </div>
+
       <br />
 
       <div className="ageintsalaryrecordtable">
         <Table
-          dataSource={dummyData}
+          dataSource={visibleData}
           columns={columns}
+          loading={loading}
           pagination={{ pageSize: 6 }}
           rowKey="key"
-          scroll={{ x: 3010 }} // enable horizontal scroll
+          scroll={{ x: 3010 }}
         />
       </div>
     </div>
