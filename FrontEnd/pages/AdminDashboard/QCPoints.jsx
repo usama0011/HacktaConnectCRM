@@ -27,6 +27,7 @@ import moment from "moment";
 import "../../styles/QCPoints.css";
 import ProjectInfoCard from "../../components/ProjectInfoCard";
 import axios from "axios";
+import API from "../../utils/BaseURL";
 
 const { Title, Text } = Typography;
 
@@ -74,10 +75,7 @@ const QCPoints = () => {
       setIsModalOpen(false);
       message.loading({ content: "Saving...", key: "qc_save" });
 
-      const res = await axios.post(
-        "http://localhost:5000/api/qcpoints",
-        payload
-      );
+      const res = await API.post("/qcpoints", payload);
       const updated = res.data;
 
       const updatedUsers = users.map((u) =>
@@ -97,9 +95,7 @@ const QCPoints = () => {
   const fetchUsersAndPoints = async (date) => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        `http://localhost:5000/api/qcpoints?date=${date}`
-      );
+      const res = await API.get(`/qcpoints?date=${date}`);
       setUsers(res.data); // Must match backend shape
     } catch (error) {
       message.error("Failed to fetch QC points");
@@ -333,6 +329,34 @@ const QCPoints = () => {
               </div>
             </div>
           ))}
+          <Form.Item
+            label="Attendance Status"
+            name="attendanceStatus"
+            rules={[
+              { required: true, message: "Please select attendance status" },
+            ]}
+          >
+            <select
+              className="attendance-dropdown"
+              value={fieldValues.attendanceStatus}
+              onChange={(e) => {
+                const updated = {
+                  ...fieldValues,
+                  attendanceStatus: e.target.value,
+                };
+                setFieldValues(updated);
+                form.setFieldValue("attendanceStatus", e.target.value);
+              }}
+              style={{ width: "100%", padding: "8px", borderRadius: "4px" }}
+            >
+              <option value="pending">Pending</option>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+              <option value="Late">Late</option>
+              <option value="RotationOff">Rotation Off</option>
+              <option value="Leave">Leave</option>
+            </select>
+          </Form.Item>
 
           {/* Custom Footer Buttons */}
           <div className="modal-button-group">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Row,
@@ -14,6 +14,7 @@ import moment from "moment";
 import { DownloadOutlined } from "@ant-design/icons";
 import { saveAs } from "file-saver";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import API from "../../utils/BaseURL";
 
 import "../../styles/DownloadSalaryWokers.css";
 const { Option } = Select;
@@ -32,15 +33,6 @@ const DownloadSalaryWokers = () => {
 
   const [filteredData, setFilteredData] = useState([]);
 
-  const dummyData = Array.from({ length: 35 }).map((_, index) => ({
-    key: index + 1,
-    srNo: index + 1,
-    bank: "Habib Metro",
-    accountTitle: `Agent ${index + 1}`,
-    accountNumber: `12345678901234${index + 1}`,
-    salary: 45000 + index * 1000,
-  }));
-
   const columns = [
     { title: "Sr No", dataIndex: "srNo", key: "srNo" },
     { title: "Bank", dataIndex: "bank", key: "bank" },
@@ -58,9 +50,23 @@ const DownloadSalaryWokers = () => {
     },
   ];
 
-  const handleSubmit = () => {
-    setFilteredData(dummyData); // Later replace with real filtering logic
-    message.success("Data filtered!");
+  const handleSubmit = async () => {
+    try {
+      const res = await API.get(`/downloadslarayreport/download-sheet`, {
+        params: {
+          shift: filters.shift,
+          agentType: filters.agentType,
+          year: filters.month.format("YYYY"),
+          month: filters.month.format("MM"),
+        },
+      });
+
+      setFilteredData(res.data);
+      message.success("Data filtered successfully!");
+    } catch (error) {
+      console.error("Error fetching salary sheet:", error);
+      message.error("Failed to fetch salary data!");
+    }
   };
 
   const handleDownload = async () => {
@@ -286,9 +292,9 @@ const DownloadSalaryWokers = () => {
               allowClear
               style={{ width: "100%" }}
             >
-              <Option value="Morning">Morning</Option>
-              <Option value="Evening">Evening</Option>
-              <Option value="Night">Night</Option>
+              <Option value="morning">Morning</Option>
+              <Option value="evening">Evening</Option>
+              <Option value="night">Night</Option>
             </Select>
           </Col>
           <Col xs={24} sm={8}>
@@ -319,15 +325,17 @@ const DownloadSalaryWokers = () => {
           <Button
             type="default"
             onClick={handleSubmit}
-            style={{ marginRight: 10 }}
+            style={{ marginRight: 10, color: "white" }}
           >
             Submit
           </Button>
           <Button
             type="primary"
             shape="round"
+            style={{ color: "white" }}
             icon={<DownloadOutlined />}
             onClick={handleDownload}
+            disabled={filteredData.length === 0} // 👈 disable if no data
           >
             Download Report
           </Button>

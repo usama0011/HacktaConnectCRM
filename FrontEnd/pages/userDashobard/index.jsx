@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Card,
   Col,
@@ -29,10 +29,16 @@ import ComputerPoints from "../../src/assets/point.png";
 import { Column } from "@ant-design/plots";
 import axios from "axios";
 
+import { useUserContext } from "../../context/UserContext";
+import API from "../../utils/BaseURL";
 const UserDashboard = () => {
   const [selectedRange, setSelectedRange] = React.useState([]);
   const [recentTasks, setRecentTasks] = useState([]);
+  const [cardStats, setCardStats] = useState(null);
+  const [monthlyIPs, setMonthlyIPs] = useState([]);
 
+  const { user } = useUserContext();
+  console.log(user._id);
   // Mock 30-day data (replace with real backend data)
   const ipData = [
     { date: "Mar 21", totalIPs: 104 },
@@ -68,12 +74,15 @@ const UserDashboard = () => {
   ];
 
   const ipConfig = {
-    data: ipData,
+    data: monthlyIPs.map((item) => ({
+      date: dayjs(item.date, "D-M-YYYY").format("MMM DD"), // format nicely
+      totalIPs: item.totalIPs,
+    })),
     xField: "date",
     yField: "totalIPs",
     columnWidthRatio: 0.5,
     style: {
-      fill: () => "#003c2f", // ✅ ALL bars in dark green now
+      fill: () => "#003c2f",
     },
     label: {
       position: "middle",
@@ -93,6 +102,7 @@ const UserDashboard = () => {
       totalIPs: { alias: "Total IPs" },
     },
   };
+
   const columns = [
     {
       title: "Image",
@@ -163,17 +173,50 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchRecentTasks = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/tasks/all"); // your GET all tasks endpoint
-        const latestFive = res.data.slice(0, 5); // just pick first 5 (already sorted from backend)
+        const res = await API.get(`/tasks/user/${user.username}`);
+        const latestFive = res.data.slice(0, 5);
         setRecentTasks(latestFive);
-        console.log(latestFive);
       } catch (error) {
-        console.error("Error fetching tasks:", error);
+        console.error("Error fetching user tasks:", error);
       }
     };
 
-    fetchRecentTasks();
-  }, []);
+    const fetchCardStats = async () => {
+      try {
+        const res = await API.get(`/ip/getcardssummery/${user._id}`, {
+          params: {
+            year: dayjs().format("YYYY"),
+            month: dayjs().format("MM"),
+          },
+        });
+        setCardStats(res.data);
+        console.log("Card stats:", res.data);
+      } catch (error) {
+        console.error("Error fetching card stats:", error);
+      }
+    };
+    const fetchMonthlyIPs = async () => {
+      try {
+        const res = await API.get(`/ip/monthlyips/${user._id}`, {
+          params: {
+            year: dayjs().format("YYYY"),
+            month: dayjs().format("MM"),
+          },
+        });
+        setMonthlyIPs(res.data);
+        console.log("Monthly IPs:", res.data);
+      } catch (error) {
+        console.error("Error fetching monthly IPs:", error);
+      }
+    };
+
+    if (user?._id) {
+      fetchRecentTasks();
+      fetchCardStats(); // 👈 fetch cards after user is loaded
+      fetchMonthlyIPs(); // 👈 Fetch the new chart data
+    }
+  }, [user]);
+
   return (
     <div className="overview-containsser">
       <DateTimeDisplay />
@@ -221,36 +264,68 @@ const UserDashboard = () => {
           )}
         />
       </div>
-
       <Row gutter={[24, 24]}>
         <Col xs={24} sm={12} md={8}>
           <Card className="dash-card dash-purple">
             <div className="dash-stat-flex">
               <img src={ComputerIcon} alt="icon" className="dash-stat-icon" />
-              <Statistic title="Total Sessions" value={"242.65K"} />
+              <Statistic
+                title="Total Sessions"
+                value={cardStats ? cardStats.sessions.current : 0}
+              />
             </div>
-            <p className="dash-sub">From the running month</p>
+            <p className="dash-sub">
+              last month {cardStats?.sessions.lastMonth || 0}{" "}
+              {cardStats?.sessions.up ? (
+                <RiseOutlined style={{ color: "green" }} />
+              ) : (
+                <BarChartOutlined style={{ color: "red" }} />
+              )}
+            </p>
           </Card>
         </Col>
+
         <Col xs={24} sm={12} md={8}>
           <Card className="dash-card dash-blue">
             <div className="dash-stat-flex">
               <img src={ComputerClick} alt="icon" className="dash-stat-icon" />
-              <Statistic title="Total Clicks" value={"334"} />
+              <Statistic
+                title="Total Clicks"
+                value={cardStats ? cardStats.clicks.current : 0}
+              />
             </div>
-            <p className="dash-sub">Daily Earning of this month</p>
+            <p className="dash-sub">
+              last month {cardStats?.clicks.lastMonth || 0}{" "}
+              {cardStats?.clicks.up ? (
+                <RiseOutlined style={{ color: "green" }} />
+              ) : (
+                <BarChartOutlined style={{ color: "red" }} />
+              )}
+            </p>
           </Card>
         </Col>
+
         <Col xs={24} sm={12} md={8}>
           <Card className="dash-card dash-green">
             <div className="dash-stat-flex">
               <img src={ComputerPoints} alt="icon" className="dash-stat-icon" />
-              <Statistic title="Total Sessions" value={"242.65K"} />
+              <Statistic
+                title="Total IPs"
+                value={cardStats ? cardStats.ips.current : 0}
+              />
             </div>
-            <p className="dash-sub">+6.04% from last month</p>
+            <p className="dash-sub">
+              last month {cardStats?.ips.lastMonth || 0}{" "}
+              {cardStats?.ips.up ? (
+                <RiseOutlined style={{ color: "green" }} />
+              ) : (
+                <BarChartOutlined style={{ color: "red" }} />
+              )}
+            </p>
           </Card>
         </Col>
       </Row>
+
       <Row gutter={[24, 24]} style={{ marginTop: 20 }}>
         <Col xs={24} md={16}>
           <Card className="dash-card">

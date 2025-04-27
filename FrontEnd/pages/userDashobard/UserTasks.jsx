@@ -1,5 +1,14 @@
-import React, { useState } from "react";
-import { Table, Avatar, Badge, Button, Typography, Space, Tooltip } from "antd";
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  Avatar,
+  Badge,
+  Button,
+  Typography,
+  Space,
+  Tooltip,
+  Spin,
+} from "antd";
 import {
   FileTextOutlined,
   CalendarOutlined,
@@ -7,35 +16,40 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useUserContext } from "../../context/UserContext";
 import "../../styles/UserTasks.css";
 
 const { Title, Text } = Typography;
 
 const UserTasks = () => {
   const navigate = useNavigate();
-  const [selectedTask, setSelectedTask] = useState(null);
+  const { user } = useUserContext();
 
-  const tasks = [
-    {
-      key: "1",
-      title: "Salary",
-      dueDate: "March 15, 1:19 PM",
-      status: "No Deadline",
-      assignedBy: "Abdul Moiz",
-      assignee: "Abdul Moiz",
-    },
-    {
-      key: "2",
-      title: "Hackta Bahia Morning Salary",
-      dueDate: "February 27, 10:28 AM",
-      status: "No Deadline",
-      assignedBy: "Abdul Moiz",
-      assignee: "Abdul Moiz",
-    },
-  ];
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchUserTasks = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/tasks/user/${user.username}`
+      );
+      setTasks(res.data);
+    } catch (error) {
+      console.error("Failed to fetch user tasks:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.username) {
+      fetchUserTasks();
+    }
+  }, [user]);
 
   const handleTaskClick = (task) => {
-    navigate(`/user/dashboard/tasks/${task.key}`, { state: { task } });
+    navigate(`/user/dashboard/tasks/${task._id}`, { state: { task } });
   };
 
   const columns = [
@@ -45,30 +59,30 @@ const UserTasks = () => {
           <FileTextOutlined /> Task Name
         </span>
       ),
-      dataIndex: "title",
-      key: "title",
+      dataIndex: "taskSummary",
+      key: "taskSummary",
       render: (text, record) => (
         <Button
           type="link"
           className="task-link-btn"
           onClick={() => handleTaskClick(record)}
         >
-          {text}
+          {text || "Untitled Task"}
         </Button>
       ),
     },
     {
       title: (
         <span>
-          <CalendarOutlined /> Active
+          <CalendarOutlined /> Start Date
         </span>
       ),
-      dataIndex: "dueDate",
-      key: "dueDate",
+      dataIndex: "startDate",
+      key: "startDate",
       render: (date) => (
         <Text>
           <CalendarOutlined style={{ marginRight: 6 }} />
-          {date}
+          {date ? new Date(date).toLocaleDateString("en-GB") : "—"}
         </Text>
       ),
     },
@@ -78,9 +92,17 @@ const UserTasks = () => {
           <CheckCircleOutlined /> Deadline
         </span>
       ),
-      dataIndex: "status",
-      key: "status",
-      render: () => <Badge status="default" text="No Deadline" />,
+      dataIndex: "deadline",
+      key: "deadline",
+      render: (date) =>
+        date ? (
+          <Badge
+            status="processing"
+            text={new Date(date).toLocaleDateString("en-GB")}
+          />
+        ) : (
+          <Badge status="default" text="No Deadline" />
+        ),
     },
     {
       title: (
@@ -88,8 +110,8 @@ const UserTasks = () => {
           <UserOutlined /> Created By
         </span>
       ),
-      dataIndex: "assignedBy",
-      key: "assignedBy",
+      dataIndex: "createdBy",
+      key: "createdBy",
       render: (user) => (
         <Space>
           <Avatar src="https://i.pravatar.cc/40?u=createdby" />
@@ -117,20 +139,24 @@ const UserTasks = () => {
   return (
     <div className="user-tasks-container">
       <Title level={2} className="user-tasks-title">
-        All Tasks
+        My Assigned Tasks
       </Title>
       <Text className="user-tasks-subtext">
-        View and manage your assigned tasks with ease.
+        View and manage your assigned or participant tasks.
       </Text>
 
-      <Table
-        className="user-tasks-table"
-        columns={columns}
-        dataSource={tasks}
-        pagination={{ pageSize: 5 }}
-        rowSelection={{ type: "checkbox" }}
-        bordered
-      />
+      {loading ? (
+        <Spin tip="Loading tasks..." size="large" />
+      ) : (
+        <Table
+          className="user-tasks-table"
+          columns={columns}
+          dataSource={tasks.map((task) => ({ ...task, key: task._id }))}
+          pagination={{ pageSize: 5 }}
+          rowSelection={{ type: "checkbox" }}
+          bordered
+        />
+      )}
     </div>
   );
 };

@@ -16,7 +16,7 @@ import {
   FrownOutlined,
 } from "@ant-design/icons";
 import "../../styles/WFHSalaryFormula.css";
-import axios from "axios";
+import API from "../../utils/BaseURL";
 
 const WFHSalaryFormula = () => {
   const [form] = Form.useForm();
@@ -27,11 +27,11 @@ const WFHSalaryFormula = () => {
     try {
       if (isUpdate) {
         // If formula exists, PUT to update
-        await axios.put("http://localhost:5000/api/wfhformula", values);
+        await API.put("/wfhformula", values);
         message.success("WFH Formula Updated Successfully!");
       } else {
         // Else POST to create
-        await axios.post("http://localhost:5000/api/wfhformula", values);
+        await API.post("/wfhformula", values);
         message.success("WFH Formula Saved Successfully!");
       }
       setFormulaDetails(values);
@@ -43,7 +43,7 @@ const WFHSalaryFormula = () => {
 
   const fetchExistingFormula = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/wfhformula");
+      const res = await API.get("/wfhformula");
       if (res.data.success && res.data.formula) {
         form.setFieldsValue(res.data.formula);
         setFormulaDetails(res.data.formula);
@@ -99,6 +99,28 @@ const WFHSalaryFormula = () => {
                 rules={[{ required: true }]}
               >
                 <InputNumber className="wfhFormula-input" min={0} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Divider
+            orientation="left"
+            plain
+            className="salaryFormula-sectionTitle"
+          >
+            Max Salary
+          </Divider>
+          <Row gutter={24}>
+            <Col span={6}>
+              <Form.Item
+                label={
+                  <span>
+                    <ThunderboltOutlined /> Maximum Salary
+                  </span>
+                }
+                name="maxSalary"
+                rules={[{ required: true }]}
+              >
+                <InputNumber className="salaryFormula-input" min={0} />
               </Form.Item>
             </Col>
           </Row>

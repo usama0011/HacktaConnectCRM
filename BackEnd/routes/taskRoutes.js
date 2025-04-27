@@ -3,6 +3,7 @@ import {
   assignTask,
   getAllTasks,
   getSingleTask,
+  getTasksByUsername,
 } from "../controllers/taskController.js";
 const router = express.Router();
 
@@ -10,5 +11,6 @@ const router = express.Router();
 router.post("/assign", assignTask);
 router.get("/all", getAllTasks); // ✅ View all tasks
 router.get("/:id", getSingleTask); // ✅ New single-task route
+router.get("/user/:username", getTasksByUsername);
 
 export default router;

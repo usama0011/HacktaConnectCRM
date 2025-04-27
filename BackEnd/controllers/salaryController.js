@@ -1,92 +1,128 @@
 import User from "../models/usermodel.js";
 import IP from "../models/ipmodel.js";
 import QCPoint from "../models/qcPointModel.js";
+import Attendance from "../models/attendanceModel.js";
+import SalaryFormulaOfficeAgents from "../models/OfficeAgentSalaryFormula.js";
+import WFHSalaryFormula from "../models/wfhSalaryFormulaModel.js";
 import moment from "moment";
 
-// Salary Formula Settings
-const SESSION_RATE = 500; // Rs per session
-const CLICK_RATE = 5; // Rs per click
-const ABSENT_FINE = 500; // Rs per absent day
-const QC_BONUS_THRESHOLD = 80; // QC Points threshold
-const QC_BONUS_AMOUNT = 3000; // Rs bonus for QC Points
-
-export const calculateSalaries = async (req, res) => {
+export const calculateAgentSalaries = async (req, res) => {
   try {
     const { shift, agentType, startDate, endDate } = req.query;
 
-    // Step 1: Fetch Users
     const userQuery = {};
     if (shift) userQuery.shift = shift;
     if (agentType) userQuery.agentType = agentType;
 
     const users = await User.find(userQuery);
 
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    let salaryFormula = null;
+    if (agentType === "Office Agent") {
+      salaryFormula = await SalaryFormulaOfficeAgents.findOne().sort({
+        createdAt: -1,
+      });
+    } else if (agentType === "WFH Agent") {
+      salaryFormula = await WFHSalaryFormula.findOne().sort({ createdAt: -1 });
+    }
 
-    const salaries = await Promise.all(
+    if (!salaryFormula) {
+      return res.status(400).json({ message: "Salary formula not found" });
+    }
+
+    const start = moment(startDate).startOf("day").toDate();
+    const end = moment(endDate).endOf("day").toDate();
+
+    const salaryData = await Promise.all(
       users.map(async (user) => {
-        // Step 2: Fetch IPs
-        const ips = await IP.find({
+        const ipData = await IP.aggregate([
+          {
+            $match: {
+              userId: user._id,
+              date: { $gte: start, $lte: end },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalClicks: { $sum: "$clicks" },
+              totalSessions: { $sum: "$sessions" },
+            },
+          },
+        ]);
+
+        const attendanceData = await Attendance.find({
           userId: user._id,
           date: { $gte: start, $lte: end },
+          status: "Absent",
         });
 
-        const totalSessions = ips.reduce(
-          (acc, ip) => acc + (ip.sessions || 0),
-          0
-        );
-        const totalClicks = ips.reduce((acc, ip) => acc + (ip.clicks || 0), 0);
+        const absenties = attendanceData.length;
 
-        // Step 3: Fetch QC Points
-        const qcPointsRecords = await QCPoint.find({
-          userId: user._id,
-          date: { $gte: start, $lte: end },
-        });
+        const qcData = await QCPoint.aggregate([
+          {
+            $match: {
+              userId: user._id,
+              date: { $gte: start, $lte: end },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              avgPoints: { $avg: "$totalPoints" },
+            },
+          },
+        ]);
 
-        const totalQcPoints = qcPointsRecords.reduce((acc, record) => {
-          const values = record;
-          const total =
-            (values.time === "1" ? 1 : 0) +
-            (values.profilePattern === "1" ? 1 : 0) +
-            (values.pacePerHour === "1" ? 1 : 0) +
-            (values.perHourReport === "1" ? 1 : 0) +
-            (values.workingBehavior === "1" ? 1 : 0);
-          return acc + total;
-        }, 0);
+        const sessions = ipData[0]?.totalSessions || 0;
+        const clicks = ipData[0]?.totalClicks || 0;
+        const totalIps = sessions + clicks;
 
-        const qcBonus =
-          totalQcPoints >= QC_BONUS_THRESHOLD ? QC_BONUS_AMOUNT : 0;
+        const sessionCost = salaryFormula.sessionCost || 0;
+        const clickCost = salaryFormula.clickCost || 0;
+        const bonus = salaryFormula.bonus || 0;
+        const absentFine = salaryFormula.absentFine || 0;
 
-        // Step 4: Calculate absent days
-        const absenties = ips.filter((ip) => ip.status === "Absent").length;
-        const absentFine = absenties * ABSENT_FINE;
+        let qcBonus = 0;
+        let avgPoints = qcData[0]?.avgPoints || 0;
 
-        // Step 5: Calculate Salary
-        const baseSalary =
-          totalSessions * SESSION_RATE + totalClicks * CLICK_RATE;
-        const bonus = 0; // Assume manual bonus (if needed later)
+        if (agentType === "Office Agent") {
+          if (avgPoints >= 110 && avgPoints <= 119) {
+            qcBonus = salaryFormula.qc110_119;
+          } else if (avgPoints >= 120 && avgPoints <= 129) {
+            qcBonus = salaryFormula.qc120_129;
+          } else if (avgPoints >= 130 && avgPoints <= 139) {
+            qcBonus = salaryFormula.qc130_139;
+          } else if (avgPoints >= 140 && avgPoints <= 149) {
+            qcBonus = salaryFormula.qc140_149;
+          } else if (avgPoints >= 150) {
+            qcBonus = salaryFormula.qc150_plus;
+          }
+        }
 
-        const netSalary = baseSalary + qcBonus + bonus - absentFine;
+        const calculatedSalary = sessions * sessionCost + clicks * clickCost;
+        const totalAbsentFine = absenties * absentFine;
+        const netSalary = calculatedSalary - totalAbsentFine + qcBonus + bonus;
+        const adjustedSalary =
+          calculatedSalary > salaryFormula.maxSalary
+            ? salaryFormula.maxSalary
+            : calculatedSalary;
 
         return {
           key: user._id,
-          name: user.username,
-          avatar: user.userImage || "",
-          bankName: user.bankName || "",
-          accountTitle: user.accountTitle || "",
-          accountNo: user.bankNumber || "",
-          joiningDate: user.joiningDate
-            ? moment(user.joiningDate).format("YYYY-MM-DD")
-            : "",
-          cnic: user.cnic || "",
-          sessions: totalSessions,
-          clicks: totalClicks,
-          totalIps: totalSessions + totalClicks,
-          salary: baseSalary,
+          name: user.agentName || user.username,
+          avatar: user.userImage,
+          bankName: user.bankName,
+          accountTitle: user.accountTitle,
+          accountNo: user.bankNumber,
+          joiningDate: moment(user.joiningDate).format("YYYY-MM-DD"),
+          cnic: user.cnic,
+          sessions,
+          clicks,
+          totalIps,
+          salary: adjustedSalary, // ✅ Use adjusted salary here for salary column
           absenties,
-          absentFine,
-          qcPoints: totalQcPoints,
+          absentFine: totalAbsentFine,
+          qcPoints: avgPoints,
           qcBonus,
           bonus,
           netSalary,
@@ -94,9 +130,9 @@ export const calculateSalaries = async (req, res) => {
       })
     );
 
-    res.json(salaries);
+    res.status(200).json(salaryData);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error", error: error.message });
+    console.error("Error calculating salaries:", error);
+    res.status(500).json({ message: "Server Error" });
   }
 };

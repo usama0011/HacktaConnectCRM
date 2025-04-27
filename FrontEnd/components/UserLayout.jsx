@@ -16,6 +16,7 @@ import {
   SearchOutlined,
   AppstoreAddOutlined,
   QuestionCircleOutlined,
+  CalculatorOutlined,
 } from "@ant-design/icons";
 import MainWebSiteLogo from "../src/assets/mainlogo.jpeg";
 import "../styles/UserDashboard.css";
@@ -91,6 +92,11 @@ const UserLayout = () => {
           </Menu.Item>
           <Menu.Item key="7" icon={<UploadOutlined />}>
             <Link to="/user/dashboard/uploadwork">Upload Work</Link>
+          </Menu.Item>
+          <Menu.Item key="7" icon={<CalculatorOutlined />}>
+            <Link to="/user/dashboard/generalsalarycalculator">
+              Salary Calculator
+            </Link>
           </Menu.Item>
           <Menu.Item key="8" icon={<SettingOutlined />}>
             <Link to="/user/dashboard/settings">Settings</Link>

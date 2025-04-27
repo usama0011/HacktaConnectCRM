@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const salaryFormulaSchema = new mongoose.Schema(
   {
     sessionCost: { type: Number, required: true },
+    maxSalary: { type: Number, required: true },
     clickCost: { type: Number, required: true },
     qc110_119: { type: Number, required: true },
     qc120_129: { type: Number, required: true },

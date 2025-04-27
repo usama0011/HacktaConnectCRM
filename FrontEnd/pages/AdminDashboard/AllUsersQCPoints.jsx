@@ -17,9 +17,8 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import axios from "axios";
+import API from "../../utils/BaseURL";
 import "../../styles/QCPoints.css";
-import ProjectInfoCard from "../../components/ProjectInfoCard";
 
 const { Title, Text } = Typography;
 
@@ -42,8 +41,8 @@ const AllUsersQCPoints = () => {
       const year = dateValue.format("YYYY");
       const month = dateValue.format("MM");
 
-      const res = await axios.get(
-        `http://localhost:5000/api/qcpoints/monthly-summary?year=${year}&month=${month}`
+      const res = await API.get(
+        `/qcpoints/monthly-summary?year=${year}&month=${month}`
       );
       setUsers(res.data.summary);
       setTopUsers(res.data.top5); // <- Update this inside your API response handler
@@ -96,6 +95,7 @@ const AllUsersQCPoints = () => {
         return (
           <Button
             type="primary"
+            style={{ color: "white", backgroundColor: "#003c2f" }}
             onClick={() =>
               navigate(
                 `/admin/dashboard/qcpoints/user/${
@@ -116,13 +116,8 @@ const AllUsersQCPoints = () => {
 
   return (
     <div className="qcpoints-container">
-      <ProjectInfoCard
-        titleproject="All Users Qc Points"
-        projectdes="Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore voluptates nobis voluptatum obcaecati blanditiis totam magni enim quam commodi saepe!"
-      />
-
       <div className="date-filter">
-        <Text style={{ marginRight: "10px", color: "white" }}>
+        <Text style={{ marginRight: "10px", color: "black" }}>
           Select Year & Month:
         </Text>
         <DatePicker
@@ -138,7 +133,7 @@ const AllUsersQCPoints = () => {
       <br />
       {topUsers.length > 0 && (
         <>
-          <Title style={{ color: "white" }} level={3}>
+          <Title style={{ color: "black" }} level={3}>
             🏆 Top 5 Performers of the Month
           </Title>
           <Row gutter={[16, 16]}>

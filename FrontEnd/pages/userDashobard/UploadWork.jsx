@@ -150,6 +150,7 @@ const UploadWork = () => {
         clicks: Number(values.clicks),
         sessions: Number(values.sessions),
         status: "Pending",
+        avatar: user?.userImage || "", // ✅ New line to submit avatar
       };
 
       const res = await axios.post(

@@ -122,6 +122,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="myprofile" element={<MyProfile />} />
             <Route path="faqs" element={<Faqs />} />
             <Route path="myrecord" element={<MyRecord />} />
+            <Route
+              path="generalsalarycalculator"
+              element={<GeneralSalaryCaculator />}
+            />
             <Route path="noticecalendar" element={<NoticeCalendar />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="tasks/:taskId" element={<ViewSingleTask />} />
@@ -143,6 +147,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           >
             <Route index element={<AdminDashboard />} />
             <Route path="analytics" element={<AdminAnalytics />} />
+
             <Route path="ipreportsusers" element={<AllUsersIPReport />} />
             <Route path="allusersattandance" element={<AllUsersAttendance />} />
             <Route

@@ -10,15 +10,15 @@ import {
   ClockCircleOutlined,
   BankOutlined,
 } from "@ant-design/icons";
+import API from "../utils/BaseURL";
 
 const COLORS = ["#28a745", "#ffc107", "#ff7043"]; // green, yellow, orange
-
 const AdminRegisterProxyStats = () => {
   const [users, setUsers] = useState([]);
   const [shiftStats, setShiftStats] = useState([]);
   useEffect(() => {
     const fetchUsers = async () => {
-      const { data } = await axios.get("http://localhost:5000/api/auth/users");
+      const { data } = await API.get("/auth/users");
 
       // Sort users by creation date (latest first)
       const sorted = [...data].sort(

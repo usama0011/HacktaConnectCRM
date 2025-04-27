@@ -1,8 +1,8 @@
 import express from "express";
-import { calculateSalaries } from "../controllers/salaryController.js";
+import { calculateAgentSalaries } from "../controllers/salaryController.js";
 
 const router = express.Router();
 
-router.get("/calculate", calculateSalaries);
+router.get("/calculate", calculateAgentSalaries);
 
 export default router;

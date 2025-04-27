@@ -1,5 +1,5 @@
 import "../../styles/AgentDailyIPReports.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   Avatar,
@@ -8,74 +8,74 @@ import {
   Modal,
   InputNumber,
   DatePicker,
-  Tag,
   Card,
+  message,
 } from "antd";
-import {
-  EditOutlined,
-  HistoryOutlined,
-  UserOutlined,
-  CalendarOutlined,
-} from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import moment from "moment";
-import "../../styles/AgentDailyIPReports.css";
+import axios from "axios";
+import { useUserContext } from "../../context/UserContext"; // ✅ Import your context
+import API from "../../utils/BaseURL";
 
 const { Title, Text } = Typography;
 
 const AgentDailyIPReports = () => {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [historyRecord, setHistoryRecord] = useState(null);
   const [editHistory, setEditHistory] = useState([]);
   const [editingRecord, setEditingRecord] = useState(null);
-  const [editHistoryVisible, setEditHistoryVisible] = useState(false);
-
   const [formData, setFormData] = useState({ sessions: 0, clicks: 0 });
+  const [data, setData] = useState([]);
 
-  const dummyUsers = Array.from({ length: 10 }).map((_, i) => ({
-    id: i + 1,
-    date: "2025-04-20",
-    name: `Agent ${i + 1}`,
-    avatar: `https://i.pravatar.cc/40?img=${i + 1}`,
-    sessions: 100 + i,
-    clicks: 200 + i,
-    editedBy: "Umer Farooq",
-    editTime: "2025-04-20 10:00 AM",
-    history: [
-      {
-        editor: "Agent Submission", // original record
-        timestamp: "2025-04-20 09:00 AM",
-        sessions: 100 + i,
-        clicks: 200 + i,
-        isOriginal: true,
-      },
-      {
-        editor: "Umer Farooq",
-        timestamp: "2025-04-20 10:00 AM",
-        sessions: 95 + i,
-        clicks: 190 + i,
-      },
-      {
-        editor: "Admin",
-        timestamp: "2025-04-19 09:00 AM",
-        sessions: 90 + i,
-        clicks: 180 + i,
-      },
-    ],
-  }));
+  const { user } = useUserContext(); // ✅ Get the logged-in user
+
+  const fetchData = async () => {
+    try {
+      const res = await API.get(`/ip/daily-reports`, {
+        params: {
+          date: selectedDate.format("YYYY-MM-DD"),
+        },
+      });
+      setData(res.data || []);
+    } catch (error) {
+      console.error("Error fetching agent IP reports:", error);
+      message.error("Failed to fetch IP reports!");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [selectedDate]);
 
   const handleEdit = (record) => {
     setEditingRecord(record);
     setFormData({ sessions: record.sessions, clicks: record.clicks });
-    setEditHistory(record.history);
+    setEditHistory(record.history || []);
     setIsModalOpen(true);
+  };
+
+  const handleSave = async () => {
+    if (!editingRecord) return;
+    try {
+      await API.put(`/ip/update-ip/${editingRecord._id}`, {
+        sessions: formData.sessions,
+        clicks: formData.clicks,
+        editor: user.username, // ✅ Send current user
+      });
+      message.success("Record updated successfully!");
+      setIsModalOpen(false);
+      fetchData(); // 🔄 Refresh table
+    } catch (error) {
+      console.error("Error updating record:", error);
+      message.error("Failed to update record.");
+    }
   };
 
   const columns = [
     {
       title: "👤 Profile",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "username",
+      key: "username",
       render: (text, record) => (
         <span className="user-cell">
           <Avatar src={record.avatar} />
@@ -96,22 +96,20 @@ const AgentDailyIPReports = () => {
     {
       title: "📊 Total",
       key: "total",
-      render: (record) => <strong>{record.sessions + record.clicks}</strong>,
+      render: (record) => <strong>{record.totalIPs}</strong>,
     },
     {
       title: "⚙️ Actions",
       key: "actions",
       render: (record) => (
-        <>
-          <Button
-            icon={<EditOutlined />}
-            type="primary"
-            onClick={() => handleEdit(record)}
-            style={{ marginRight: 8 }}
-          >
-            Edit & History
-          </Button>
-        </>
+        <Button
+          icon={<EditOutlined />}
+          type="primary"
+          onClick={() => handleEdit(record)}
+          style={{ marginRight: 8, backgroundColor: "#003c2f" }}
+        >
+          Edit & History
+        </Button>
       ),
     },
   ];
@@ -129,8 +127,8 @@ const AgentDailyIPReports = () => {
 
       <Table
         columns={columns}
-        dataSource={dummyUsers}
-        rowKey="id"
+        dataSource={data}
+        rowKey="_id"
         className="user-table-singipoidsfisodf"
         pagination={{ pageSize: 10 }}
         bordered
@@ -140,17 +138,17 @@ const AgentDailyIPReports = () => {
         title="Edit Agent Record"
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
-        onOk={() => setIsModalOpen(false)}
+        onOk={handleSave}
         okText="Save"
       >
         <div className="modal-user">
           <Avatar src={editingRecord?.avatar} />
           <Text strong style={{ marginLeft: 10 }}>
-            {editingRecord?.name}
+            {editingRecord?.username}
           </Text>
         </div>
 
-        <div className="modal-fields">
+        <div className="modal-fields" style={{ marginTop: 20 }}>
           <Text>Sessions:</Text>
           <InputNumber
             min={0}

@@ -16,6 +16,7 @@ import {
 import moment from "moment";
 import axios from "axios";
 import "../../styles/AgentsSalaryRecord.css";
+import API from "../../utils/BaseURL";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -24,8 +25,7 @@ const AgentsSalaryRecord = () => {
   const [filters, setFilters] = useState({
     shift: "",
     agentType: "",
-    startDate: moment().startOf("month"),
-    endDate: moment().endOf("month"),
+    dateRange: [moment().startOf("month"), moment().endOf("month")],
   });
   const [visibleData, setVisibleData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -35,16 +35,18 @@ const AgentsSalaryRecord = () => {
   };
 
   const handleDateRangeChange = (dates) => {
-    if (dates) {
+    if (dates && dates.length === 2 && dates[0] && dates[1]) {
+      setFilters({ ...filters, dateRange: dates });
+    } else {
       setFilters({
         ...filters,
-        startDate: dates[0],
-        endDate: dates[1],
+        dateRange: [moment().startOf("month"), moment().endOf("month")],
       });
+      // Reset to current month if invalid
     }
   };
 
-  const columns = [
+  const fullColumns = [
     {
       title: (
         <span>
@@ -138,7 +140,7 @@ const AgentsSalaryRecord = () => {
     {
       title: (
         <span>
-          <DollarCircleOutlined /> Salary
+          <DollarCircleOutlined /> Gross Salary
         </span>
       ),
       dataIndex: "salary",
@@ -204,22 +206,29 @@ const AgentsSalaryRecord = () => {
     },
   ];
 
+  const wfhColumns = fullColumns.filter(
+    (col) =>
+      !["absenties", "absentFine", "qcPoints", "qcBonus"].includes(
+        col.dataIndex
+      )
+  );
+
+  const columns = filters.agentType === "WFH Agent" ? wfhColumns : fullColumns;
+
   useEffect(() => {
     const fetchSalaryData = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(
-          `http://localhost:5000/api/salaries/calculate`,
-          {
-            params: {
-              shift: filters.shift,
-              agentType: filters.agentType,
-              startDate: filters.startDate.format("YYYY-MM-DD"),
-              endDate: filters.endDate.format("YYYY-MM-DD"),
-            },
-          }
-        );
+        const res = await API.get(`/salary/calculate`, {
+          params: {
+            shift: filters.shift,
+            agentType: filters.agentType,
+            startDate: filters.dateRange[0].format("YYYY-MM-DD"),
+            endDate: filters.dateRange[1].format("YYYY-MM-DD"),
+          },
+        });
         setVisibleData(res.data);
+        console.log(res.data);
       } catch (error) {
         console.error("Failed to fetch salary data", error);
       } finally {
@@ -227,7 +236,9 @@ const AgentsSalaryRecord = () => {
       }
     };
 
-    fetchSalaryData();
+    if (filters.agentType) {
+      fetchSalaryData();
+    }
   }, [filters]);
 
   return (
@@ -247,9 +258,9 @@ const AgentsSalaryRecord = () => {
               className="salaryRecord-select"
               allowClear
             >
-              <Option value="Morning">Morning</Option>
-              <Option value="Evening">Evening</Option>
-              <Option value="Night">Night</Option>
+              <Option value="morning">Morning</Option>
+              <Option value="evening">Evening</Option>
+              <Option value="night">Night</Option>
             </Select>
           </Col>
           <Col xs={24} sm={8}>
@@ -268,9 +279,13 @@ const AgentsSalaryRecord = () => {
           <Col xs={24} sm={8}>
             <label>Select Date Range</label>
             <RangePicker
-              value={[filters.startDate, filters.endDate]}
+              value={filters.dateRange}
               onChange={handleDateRangeChange}
               format="YYYY-MM-DD"
+              disabledDate={(current) =>
+                current && current > moment().endOf("day")
+              }
+              allowClear={false} // 👈 Important: Disable clearing empty dates
               className="salaryRecord-datePicker"
             />
           </Col>

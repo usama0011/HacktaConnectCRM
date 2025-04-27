@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Input,
@@ -21,8 +21,9 @@ import {
   FormOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
+
 import "../../styles/AddNewUser.css";
-import ProjectInfoCard from "../../components/ProjectInfoCard";
+import API from "../../utils/BaseURL";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -31,6 +32,7 @@ const AddNewUser = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
+  const [superAdminExists, setSuperAdminExists] = useState(false);
 
   const handleSubmit = async (values) => {
     setLoading(true);
@@ -55,7 +57,7 @@ const AddNewUser = () => {
         userImage: imageUrl,
       });
 
-      await axios.post("http://localhost:5000/api/auth/signup", {
+      await API.post("/auth/signup", {
         username: values.username,
         password: values.password,
         role: values.role,
@@ -79,6 +81,18 @@ const AddNewUser = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    const checkSuperAdmin = async () => {
+      try {
+        const res = await API.get("auth/check-superadmin");
+        setSuperAdminExists(res.data.exists);
+      } catch (error) {
+        console.error("Error checking super admin:", error);
+      }
+    };
+
+    checkSuperAdmin();
+  }, []);
 
   return (
     <div className="newUser-container">
@@ -122,12 +136,12 @@ const AddNewUser = () => {
             <Col xs={24} md={12}>
               <Form.Item
                 name="agentName"
-                label="Agent Name"
-                rules={[{ required: true, message: "Please enter agent name" }]}
+                label="Full Name"
+                rules={[{ required: true, message: "Please enter Full Name" }]}
               >
                 <Input
                   prefix={<UserOutlined />}
-                  placeholder="Enter agent name"
+                  placeholder="Enter Full Name"
                 />
               </Form.Item>
             </Col>
@@ -136,7 +150,7 @@ const AddNewUser = () => {
                 name="cnic"
                 label="CNIC"
                 rules={[
-                  { required: true, message: "Please enter CNIC number" },
+                  { message: "Please enter CNIC number" },
                   {
                     pattern: /^[0-9]{13}$/,
                     message: "CNIC must be exactly 13 digits (no dashes)",
@@ -201,7 +215,11 @@ const AddNewUser = () => {
                   }}
                   placeholder="Select role"
                 >
-                  <Option value="superadmin">Super Admin</Option>
+                  {/* Only show Super Admin if not already registered */}
+                  {!superAdminExists && (
+                    <Option value="superadmin">Super Admin</Option>
+                  )}
+
                   <Option value="hr">HR</Option>
                   <Option value="floormanager">Floor Manager</Option>
                   <Option value="assistancefloormanager">
@@ -300,11 +318,7 @@ const AddNewUser = () => {
           </Divider>
           <Row gutter={16}>
             <Col xs={24} md={12}>
-              <Form.Item
-                name="bankName"
-                label="Bank Account Name"
-                rules={[{ required: true }]}
-              >
+              <Form.Item name="bankName" label="Bank Account Name">
                 <Input
                   prefix={<BankOutlined />}
                   placeholder="Enter bank account name"
@@ -312,11 +326,7 @@ const AddNewUser = () => {
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
-              <Form.Item
-                name="bankNumber"
-                label="Bank Account Number"
-                rules={[{ required: true }]}
-              >
+              <Form.Item name="bankNumber" label="Bank Account Number">
                 <Input
                   prefix={<BankOutlined />}
                   placeholder="Enter bank account number"
@@ -329,9 +339,7 @@ const AddNewUser = () => {
               <Form.Item
                 name="accountTitle"
                 label="Account Title"
-                rules={[
-                  { required: true, message: "Please enter account title" },
-                ]}
+                rules={[{ message: "Please enter account title" }]}
               >
                 <Input
                   prefix={<BankOutlined />}
@@ -343,6 +351,11 @@ const AddNewUser = () => {
 
           <Form.Item>
             <Button
+              style={{
+                width: "100%",
+                height: "50px",
+                backgroundColor: "#003c2f",
+              }}
               type="primary"
               htmlType="submit"
               className="sumitbutonaddnewuser"
@@ -353,6 +366,7 @@ const AddNewUser = () => {
           </Form.Item>
         </Form>
       </Card>
+      s
     </div>
   );
 };

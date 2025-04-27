@@ -13,6 +13,7 @@ import axios from "axios";
 import moment from "moment";
 import "../styles/RightDashboardPanel.css";
 import { useNavigate } from "react-router-dom";
+import API from "../utils/BaseURL";
 
 const RightDashboardPanel = () => {
   const [topPerformers, setTopPerformers] = useState([]);
@@ -23,15 +24,12 @@ const RightDashboardPanel = () => {
     const fetchTopPerformers = async () => {
       try {
         const now = new Date();
-        const res = await axios.get(
-          "http://localhost:5000/api/qcpoints/monthly-summary",
-          {
-            params: {
-              year: now.getFullYear(),
-              month: now.getMonth() + 1, // month is 0-based in JS
-            },
-          }
-        );
+        const res = await API.get("/qcpoints/monthly-summary", {
+          params: {
+            year: now.getFullYear(),
+            month: now.getMonth() + 1, // month is 0-based in JS
+          },
+        });
         setTopPerformers(res.data.top5);
       } catch (err) {
         console.error("Error fetching top performers:", err);
@@ -40,7 +38,7 @@ const RightDashboardPanel = () => {
 
     const fetchRecentWork = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/ip/");
+        const res = await API.get("/ip/");
         setRecentSubmissions(res.data.ipRecords);
       } catch (err) {
         console.error("Error fetching recent submissions:", err);

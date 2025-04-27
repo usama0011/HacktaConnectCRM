@@ -7,6 +7,7 @@ import {
   editUser,
   deleteUser,
   getSingleUser,
+  CheckSuperAdiminUser,
 } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -22,6 +23,7 @@ router.put("/edit/:id", editUser); // PUT /api/auth/edit/:id
 
 // Logout
 router.post("/logout", logoutUser);
+router.get("/check-superadmin", CheckSuperAdiminUser);
 router.delete("/delete/:id", deleteUser);
 
 export default router;

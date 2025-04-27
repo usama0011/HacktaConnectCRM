@@ -18,6 +18,7 @@ import {
   GiftOutlined,
   FrownOutlined,
 } from "@ant-design/icons";
+import API from "../../utils/BaseURL";
 
 const OfficeAgentsSalaryFormula = () => {
   const [form] = Form.useForm();
@@ -27,9 +28,7 @@ const OfficeAgentsSalaryFormula = () => {
   // Fetch the existing formula on load
   const fetchFormula = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/salaryformulaofficeagents"
-      );
+      const res = await API.get("/salaryformulaofficeagents");
       if (res.data.success) {
         const data = res.data.formula;
         form.setFieldsValue(data);
@@ -49,17 +48,11 @@ const OfficeAgentsSalaryFormula = () => {
     try {
       if (isEditing) {
         // Update existing formula
-        await axios.put(
-          "http://localhost:5000/api/salaryformulaofficeagents",
-          values
-        );
+        await API.put("/salaryformulaofficeagents", values);
         message.success("Formula updated successfully!");
       } else {
         // Create new formula
-        await axios.post(
-          "http://localhost:5000/api/salaryformulaofficeagents",
-          values
-        );
+        await API.post("/salaryformulaofficeagents", values);
         message.success("Formula created successfully!");
       }
       setSalaryDetails(values);
@@ -118,7 +111,28 @@ const OfficeAgentsSalaryFormula = () => {
               </Form.Item>
             </Col>
           </Row>
-
+          <Divider
+            orientation="left"
+            plain
+            className="salaryFormula-sectionTitle"
+          >
+            Max Salary
+          </Divider>
+          <Row gutter={24}>
+            <Col span={6}>
+              <Form.Item
+                label={
+                  <span>
+                    <ThunderboltOutlined /> Maximum Salary
+                  </span>
+                }
+                name="maxSalary"
+                rules={[{ required: true }]}
+              >
+                <InputNumber className="salaryFormula-input" min={0} />
+              </Form.Item>
+            </Col>
+          </Row>
           <Divider
             orientation="left"
             plain

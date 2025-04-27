@@ -7,8 +7,8 @@ import LoginBanner from "../../src/assets/loginbanner.jpg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useUserContext } from "../../context/UserContext";
+import API from "../../utils/BaseURL";
 const { Title, Text } = Typography;
-
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Login = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await API.post("/auth/login", {
         username: values.email,
         password: values.password,
       });
@@ -33,7 +33,7 @@ const Login = () => {
 
       // ✅ Attempt to mark attendance
       try {
-        await axios.post("http://localhost:5000/api/attendance/mark", {
+        await API.post("/attendance/mark", {
           userId: user._id,
           username: user.username,
         });

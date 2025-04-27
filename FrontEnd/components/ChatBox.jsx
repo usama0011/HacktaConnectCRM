@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useUserContext } from "../context/UserContext"; // ✅ Import context
 import dayjs from "dayjs"; // Add this line
 import "../styles/ChatBox.css";
+import API from "../utils/BaseURL";
 
 const { Text } = Typography;
 
@@ -17,7 +18,7 @@ const ChatBox = () => {
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/chat/${taskId}`);
+      const res = await API.get(`/chat/${taskId}`);
       setMessages(res.data);
     } catch (err) {
       console.error("Failed to fetch messages", err);
@@ -31,7 +32,7 @@ const ChatBox = () => {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    await axios.post("http://localhost:5000/api/chat/send", {
+    await API.post("/chat/send", {
       taskId,
       sender: user?.username || "Anonymous", // ✅ Use context user
       message: input,

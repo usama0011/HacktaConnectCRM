@@ -1,0 +1,38 @@
+.smartproxy-container {
+  padding: 24px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.smartproxy-heading {
+  color: #003c2f;
+}
+
+.smartproxy-section {
+  margin-top: 24px;
+}
+
+.smartproxy-section h2 {
+  color: #003c2f;
+}
+
+.smartproxy-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.smartproxy-list li {
+  background-color: #ffffff;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.smartproxy-ip-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

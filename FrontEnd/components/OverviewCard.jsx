@@ -1,40 +1,31 @@
 import "../styles/OverviewCard.css";
 import { Card } from "antd";
-
-const cardData = [
-  {
-    title: "#01 Rank",
-    value: "857 Points",
-    change: "-10% vs past month",
-    changeType: "down",
-    iconURL:
-      "https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg",
-    shift: "Morning",
-    totalIPs: 120,
-  },
-  {
-    title: "#02 Rank",
-    value: "158 Points",
-    change: "+20% vs past month",
-    changeType: "up",
-    iconURL:
-      "https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg",
-    shift: "Evening",
-    totalIPs: 95,
-  },
-  {
-    title: "#03 Rank",
-    value: "1.5k Points",
-    change: "+5% vs past month",
-    changeType: "up",
-    iconURL:
-      "https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg",
-    shift: "Night",
-    totalIPs: 110,
-  },
-];
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { RiseOutlined, FallOutlined } from "@ant-design/icons"; // ✅ Import Up/Down icons
+import API from "../utils/BaseURL";
 
 const OverviewCard = () => {
+  const [cardData, setCardData] = useState([]);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const res = await API.get("/qcpoints/topagents", {
+          params: {
+            year: new Date().getFullYear(),
+            month: String(new Date().getMonth() + 1).padStart(2, "0"),
+          },
+        });
+        setCardData(res.data);
+      } catch (error) {
+        console.error("Failed to fetch leaderboard:", error);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
+  console.log(cardData);
   return (
     <>
       <div className="CRM-leaderboard-ribbon">
@@ -49,17 +40,24 @@ const OverviewCard = () => {
           <Card className="CRM-overview-card" key={index}>
             <div className="CRM-card-content">
               <div className="CRM-card-text">
-                <p className="CRM-card-title">{card.title}</p>
-                <h2 className="CRM-card-value">{card.value}</h2>
+                <p className="CRM-card-title">{card.rank}</p>
+                <h2 className="CRM-card-value">{card.totalPoints} Points</h2>
+
                 <p
                   className={`CRM-card-change ${
                     card.changeType === "up" ? "CRM-positive" : "CRM-negative"
                   }`}
                 >
-                  {card.change}
+                  {card.changeType === "up" ? (
+                    <RiseOutlined style={{ color: "green", marginRight: 4 }} />
+                  ) : (
+                    <FallOutlined style={{ color: "red", marginRight: 4 }} />
+                  )}
+                  {card.lastMonthPoints === 0
+                    ? "0 vs last month"
+                    : `${card.change}% vs last month`}
                 </p>
 
-                {/* 👇 New */}
                 <div className="CRM-extra-info">
                   <p className="CRM-shift">
                     Shift: <strong>{card.shift}</strong>
@@ -72,7 +70,7 @@ const OverviewCard = () => {
 
               <img
                 className="CRM-card-icon"
-                src={card.iconURL || ""}
+                src={card.avatar || ""}
                 alt="icon"
               />
             </div>
@@ -82,14 +80,14 @@ const OverviewCard = () => {
               <div className="CRM-banner-left">
                 <img
                   className="CRM-banner-avatar"
-                  src={card.iconURL || ""}
+                  src={card.avatar || ""}
                   alt="profile"
                 />
-                <span className="CRM-banner-name">USERNAME01</span>
+                <span className="CRM-banner-name">{card.username}</span>
               </div>
               <div className="CRM-banner-points">
                 <span className="CRM-points-icon">🪙</span>
-                <span className="CRM-banner-score">{card.value}</span>
+                <span className="CRM-banner-score">{card.totalPoints} pts</span>
               </div>
             </div>
           </Card>

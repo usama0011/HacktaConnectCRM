@@ -66,3 +66,28 @@ export const getSingleTask = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+// GET: Get all tasks related to a user (assignee or participant)
+export const getTasksByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    if (!username) {
+      return res.status(400).json({ message: "Username is required" });
+    }
+
+    const tasks = await Task.find({
+      $or: [
+        { assignee: username },
+        { participants: username }, // ✅ Check if user is in participants array
+      ],
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch user tasks",
+      error: error.message,
+    });
+  }
+};
