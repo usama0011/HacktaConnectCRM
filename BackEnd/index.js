@@ -48,9 +48,7 @@ app.use(morgan("dev"));
 
 // MongoDB Connection
 mongoose
-  .connect(
-    "mongodb+srv://za5232208:za5232208@hacktanewcrmdb.cyoxrvc.mongodb.net/?retryWrites=true&w=majority&appName=HacktaNewCRMDB"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
