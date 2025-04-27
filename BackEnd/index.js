@@ -71,9 +71,7 @@ app.use("/api/reports", reportRoutes); // User Reports (By Year, Month, Day)
 app.use("/api/attendance", attendanceRoutes); // Attendance Tracking (Check-in, Check-out)
 // MongoDB Connection
 mongoose
-  .connect(
-    "mongodb+srv://za5232208:za5232208@hacktanewcrmdb.cyoxrvc.mongodb.net/?retryWrites=true&w=majority&appName=HacktaNewCRMDB"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
