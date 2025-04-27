@@ -5,7 +5,6 @@ import "../../styles/Login.css";
 import MainWebSiteLogo from "../../src/assets/mainlogo.jpeg";
 import LoginBanner from "../../src/assets/loginbanner.jpg";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useUserContext } from "../../context/UserContext";
 import API from "../../utils/BaseURL";
 const { Title, Text } = Typography;
