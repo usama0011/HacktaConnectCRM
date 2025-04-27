@@ -48,7 +48,7 @@ const AddNewUser = () => {
       formData.append("image", imageFile);
 
       const uploadRes = await axios.post(
-        "http://localhost:5000/api/upload",
+        "https://hackta-connect-crm-server.vercel.app/api/upload",
         formData
       );
       const imageUrl = uploadRes.data.url;
