@@ -4,7 +4,7 @@ import { Modal, Button, Input, message, Spin } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Pie } from "@ant-design/plots";
 import { isEqual } from "lodash-es";
-import "../../styles/SmartProxy.css";
+import "../../styles/smartproxy.css";
 import API from "../../utils/BaseURL";
 
 const SmartProxy = () => {
