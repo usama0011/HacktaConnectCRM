@@ -25,10 +25,12 @@ import MainWebSiteLogo from "../src/assets/mainlogo.jpeg";
 import LogoutMainCharactor from "../src/assets/logoutcharactor.png";
 import "../styles/AdminDashboard.css";
 import Sidebar from "./SideBar";
+import { useUserContext } from "../context/UserContext";
 
 const { Header, Sider, Content } = Layout;
 
 const AdminLayout = () => {
+  const { user } = useUserContext();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
 
@@ -56,7 +58,7 @@ const AdminLayout = () => {
       <Content className="admin-dashboard-content">
         <Header className="custom-admin-header">
           <div className="header-left">
-            <h1>Hello, Mike!</h1>
+            <h1>Hello,{user?.agentName}</h1>
           </div>
 
           <div className="header-center">
@@ -70,7 +72,7 @@ const AdminLayout = () => {
           <div className="header-right">
             <Dropdown overlay={menu} trigger={["click"]}>
               <Avatar
-                src="https://via.placeholder.com/150"
+                src={user?.userImage}
                 className="header-avatar"
                 style={{ cursor: "pointer" }}
               />

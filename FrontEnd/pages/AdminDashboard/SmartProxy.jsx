@@ -1,16 +1,18 @@
-import React, { useEffect, useState, memo } from "react";
-import axios from "axios";
-import { Modal, Button, Input, message, Spin } from "antd";
+import React, { useEffect, useState } from "react";
+import { Modal, Button, Input, message, Spin, Card, Row, Col } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Pie } from "@ant-design/plots";
-import { isEqual } from "lodash-es";
 import "../../styles/smartproxy.css";
+import ChartUp from "../../src/assets/chartup.png";
+import Insights from "../../src/assets/Insights.png";
+import ProxyPng from "../../src/assets/proxy.png";
+import TeamAdmin from "../../src/assets/proxy.png";
 import API from "../../utils/BaseURL";
 
 const SmartProxy = () => {
   const [subscriptionData, setSubscriptionData] = useState(null);
   const [whitelistIPs, setWhitelistIPs] = useState([]);
-  const [newTag, setNewTag] = useState(""); // New
+  const [newTag, setNewTag] = useState("");
   const [subUsers, setSubUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -49,13 +51,12 @@ const SmartProxy = () => {
     try {
       await API.post("/smartproxy/whitelisted-ips", {
         ip: newIP.trim(),
-        tag: newTag.trim(), // <-- sending tag also
+        tag: newTag.trim(),
       });
       message.success("IP added successfully!");
       setModalVisible(false);
       setNewIP("");
-      setNewTag(""); // clear tag too
-
+      setNewTag("");
       fetchAllData();
     } catch (error) {
       console.error("Error adding IP:", error);
@@ -81,26 +82,6 @@ const SmartProxy = () => {
     value: user.traffic,
   }));
 
-  const DemoPie = memo(
-    ({ data }) => {
-      const config = {
-        data,
-        angleField: "value",
-        colorField: "type",
-        radius: 1,
-        innerRadius: 0.6, // Donut
-        height: 400, // <--- ADD THIS
-        label: {
-          type: "outer",
-          content: "{name}: {percentage}",
-        },
-        interactions: [{ type: "element-active" }],
-      };
-      return <Pie {...config} />;
-    },
-    (prev, next) => isEqual(prev?.data, next?.data)
-  );
-
   if (loading) {
     return (
       <div className="smartproxy-container">
@@ -108,43 +89,54 @@ const SmartProxy = () => {
       </div>
     );
   }
-  console.log(trafficData);
+
   return (
     <div className="smartproxy-container">
-      <h1 className="smartproxy-heading">Decodo Subscription Dashboard</h1>
+      <h1 className="smartproxy-heading">Decodo Dashboard</h1>
 
-      {/* Subscription Info */}
-      {subscriptionData ? (
-        <ul className="smartproxy-list smartproxy-section">
-          <li>
-            <strong>Traffic Limit:</strong> {subscriptionData.traffic_limit} GB
-          </li>
-          <li>
-            <strong>Traffic Used:</strong> {subscriptionData.traffic} GB
-          </li>
-          <li>
-            <strong>Valid From:</strong> {subscriptionData.valid_from}
-          </li>
-          <li>
-            <strong>Valid Until:</strong> {subscriptionData.valid_until}
-          </li>
-          <li>
-            <strong>Proxy Users Limit:</strong>{" "}
-            {subscriptionData.proxy_users_limit}
-          </li>
-          <li>
-            <strong>IP Address Limit:</strong>{" "}
-            {subscriptionData.ip_address_limit}
-          </li>
-        </ul>
-      ) : (
-        <p>No subscription data available.</p>
-      )}
+      {/* Subscription Info Section */}
+      <Row gutter={24} className="smartproxy-section">
+        {subscriptionData && (
+          <Col xs={24} md={12}>
+            <Card className="smartproxy-card">
+              <div className="smartproxy-card-header">
+                <img
+                  src={Insights}
+                  alt="Subscription Icon"
+                  className="smartproxy-icon"
+                />
+                <h2>Subscription Info</h2>
+              </div>
+              <p>
+                <strong>Traffic Limit:</strong> {subscriptionData.traffic_limit}{" "}
+                GB
+              </p>
+              <p>
+                <strong>Traffic Used:</strong> {subscriptionData.traffic} GB
+              </p>
+              <p>
+                <strong>Valid From:</strong> {subscriptionData.valid_from}
+              </p>
+              <p>
+                <strong>Valid Until:</strong> {subscriptionData.valid_until}
+              </p>
+            </Card>
+          </Col>
+        )}
+      </Row>
 
       {/* Whitelisted IPs */}
       <div className="smartproxy-section">
-        <h2>Whitelisted IPs</h2>
+        <div className="smartproxy-card-header">
+          <img
+            src={ProxyPng}
+            alt="Whitelist Icon"
+            className="smartproxy-icon"
+          />
+          <h2>Whitelisted IPs</h2>
+        </div>
         <Button
+          className="addnewapi"
           type="primary"
           icon={<PlusOutlined />}
           onClick={() => setModalVisible(true)}
@@ -153,15 +145,14 @@ const SmartProxy = () => {
           Add New IP
         </Button>
 
-        {whitelistIPs.length > 0 ? (
-          <ul className="smartproxy-list">
-            {whitelistIPs.map((ip) => (
-              <li key={ip.id} className="smartproxy-ip-item">
-                <div>
-                  <strong>{ip.ip}</strong> {ip.tag ? `(${ip.tag})` : ""}
-                  <br />
-                  <small>Added on: {ip.created_at}</small>
-                </div>
+        <Row gutter={16}>
+          {whitelistIPs.map((ip) => (
+            <Col xs={24} md={12} lg={8} key={ip.id}>
+              <Card className="smartproxy-card">
+                <p>
+                  <strong>{ip.ip}</strong> {ip.tag && `(${ip.tag})`}
+                </p>
+                <small>Added on: {ip.created_at}</small>
                 <Button
                   type="text"
                   danger
@@ -170,42 +161,68 @@ const SmartProxy = () => {
                 >
                   Delete
                 </Button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No whitelisted IPs found.</p>
-        )}
+              </Card>
+            </Col>
+          ))}
+        </Row>
       </div>
 
       {/* Sub Users Section */}
       <div className="smartproxy-section">
-        <h2>Sub Users</h2>
-        {subUsers.length > 0 ? (
-          <ul className="smartproxy-list">
-            {subUsers.map((user) => (
-              <li key={user.id}>
-                <div>
-                  <strong>Username:</strong> {user.username} <br />
-                  <strong>Status:</strong> {user.status} <br />
-                  <strong>Traffic Used:</strong> {user.traffic} GB <br />
-                </div>
-              </li>
-            ))}
-          </ul>
+        <div className="smartproxy-card-header">
+          <img src={TeamAdmin} alt="Users Icon" className="smartproxy-icon" />
+          <h2>Sub Users</h2>
+        </div>
+
+        <Row gutter={16}>
+          {subUsers.map((user) => (
+            <Col xs={24} md={12} lg={8} key={user.id}>
+              <Card className="smartproxy-card">
+                <p>
+                  <strong>Username:</strong> {user.username}
+                </p>
+                <p>
+                  <strong>Status:</strong> {user.status}
+                </p>
+                <p>
+                  <strong>Traffic Used:</strong> {user.traffic} GB
+                </p>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </div>
+
+      {/* Donut Chart Section */}
+      <div className="smartproxy-section">
+        <div className="smartproxy-card-header">
+          <img src={ChartUp} alt="Traffic Icon" className="smartproxy-icon" />
+          <h2>Sub Users Traffic Usage</h2>
+        </div>
+
+        {trafficData.length > 0 ? (
+          <Pie
+            data={trafficData}
+            angleField="value"
+            colorField="type"
+            radius={1}
+            innerRadius={0.6}
+            label={{
+              type: "spider",
+              content: "{type}: {value} GB",
+            }}
+            legend={{
+              position: "right",
+            }}
+            height={400}
+            interactions={[{ type: "element-active" }]}
+          />
         ) : (
-          <p>No sub users found.</p>
+          <Spin tip="Loading Chart..." />
         )}
       </div>
 
-      {/* Chart Section */}
-      <div className="">
-        <h2>Sub Users Traffic Usage (Donut Chart)</h2>
-
-        <DemoPie data={trafficData} />
-      </div>
-
-      {/* Modal for Adding New IP */}
+      {/* Modal for adding IP */}
       <Modal
         title="Add New Whitelisted IP"
         open={modalVisible}

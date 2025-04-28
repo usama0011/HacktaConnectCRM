@@ -40,6 +40,7 @@ export const registerUser = async (req, res) => {
     branch,
     joiningDate,
     cnic,
+    CreatedBy,
     userImage,
   } = req.body;
 
@@ -64,6 +65,7 @@ export const registerUser = async (req, res) => {
       joiningDate,
       cnic,
       userImage,
+      CreatedBy,
     });
 
     await newUser.save();
@@ -174,6 +176,8 @@ export const editUser = async (req, res) => {
     joiningDate,
     cnic,
     userImage,
+    editorUsername, // 🆕 Add editor fields
+    editorAvatar, // 🆕 Add editor fields
   } = req.body;
 
   try {
@@ -187,7 +191,7 @@ export const editUser = async (req, res) => {
       updatedPassword = await bcrypt.hash(password, 10);
     }
 
-    // Update all fields (only if they exist in the request)
+    // Update all fields
     user.username = username || user.username;
     user.password = updatedPassword;
     user.role = role || user.role;
@@ -202,6 +206,16 @@ export const editUser = async (req, res) => {
     user.cnic = cnic || user.cnic;
     user.userImage = userImage || user.userImage;
 
+    // ✨ Push Edit History (coming from req.body now)
+    if (editorUsername && editorAvatar) {
+      user.editHistory = user.editHistory || [];
+      user.editHistory.push({
+        editedByUsername: editorUsername,
+        editedByAvatar: editorAvatar,
+        editedAt: new Date(),
+      });
+    }
+
     // Save updated user
     await user.save();
 
@@ -212,7 +226,6 @@ export const editUser = async (req, res) => {
       .json({ message: "Failed to update user", error: error.message });
   }
 };
-
 // Delete User
 export const deleteUser = async (req, res) => {
   try {
@@ -239,5 +252,59 @@ export const CheckSuperAdiminUser = async (req, res) => {
   } catch (err) {
     console.error("Error checking superadmin:", err);
     return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// For fetching only Agents
+export const getAllAgents = async (req, res) => {
+  try {
+    const { username, shift, agentType, branch } = req.query;
+    const query = { role: "agent" };
+
+    if (username) {
+      query.username = { $regex: username, $options: "i" };
+    }
+    if (shift) {
+      query.shift = shift;
+    }
+    if (agentType) {
+      query.agentType = agentType;
+    }
+    if (branch) {
+      query.branch = branch;
+    }
+
+    const agents = await User.find(query).sort({ createdAt: -1 });
+    res.status(200).json(agents);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to fetch agents", error: error.message });
+  }
+};
+
+// For fetching Management Users (non-agents)
+export const getAllManagementUsers = async (req, res) => {
+  try {
+    const { username, shift, branch } = req.query;
+    const query = { role: { $ne: "agent" } };
+
+    if (username) {
+      query.username = { $regex: username, $options: "i" };
+    }
+    if (shift) {
+      query.shift = shift;
+    }
+    if (branch) {
+      query.branch = branch;
+    }
+
+    const managementUsers = await User.find(query).sort({ createdAt: -1 });
+    res.status(200).json(managementUsers);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch management users",
+      error: error.message,
+    });
   }
 };

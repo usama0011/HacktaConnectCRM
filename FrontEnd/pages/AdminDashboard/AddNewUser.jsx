@@ -71,6 +71,7 @@ const AddNewUser = () => {
         joiningDate: values.joiningDate,
         cnic: values.cnic,
         userImage: imageUrl,
+        CreatedBy: "Abdul Moiz",
       });
 
       message.success(`User "${values.username}" added successfully!`);

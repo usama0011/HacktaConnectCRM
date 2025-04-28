@@ -1,6 +1,6 @@
 import Attendance from "../models/attendanceModel.js";
 import moment from "moment"; // install moment if not already installed
-
+import User from "../models/usermodel.js";
 // **Mark User Attendance**
 // controllers/attendanceController.js
 export const markAttendance = async (req, res) => {
@@ -138,5 +138,66 @@ export const updateAttendanceStatus = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Server Error", error: error.message });
+  }
+};
+
+// Get ALL AGENTS Attendance (for frontend AllUsersAttendance.jsx)
+export const getAllAgentsAttendance = async (req, res) => {
+  try {
+    const today = moment().startOf("day"); // Today 00:00
+    const startOfMonth = moment().startOf("month"); // Month Start
+
+    // 1. Fetch all users with role "agent"
+    const agents = await User.find({ role: "agent" });
+
+    // 2. Map each agent's attendance
+    const result = await Promise.all(
+      agents.map(async (agent) => {
+        // Today's attendance
+        const todayRecord = await Attendance.findOne({
+          userId: agent._id,
+          date: {
+            $gte: today.toDate(),
+            $lte: moment(today).endOf("day").toDate(),
+          },
+        });
+
+        // This month's attendance
+        const monthRecords = await Attendance.find({
+          userId: agent._id,
+          date: {
+            $gte: startOfMonth.toDate(),
+            $lte: moment().endOf("day").toDate(),
+          },
+        });
+
+        let present = 0,
+          absent = 0,
+          late = 0;
+
+        monthRecords.forEach((rec) => {
+          if (rec.status === "Present") present++;
+          else if (rec.status === "Absent") absent++;
+          else if (rec.status === "Late") late++;
+        });
+
+        return {
+          username: agent.username,
+          checkInTime: todayRecord?.checkInTime || null,
+          status: todayRecord?.status || "Absent", // Default to Absent if no record
+          present,
+          absent,
+          late,
+          total: moment().date(), // Today’s date number (e.g., 28 for April 28)
+        };
+      })
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching agents attendance:", error.message);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 };

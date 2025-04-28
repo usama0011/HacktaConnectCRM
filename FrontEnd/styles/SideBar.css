@@ -25,7 +25,7 @@
 }
 /* Collapsed Sidebar */
 .bitrix-sidebar:not(.expanded) {
-  width: 70px !important;
+  width: 60px !important;
   backdrop-filter: blur(6px);
   background-color: white;
 }
@@ -67,10 +67,30 @@
 
 /* Active/Selected Menu Item */
 .bitrix-menu .ant-menu-item-selected {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  color: black !important;
+  color: white !important;
+  background-color: #003c2f;
   font-weight: 600;
-  border-radius: 8px;
+}
+.bitrix-menu .ant-menu-item-selected .sidebariconspecial {
+  color: white !important;
+}
+
+/* Add right side border */
+.bitrix-menu .ant-menu-item-selected::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0px;
+  bottom: 10px;
+  width: 5px;
+  background-color: #003c2f; /* Blue border color */
+  height: 100%;
+}
+/* Hovered Menu Item */
+.bitrix-menu .ant-menu-item:hover,
+.bitrix-menu .ant-menu-submenu-title:hover {
+  background-color: rgba(0, 140, 255, 0.05) !important; /* Light blue hover */
+  color: black !important;
 }
 
 /* Popup Submenu (when expanded) */

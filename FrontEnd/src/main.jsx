@@ -80,6 +80,8 @@ import DownloadSalaryWokers from "../pages/AdminDashboard/DownloadSalaryWokers.j
 import Features from "../pages/generalPages/Features.jsx";
 import Company from "../pages/generalPages/Company.jsx";
 import GeneralSalaryCaculator from "../pages/AdminDashboard/GeneralSalaryCaculator.jsx";
+import AllAgentsRegistraction from "../pages/AdminDashboard/AllAgentsRegistraction.jsx";
+import AllManagementRecord from "../pages/AdminDashboard/AllManagementRecord.jsx";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -223,9 +225,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               path="qcpointsdownlaod"
               element={<QCPointsDownloadReports />}
             />
+            <Route path="allagentrecord" element={<AllAgentsRegistraction />} />
             <Route
               path="registedusersdownlaodreports"
               element={<RegisteredUsersDownlaodReports />}
+            />
+            <Route
+              path="allmangemenrerecord"
+              element={<AllManagementRecord />}
             />
             <Route
               path="agentreportsipsdownlaod"

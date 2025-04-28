@@ -4,7 +4,7 @@ import { UserOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import "../../styles/Attendance.css";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../../utils/BaseURL";
 
 const { Title, Text } = Typography;
 
@@ -13,6 +13,7 @@ const AllUsersAttendance = () => {
   const [users, setUsers] = useState([]);
 
   const navigate = useNavigate();
+
   const columns = [
     {
       title: "User",
@@ -30,7 +31,6 @@ const AllUsersAttendance = () => {
         </div>
       ),
     },
-
     {
       title: "Check-in Time",
       key: "checkIn",
@@ -73,13 +73,13 @@ const AllUsersAttendance = () => {
       render: (record) => <strong>{record.attendance.month.total}</strong>,
     },
   ];
+
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
-        const res = await fetch("/api/attendance/all"); // Update this to your actual API route
-        const data = await res.json();
+        const res = await API.get("/attendance/all-agents"); // 🆕 Axios and updated endpoint
+        const data = res.data;
 
-        // Format each user
         const formatted = data.map((item, index) => ({
           id: index + 1,
           name: item.username,
@@ -92,10 +92,10 @@ const AllUsersAttendance = () => {
               status: item.status,
             },
             month: {
-              present: item.present || 0, // Replace with real values if available
+              present: item.present || 0,
               absent: item.absent || 0,
               late: item.late || 0,
-              total: item.total || 30, // Assume 30 for now
+              total: item.total || 30,
             },
           },
         }));
@@ -124,7 +124,7 @@ const AllUsersAttendance = () => {
 
       <Table
         columns={columns}
-        dataSource={users} // ✅ updated
+        dataSource={users}
         rowKey="id"
         pagination={{ pageSize: 5 }}
         bordered

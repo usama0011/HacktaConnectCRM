@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Spin, Card, Typography, Progress, Row, Col, message } from "antd";
 import {
   DatabaseOutlined,
@@ -9,6 +8,9 @@ import {
 import { Pie } from "@ant-design/plots";
 import "../../styles/mangoproxy.css";
 import API from "../../utils/BaseURL";
+
+import TrafficUIIcon from "../../src/assets/Insights.png";
+import ChartIcon from "../../src/assets/chartup.png";
 
 const MangoProxy = () => {
   const [trafficData, setTrafficData] = useState(null);
@@ -21,7 +23,6 @@ const MangoProxy = () => {
         const trafficRes = await API.get("/mangoproxy/traffic");
         setTrafficData(trafficRes.data);
 
-        // After slight delay, set pie chart data
         setTimeout(() => {
           if (trafficRes.data) {
             const totalGB = (trafficRes.data.totalMB || 0) / 1024;
@@ -48,7 +49,7 @@ const MangoProxy = () => {
 
   if (loading) {
     return (
-      <div className="smartproxy-container">
+      <div className="mangoproxy-container">
         <Spin size="large" tip="Loading MangoProxy Traffic Data..." />
       </div>
     );
@@ -63,41 +64,49 @@ const MangoProxy = () => {
     data: pieData,
     angleField: "value",
     colorField: "type",
+    radius: 1,
+    innerRadius: 0.6,
     label: {
-      text: "value",
-      style: {
-        fontWeight: "bold",
-      },
+      type: "spider",
+      content: "{type}: {value} GB",
     },
     legend: {
-      color: {
-        title: false,
-        position: "right",
-        rowPadding: 5,
-      },
+      position: "right",
     },
+    height: 350,
+    interactions: [{ type: "element-active" }],
   };
 
   return (
-    <div className="smartproxy-container">
-      <h1 className="smartproxy-heading">Mango Proxy Dashboard</h1>
+    <div className="mangoproxy-container">
+      <h1 className="mangoproxy-heading">Mango Proxy Dashboard</h1>
 
       <Row gutter={24}>
-        {/* Traffic Usage */}
+        {/* Traffic Usage Card */}
         <Col xs={24} md={12}>
-          <Card title="Traffic Usage" bordered>
-            <p>
-              <DatabaseOutlined /> <strong>Total Traffic:</strong>{" "}
-              {totalGB.toFixed(2)} GB
-            </p>
-            <p>
-              <DownloadOutlined /> <strong>Used Traffic:</strong>{" "}
-              {usedGB.toFixed(2)} GB
-            </p>
-            <p>
-              <CloudOutlined /> <strong>Available Traffic:</strong>{" "}
-              {availableGB.toFixed(2)} GB
-            </p>
+          <Card className="mangoproxy-card">
+            <div className="mangoproxy-card-header">
+              <img
+                src={TrafficUIIcon}
+                alt="Traffic Icon"
+                className="mangoproxy-icon"
+              />
+              <h2>Traffic Usage</h2>
+            </div>
+            <div className="mangoproxy-stats">
+              <p>
+                <DatabaseOutlined /> <strong>Total Traffic:</strong>{" "}
+                {totalGB.toFixed(2)} GB
+              </p>
+              <p>
+                <DownloadOutlined /> <strong>Used Traffic:</strong>{" "}
+                {usedGB.toFixed(2)} GB
+              </p>
+              <p>
+                <CloudOutlined /> <strong>Available Traffic:</strong>{" "}
+                {availableGB.toFixed(2)} GB
+              </p>
+            </div>
             <Progress
               percent={usedPercent.toFixed(2)}
               status="active"
@@ -109,9 +118,17 @@ const MangoProxy = () => {
           </Card>
         </Col>
 
-        {/* Traffic Distribution */}
+        {/* Traffic Distribution Card */}
         <Col xs={24} md={12}>
-          <Card title="Traffic Distribution">
+          <Card className="mangoproxy-card">
+            <div className="mangoproxy-card-header">
+              <img
+                src={ChartIcon}
+                alt="Chart Icon"
+                className="mangoproxy-icon"
+              />
+              <h2>Traffic Distribution</h2>
+            </div>
             {pieData.length > 0 ? (
               <Pie {...pieConfig} />
             ) : (

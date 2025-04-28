@@ -14,7 +14,6 @@ import {
   GiftOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
-import axios from "axios";
 import "../../styles/AgentsSalaryRecord.css";
 import API from "../../utils/BaseURL";
 

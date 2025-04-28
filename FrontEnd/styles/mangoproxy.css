@@ -1,0 +1,44 @@
+.mangoproxy-container {
+  padding: 24px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.mangoproxy-heading {
+  color: #003c2f;
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+
+.mangoproxy-card {
+  background: white;
+  border-radius: 12px;
+  min-height: 500px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+}
+
+.mangoproxy-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.mangoproxy-card-header h2 {
+  color: #003c2f;
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.mangoproxy-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+}
+
+.mangoproxy-stats p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #333;
+}

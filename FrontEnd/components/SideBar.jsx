@@ -20,10 +20,13 @@ import "../styles/SideBar.css";
 import { Button, Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
 import MainWebSiteLogo from "../src/assets/mainlogo.jpeg";
+import { useLocation } from "react-router-dom";
+
 const { Sider } = Layout;
 
 const Sidebar = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const location = useLocation();
 
   return (
     <Sider
@@ -40,128 +43,134 @@ const Sidebar = () => {
         <div className="sidebar-logo">
           <img src={MainWebSiteLogo} alt="Logo" />
         </div>
-
+        {/* Made It Active Even on Submenu Even okay  */}
         <div className="sidebar-scrollable">
           <Menu
             mode="inline"
-            theme="dark"
+            theme="light"
+            selectedKeys={[location.pathname]}
             className={`bitrix-menu ${isHovered ? "show-labels" : ""}`}
             inlineCollapsed={!isHovered}
           >
             <Menu.Item
-              key="1"
+              key="/admin/dashboard"
               icon={<DashboardOutlined className="sidebariconspecial" />}
             >
-              <Link to="/admin/dashboard">Dashboard</Link>{" "}
-            </Menu.Item>{" "}
+              <Link to="/admin/dashboard">Dashboard</Link>
+            </Menu.Item>
+
             <Menu.Item
-              key="2"
+              key="/admin/dashboard/proxyusage"
               icon={<BarChartOutlined className="sidebariconspecial" />}
             >
-              <Link to="/admin/dashboard/proxyusage">Proxy Usage</Link>{" "}
-            </Menu.Item>{" "}
+              <Link to="/admin/dashboard/proxyusage">Proxy Usage</Link>
+            </Menu.Item>
+
             <Menu.SubMenu
-              key="3"
+              key="/admin/dashboard/manageusers"
               icon={<UserOutlined className="sidebariconspecial" />}
               title="Manage Users"
             >
-              {" "}
-              <Menu.Item key="3-1">
-                <Link to="/admin/dashboard/manageusers">All Users</Link>{" "}
-              </Menu.Item>{" "}
-              <Menu.Item key="3-2">
-                <Link to="/admin/dashboard/addnewuser">Add User</Link>{" "}
+              <Menu.Item key="/admin/dashboard/manageusers">
+                <Link to="/admin/dashboard/manageusers">All Users</Link>
               </Menu.Item>
-            </Menu.SubMenu>{" "}
+              <Menu.Item key="/admin/dashboard/addnewuser">
+                <Link to="/admin/dashboard/addnewuser">Add User</Link>
+              </Menu.Item>
+            </Menu.SubMenu>
+
             <Menu.Item
-              key="13"
+              key="/admin/dashboard/allusersattandance"
               icon={<CalendarOutlined className="sidebariconspecial" />}
             >
               <Link to="/admin/dashboard/allusersattandance">
-                Agents Attandance
-              </Link>{" "}
+                Agents Attendance
+              </Link>
             </Menu.Item>
+
             <Menu.SubMenu
-              key="14"
+              key="/admin/dashboard/ipreportsusers"
               icon={<DotChartOutlined className="sidebariconspecial" />}
               title="Agent Reports"
             >
-              <Menu.Item key="14-1">
+              <Menu.Item key="/admin/dashboard/ipreportsusers">
                 <Link to="/admin/dashboard/ipreportsusers">
                   Agents IP Reports
                 </Link>
               </Menu.Item>
-              <Menu.Item key="14-2">
-                <Link to="/admin/dashboard/AllQCPoints">Agent QC Reports</Link>{" "}
+              <Menu.Item key="/admin/dashboard/AllQCPoints">
+                <Link to="/admin/dashboard/AllQCPoints">Agent QC Reports</Link>
               </Menu.Item>
-              <Menu.Item key="13-3">
-                <Link to="/admin/dashboard/addqcpointform">Add QC Points</Link>{" "}
-              </Menu.Item>{" "}
-              <Menu.Item key="13-4">
+              <Menu.Item key="/admin/dashboard/addqcpointform">
+                <Link to="/admin/dashboard/addqcpointform">Add QC Points</Link>
+              </Menu.Item>
+              <Menu.Item key="/admin/dashboard/dailyipreport">
                 <Link to="/admin/dashboard/dailyipreport">
                   Agents Daily IPs
-                </Link>{" "}
-              </Menu.Item>{" "}
+                </Link>
+              </Menu.Item>
             </Menu.SubMenu>
+
             <Menu.Item
-              key="7"
+              key="/admin/dashboard/salarymanagement"
               icon={<DollarCircleOutlined className="sidebariconspecial" />}
             >
-              {" "}
               <Link to="/admin/dashboard/salarymanagement">
                 Salary Management
-              </Link>{" "}
-            </Menu.Item>{" "}
+              </Link>
+            </Menu.Item>
+
             <Menu.Item
-              key="4"
+              key="/admin/dashboard/noticeboard"
               icon={<NotificationOutlined className="sidebariconspecial" />}
             >
-              <Link to="/admin/dashboard/noticeboard">Notice Board</Link>{" "}
-            </Menu.Item>{" "}
+              <Link to="/admin/dashboard/noticeboard">Notice Board</Link>
+            </Menu.Item>
+
             <Menu.Item
-              key="6"
+              key="/admin/dashboard/announcements"
               icon={<FileProtectOutlined className="sidebariconspecial" />}
             >
-              <Link to="/admin/dashboard/announcements">Announcements</Link>{" "}
-            </Menu.Item>{" "}
+              <Link to="/admin/dashboard/announcements">Announcements</Link>
+            </Menu.Item>
+
             <Menu.Item
-              key="8"
+              key="/admin/dashboard/settings"
               icon={<SettingOutlined className="sidebariconspecial" />}
             >
-              <Link to="/admin/dashboard/settings">Settings</Link>{" "}
-            </Menu.Item>{" "}
+              <Link to="/admin/dashboard/settings">Settings</Link>
+            </Menu.Item>
+
             <Menu.SubMenu
-              key="9"
+              key="/admin/dashboard/newtask"
               icon={<DatabaseFilled className="sidebariconspecial" />}
               title="Task Creation"
             >
-              {" "}
-              <Menu.Item key="9-1">
-                <Link to="/admin/dashboard/newtask">New Task</Link>{" "}
-              </Menu.Item>{" "}
-              <Menu.Item key="9-2">
-                {" "}
+              <Menu.Item key="/admin/dashboard/newtask">
+                <Link to="/admin/dashboard/newtask">New Task</Link>
+              </Menu.Item>
+              <Menu.Item key="/admin/dashboard/viewtaskcreation">
                 <Link to="/admin/dashboard/viewtaskcreation">
                   View Creations
-                </Link>{" "}
-              </Menu.Item>{" "}
-            </Menu.SubMenu>{" "}
+                </Link>
+              </Menu.Item>
+            </Menu.SubMenu>
+
             <Menu.Item
-              key="10"
+              key="/admin/dashboard/termsandpolicies"
               icon={<FileProtectOutlined className="sidebariconspecial" />}
             >
-              {" "}
               <Link to="/admin/dashboard/termsandpolicies">
                 Terms & Policies
-              </Link>{" "}
-            </Menu.Item>{" "}
+              </Link>
+            </Menu.Item>
+
             <Menu.Item
-              key="11"
+              key="/admin/dashboard/notifications"
               icon={<BellOutlined className="sidebariconspecial" />}
             >
-              <Link to="/admin/dashboard/notifications">Notifications</Link>{" "}
+              <Link to="/admin/dashboard/notifications">Notifications</Link>
             </Menu.Item>
-            {/* Add QCPintins */}{" "}
           </Menu>
         </div>
 
