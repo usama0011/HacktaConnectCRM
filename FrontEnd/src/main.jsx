@@ -82,6 +82,7 @@ import Company from "../pages/generalPages/Company.jsx";
 import GeneralSalaryCaculator from "../pages/AdminDashboard/GeneralSalaryCaculator.jsx";
 import AllAgentsRegistraction from "../pages/AdminDashboard/AllAgentsRegistraction.jsx";
 import AllManagementRecord from "../pages/AdminDashboard/AllManagementRecord.jsx";
+import SingleAgentAttendance from "../pages/AdminDashboard/SingleAgentAttandance.jsx";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -142,7 +143,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route
             path="/admin/dashboard"
             element={
-              // <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
+              // <ProtectedRoute allowedRoles={["admin", "Super Admin"]}>
               <AdminLayout />
               // </ProtectedRoute>
             }
@@ -246,6 +247,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route
               path="viewsinglesalary"
               element={<ViewSingleSalaryStatement />}
+            />
+
+            <Route
+              path="attendance/user/:id"
+              element={<SingleAgentAttendance />}
             />
           </Route>
         </Routes>

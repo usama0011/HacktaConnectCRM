@@ -351,3 +351,73 @@ export const updateAgentIPWithHistory = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getAgentsMonthlyIPs = async (req, res) => {
+  try {
+    const { year, month } = req.query;
+    if (!year || !month) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Month and Year are required" });
+    }
+
+    const startOfMonth = moment(`${year}-${month}-01`)
+      .startOf("month")
+      .toDate();
+    const endOfMonth = moment(`${year}-${month}-01`).endOf("month").toDate();
+
+    // First find all Agents
+    const agents = await User.find({ role: "agent" });
+
+    if (!agents.length) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No agents found" });
+    }
+
+    const agentIds = agents.map((a) => a._id);
+
+    // Find IP submissions for these agents during the month
+    const ipRecords = await IP.aggregate([
+      {
+        $match: {
+          userId: { $in: agentIds },
+          date: { $gte: startOfMonth, $lte: endOfMonth },
+        },
+      },
+      {
+        $group: {
+          _id: "$userId",
+          totalClicks: { $sum: "$clicks" },
+          totalSessions: { $sum: "$sessions" },
+        },
+      },
+    ]);
+
+    // Prepare Final Response
+    const finalData = agents.map((agent) => {
+      const ipData = ipRecords.find(
+        (r) => r._id.toString() === agent._id.toString()
+      ) || {
+        totalClicks: 0,
+        totalSessions: 0,
+      };
+
+      return {
+        id: agent._id,
+        username: agent.username,
+        avatar: agent.userImage || "", // if available
+        totalClicks: ipData.totalClicks,
+        totalSessions: ipData.totalSessions,
+        totalIPs: ipData.totalClicks + ipData.totalSessions,
+      };
+    });
+
+    res.status(200).json({ success: true, agents: finalData });
+  } catch (error) {
+    console.error("Get Agents Monthly IPs Error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};

@@ -1,34 +1,48 @@
 import Attendance from "../models/attendanceModel.js";
 import moment from "moment"; // install moment if not already installed
 import User from "../models/usermodel.js";
+import mongoose from "mongoose";
 // **Mark User Attendance**
 // controllers/attendanceController.js
 export const markAttendance = async (req, res) => {
   const { userId, username } = req.body;
 
   try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const now = new Date();
 
-    // Check if today's attendance already exists
-    let attendance = await Attendance.findOne({ userId, date: today });
+    // Create date range for today
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    // Check if attendance already exists for today (any time)
+    let attendance = await Attendance.findOne({
+      userId,
+      date: {
+        $gte: todayStart,
+        $lte: todayEnd,
+      },
+    });
 
     if (!attendance) {
-      // ✅ Only create if no record for today
+      // ✅ Create only if it doesn't exist
       attendance = new Attendance({
         userId,
         username,
-        date: today,
-        checkInTime: new Date(),
+        date: now, // store current datetime
+        checkInTime: now,
       });
 
       await attendance.save();
+
       return res.status(201).json({
         message: "Attendance marked for today",
         attendance,
       });
     } else {
-      // ⚠️ Already submitted
+      // ⚠️ Already submitted today
       return res.status(200).json({
         message: "Attendance already marked for today",
         attendance,
@@ -42,78 +56,23 @@ export const markAttendance = async (req, res) => {
   }
 };
 
-// **Get Attendance for a Specific User**
-
-export const getAttendanceByUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    // 1. Fetch all records for the user
-    const attendanceRecords = await Attendance.find({ userId }).sort({
-      date: -1,
-    });
-
-    if (!attendanceRecords.length) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No records found" });
-    }
-
-    // 2. Today's Record
-    const todayDate = moment().startOf("day");
-    const todayRecord = attendanceRecords.find((record) =>
-      moment(record.date).isSame(todayDate, "day")
-    );
-
-    // 3. Month Summary
-    const currentMonth = moment().month();
-    const monthlyRecords = attendanceRecords.filter(
-      (record) => moment(record.date).month() === currentMonth
-    );
-
-    let present = 0,
-      absent = 0,
-      late = 0;
-    monthlyRecords.forEach((rec) => {
-      if (rec.status === "Present") present++;
-      else if (rec.status === "Absent") absent++;
-      else if (rec.status === "Late") late++;
-    });
-
-    const summary = {
-      present,
-      absent,
-      late,
-      total: monthlyRecords.length,
-    };
-
-    // 4. Final Response
-    res.json({
-      success: true,
-      userAttendance: {
-        today: {
-          checkInTime: todayRecord?.checkInTime || null,
-          status: todayRecord?.status || "Absent", // Default if no record
-        },
-        monthSummary: summary,
-      },
-    });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: error.message });
-  }
-};
-
 export const updateAttendanceStatus = async (req, res) => {
   try {
     const { userId, date, newStatus, updatedBy } = req.body;
 
+    // ✅ Properly define start and end of day for the given date
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    // ✅ Search using a date range
     const attendance = await Attendance.findOne({
       userId,
       date: {
-        $gte: new Date(date).setHours(0, 0, 0, 0),
-        $lte: new Date(date).setHours(23, 59, 59, 999),
+        $gte: startOfDay,
+        $lte: endOfDay,
       },
     });
 
@@ -124,6 +83,7 @@ export const updateAttendanceStatus = async (req, res) => {
       });
     }
 
+    // ✅ Update attendance fields
     attendance.status = newStatus;
     attendance.updatedBy = updatedBy;
 
@@ -135,69 +95,107 @@ export const updateAttendanceStatus = async (req, res) => {
       attendance,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Server Error", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    });
   }
 };
 
-// Get ALL AGENTS Attendance (for frontend AllUsersAttendance.jsx)
-export const getAllAgentsAttendance = async (req, res) => {
+export const getTodayAttendance = async (req, res) => {
   try {
-    const today = moment().startOf("day"); // Today 00:00
-    const startOfMonth = moment().startOf("month"); // Month Start
+    const userId = new mongoose.Types.ObjectId(req.params.userId);
+    const dateParam = req.query.date;
+    console.log(userId, dateParam);
 
-    // 1. Fetch all users with role "agent"
-    const agents = await User.find({ role: "agent" });
+    if (!dateParam) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing 'date' query parameter",
+        today: null,
+      });
+    }
 
-    // 2. Map each agent's attendance
-    const result = await Promise.all(
-      agents.map(async (agent) => {
-        // Today's attendance
-        const todayRecord = await Attendance.findOne({
-          userId: agent._id,
-          date: {
-            $gte: today.toDate(),
-            $lte: moment(today).endOf("day").toDate(),
-          },
-        });
+    const startOfDayLocal = new Date(dateParam);
+    startOfDayLocal.setHours(0, 0, 0, 0);
 
-        // This month's attendance
-        const monthRecords = await Attendance.find({
-          userId: agent._id,
-          date: {
-            $gte: startOfMonth.toDate(),
-            $lte: moment().endOf("day").toDate(),
-          },
-        });
+    const endOfDayLocal = new Date(dateParam);
+    endOfDayLocal.setHours(23, 59, 59, 999);
 
-        let present = 0,
-          absent = 0,
-          late = 0;
+    const todayAttendance = await Attendance.findOne({
+      userId,
+      date: {
+        $gte: startOfDayLocal,
+        $lte: endOfDayLocal,
+      },
+    });
 
-        monthRecords.forEach((rec) => {
-          if (rec.status === "Present") present++;
-          else if (rec.status === "Absent") absent++;
-          else if (rec.status === "Late") late++;
-        });
+    if (!todayAttendance) {
+      return res.status(404).json({
+        success: false,
+        message: "No attendance found for selected date.",
+        today: null,
+      });
+    }
 
-        return {
-          username: agent.username,
-          checkInTime: todayRecord?.checkInTime || null,
-          status: todayRecord?.status || "Absent", // Default to Absent if no record
-          present,
-          absent,
-          late,
-          total: moment().date(), // Today’s date number (e.g., 28 for April 28)
-        };
-      })
-    );
-
-    res.status(200).json(result);
+    return res.status(200).json({
+      success: true,
+      today: todayAttendance,
+    });
   } catch (error) {
-    console.error("Error fetching agents attendance:", error.message);
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch attendance for selected date",
+      error: error.message,
+    });
+  }
+};
+export const markCheckoutTime = async (req, res) => {
+  try {
+    const { userId, date } = req.body;
+
+    if (!userId || !date) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing userId or date",
+      });
+    }
+
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const attendance = await Attendance.findOne({
+      userId,
+      date: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+    });
+
+    if (!attendance) {
+      return res.status(404).json({
+        success: false,
+        message: "Attendance not found for that date",
+      });
+    }
+
+    attendance.checkOutTime = new Date(); // set to now
+    await attendance.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Checkout time updated successfully",
+      attendance,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error updating checkout time",
+      error: error.message,
+    });
   }
 };

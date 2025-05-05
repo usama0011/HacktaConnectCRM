@@ -25,8 +25,7 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import "../../styles/QCPoints.css";
-import ProjectInfoCard from "../../components/ProjectInfoCard";
-import axios from "axios";
+
 import API from "../../utils/BaseURL";
 
 const { Title, Text } = Typography;
@@ -36,7 +35,10 @@ const QCPoints = () => {
   const [loading, setLoading] = useState(false);
 
   const [users, setUsers] = useState([]);
-
+  const [attendanceStatus, setAttendanceStatus] = useState(null);
+  const [attendanceCheckInTime, setAttendanceCheckInTime] = useState(null);
+  const [attendanceLoading, setAttendanceLoading] = useState(false);
+  const [checkOutTime, setCheckOutTime] = useState(null);
   const [selectedDate, setSelectedDate] = useState(moment());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
@@ -57,13 +59,17 @@ const QCPoints = () => {
     form.setFieldsValue(values);
     setFieldValues(values);
     setIsModalOpen(true);
+
+    // 👇 Fetch attendance when modal opens
+    fetchUserAttendance(user._id);
   };
   const handleUpdate = async () => {
     const totalPoints = Object.values(fieldValues).filter(
       (v) => v === "1"
     ).length;
+
     const payload = {
-      userId: editingUser._id, // real user id from database
+      userId: editingUser._id,
       name: editingUser.name,
       avatar: editingUser.avatar,
       editor,
@@ -75,6 +81,23 @@ const QCPoints = () => {
       setIsModalOpen(false);
       message.loading({ content: "Saving...", key: "qc_save" });
 
+      // 🛠 If no attendance, mark it first
+      if (attendanceStatus === null) {
+        await API.post("/attendance/mark", {
+          userId: editingUser._id,
+          username: editingUser.name,
+        });
+      }
+
+      // 🛠 Always update status (whether new or old)
+      await API.put("/attendance/updatestatus", {
+        userId: editingUser._id,
+        date: selectedDate.format("YYYY-MM-DD"),
+        newStatus: fieldValues.attendanceStatus,
+        updatedBy: editor,
+      });
+
+      // Now save QC Points
       const res = await API.post("/qcpoints", payload);
       const updated = res.data;
 
@@ -84,14 +107,15 @@ const QCPoints = () => {
 
       setUsers(updatedUsers);
       message.success({
-        content: "QC Point Saved!",
+        content: "QC Point & Attendance Saved!",
         key: "qc_save",
         duration: 2,
       });
     } catch (err) {
-      message.error("Failed to update QC point");
+      message.error("Failed to update QC point or attendance");
     }
   };
+
   const fetchUsersAndPoints = async (date) => {
     try {
       setLoading(true);
@@ -101,6 +125,37 @@ const QCPoints = () => {
       message.error("Failed to fetch QC points");
     } finally {
       setLoading(false);
+    }
+  };
+  const fetchUserAttendance = async (userId) => {
+    try {
+      setAttendanceLoading(true);
+      const res = await API.get(
+        `/attendance/today/${userId}?date=${selectedDate.format("YYYY-MM-DD")}`
+      );
+      const data = res.data.today;
+
+      setAttendanceStatus(data?.status || null);
+      setAttendanceCheckInTime(
+        data?.checkInTime ? moment(data.checkInTime).format("hh:mm A") : null
+      );
+      setCheckOutTime(
+        data?.checkOutTime ? moment(data.checkOutTime).format("hh:mm A") : null
+      );
+      // ✅ Add this block to update form field and dropdown default value
+      if (data?.status) {
+        setFieldValues((prev) => ({
+          ...prev,
+          attendanceStatus: data.status,
+        }));
+        form.setFieldValue("attendanceStatus", data.status);
+      }
+    } catch (err) {
+      console.error("No attendance marked today yet.");
+      setAttendanceStatus(null); // No attendance exists yet
+      setAttendanceCheckInTime(null);
+    } finally {
+      setAttendanceLoading(false);
     }
   };
 
@@ -357,6 +412,33 @@ const QCPoints = () => {
               <option value="Leave">Leave</option>
             </select>
           </Form.Item>
+          {attendanceLoading ? (
+            <div>Loading attendance info...</div>
+          ) : (
+            <div className="attendance-info">
+              <h4>Today's Attendance Status:</h4>
+              {attendanceStatus !== null ? (
+                <>
+                  <p>
+                    Status: <strong>{attendanceStatus}</strong>
+                  </p>
+                  <p>
+                    Check-In Time:{" "}
+                    <strong>{attendanceCheckInTime || "Not available"}</strong>
+                  </p>
+                  <p>
+                    Check-Out Time:{" "}
+                    <strong>{checkOutTime || "Not available"}</strong>
+                  </p>
+                </>
+              ) : (
+                <p style={{ color: "red" }}>
+                  Today Still that Agent has no Marked Attendance. <br />
+                  Do you want to insert the status manually below?
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Custom Footer Buttons */}
           <div className="modal-button-group">

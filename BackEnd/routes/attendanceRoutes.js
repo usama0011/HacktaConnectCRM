@@ -1,9 +1,9 @@
 import express from "express";
 import {
+  getTodayAttendance,
   markAttendance,
-  getAttendanceByUser,
+  markCheckoutTime,
   updateAttendanceStatus,
-  getAllAgentsAttendance,
 } from "../controllers/attendanceController.js";
 
 const router = express.Router();
@@ -11,9 +11,7 @@ const router = express.Router();
 // **Mark Attendance (Check-in & Check-out)**
 router.post("/mark", markAttendance);
 router.put("/updatestatus", updateAttendanceStatus);
-
-// **Get Attendance for a User**
-router.get("/:userId", getAttendanceByUser);
-router.get("/all-agents", getAllAgentsAttendance);
+router.get("/today/:userId", getTodayAttendance);
+router.put("/checkout", markCheckoutTime);
 
 export default router;

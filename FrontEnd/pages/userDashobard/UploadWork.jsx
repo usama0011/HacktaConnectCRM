@@ -19,7 +19,7 @@ import {
   CheckCircleOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
-import axios from "axios";
+import API from "../../utils/BaseURL";
 import moment from "moment";
 import "../../styles/UploadWork.css";
 import ProjectInfoCard from "../../components/ProjectInfoCard";
@@ -150,14 +150,19 @@ const UploadWork = () => {
         clicks: Number(values.clicks),
         sessions: Number(values.sessions),
         status: "Pending",
-        avatar: user?.userImage || "", // ✅ New line to submit avatar
+        avatar: user?.userImage || "",
       };
 
-      const res = await axios.post(
-        "http://localhost:5000/api/ip/submit",
-        payload
-      );
-      message.success("Work submitted successfully!");
+      // ✅ Submit IP work data
+      await API.post("/ip/submit", payload);
+
+      // ✅ Mark attendance checkout time
+      await API.put("/attendance/checkout", {
+        userId: user._id,
+        date: moment().format("YYYY-MM-DD"),
+      });
+
+      message.success("Work & checkout recorded successfully!");
       form.resetFields();
       form.setFieldsValue({ date: moment() });
     } catch (err) {
@@ -167,6 +172,7 @@ const UploadWork = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (user?.username) {
       form.setFieldsValue({

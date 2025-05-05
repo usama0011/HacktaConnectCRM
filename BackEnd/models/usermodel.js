@@ -25,12 +25,36 @@ const userSchema = new mongoose.Schema(
     joiningDate: { type: Date },
     cnic: { type: String },
     userImage: { type: String },
-    editHistory: [editHistorySchema], // 🆕 Added Edit History
+    shiftStartTime: { type: String }, // 🆕 Added
+    shiftEndTime: { type: String }, // 🆕 Added
+    editHistory: [editHistorySchema],
   },
   {
     timestamps: true,
   }
 );
+
+// 🧠 Pre-save hook to set shift times
+userSchema.pre("save", function (next) {
+  switch (this.shift?.toLowerCase()) {
+    case "morning":
+      this.shiftStartTime = "08:00 AM";
+      this.shiftEndTime = "04:00 PM";
+      break;
+    case "evening":
+      this.shiftStartTime = "04:00 PM";
+      this.shiftEndTime = "12:00 AM";
+      break;
+    case "night":
+      this.shiftStartTime = "12:00 AM";
+      this.shiftEndTime = "08:00 AM";
+      break;
+    default:
+      this.shiftStartTime = null;
+      this.shiftEndTime = null;
+  }
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 export default User;

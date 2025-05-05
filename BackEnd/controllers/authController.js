@@ -242,7 +242,7 @@ export const deleteUser = async (req, res) => {
 // 👇 NEW ROUTE to check if a Super Admin exists
 export const CheckSuperAdiminUser = async (req, res) => {
   try {
-    const existingSuperAdmin = await User.findOne({ role: "superadmin" });
+    const existingSuperAdmin = await User.findOne({ role: "Super Admin" });
 
     if (existingSuperAdmin) {
       return res.status(200).json({ exists: true });

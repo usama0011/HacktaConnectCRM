@@ -1,70 +1,23 @@
-.proxy-dashboard-container {
-  padding: 24px;
-  background-color: #f5f5f5;
-  min-height: 100vh;
-}
-
-/* Ribbon Styles */
-.CRM-leaderboard-ribbon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px auto 32px auto;
-  position: relative;
-}
-
-.CRM-ribbon-center {
-  background: linear-gradient(to bottom, #003c2f, #02543d);
-  color: white;
-  padding: 12px 40px;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 20px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-  font-family: "Fredoka", "Comic Sans MS", sans-serif;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  z-index: 2;
-}
-
-.CRM-ribbon-left,
-.CRM-ribbon-right {
-  width: 0;
-  height: 0;
-  border-top: 30px solid transparent;
-  border-bottom: 30px solid transparent;
-  position: relative;
-  z-index: 1;
-}
-
-.CRM-ribbon-left {
-  border-right: 30px solid #003c2f;
-  margin-right: -15px;
-}
-
-.CRM-ribbon-right {
-  border-left: 30px solid #003c2f;
-  margin-left: -15px;
-}
-
 /* Card Styles */
 .CRM-overview-card {
-  border-radius: 16px;
+  border-radius: 14px;
   background: #ffffff;
   overflow: hidden;
   padding: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  min-height: 320px;
 }
 
 /* Big Cover Image */
 .proxy-card-cover img {
   width: 100%;
-  height: 180px;
+  height: 120px;
   object-fit: cover;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
 }
 
 /* Inside Card Content */
@@ -72,50 +25,46 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-}
-
-.proxy-card-text {
-  flex: 1;
+  padding: 12px 16px;
 }
 
 .proxy-card-title {
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #003c2f;
 }
 
 .proxy-card-value {
-  margin: 8px 0 4px 0;
-  font-size: 24px;
+  margin: 6px 0 2px 0;
+  font-size: 20px;
   font-weight: 700;
   color: #003c2f;
 }
 
 .proxy-card-subtext {
   color: gray;
-  font-size: 13px;
-  margin-top: 4px;
+  font-size: 12px;
+  margin-top: 2px;
 }
 
-/* Small logo avatar */
+/* Avatar */
 .proxy-avatar {
-  width: 50px !important;
-  height: 50px !important;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #eee;
+  border: 1px solid #eee;
 }
 
-/* Full Report Button */
+/* Button */
 .proxy-view-btn {
-  margin: 16px 20px 20px 20px;
+  margin: 12px 16px 16px 16px;
   background: #003c2f;
-  height: 45px;
+  height: 38px;
   border: none;
-  border-radius: 10px;
-  width: calc(100% - 40px);
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -127,9 +76,9 @@
 /* Responsive */
 @media (max-width: 768px) {
   .proxy-card-value {
-    font-size: 22px;
+    font-size: 18px;
   }
   .proxy-card-title {
-    font-size: 15px;
+    font-size: 14px;
   }
 }

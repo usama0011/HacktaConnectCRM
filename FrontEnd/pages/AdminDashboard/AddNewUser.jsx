@@ -48,7 +48,7 @@ const AddNewUser = () => {
       formData.append("image", imageFile);
 
       const uploadRes = await axios.post(
-        "https://hackta-connect-crm-client.vercel.app/api/upload",
+        "http://localhost:5000/api/upload",
         formData
       );
       const imageUrl = uploadRes.data.url;
@@ -208,7 +208,9 @@ const AddNewUser = () => {
                 <Select
                   onChange={(value) => {
                     setSelectedRole(value);
-                    if (["superadmin", "hr", "floormanager"].includes(value)) {
+                    if (
+                      ["Super Admin", "HR", "Floor Manager"].includes(value)
+                    ) {
                       form.setFieldsValue({ shift: "All Shifts" });
                     } else {
                       form.setFieldsValue({ shift: undefined });
@@ -218,17 +220,17 @@ const AddNewUser = () => {
                 >
                   {/* Only show Super Admin if not already registered */}
                   {!superAdminExists && (
-                    <Option value="superadmin">Super Admin</Option>
+                    <Option value="Super Admin">Super Admin</Option>
                   )}
 
-                  <Option value="hr">HR</Option>
-                  <Option value="floormanager">Floor Manager</Option>
-                  <Option value="assistancefloormanager">
+                  <Option value="HR">HR</Option>
+                  <Option value="Floor Manager">Floor Manager</Option>
+                  <Option value="Assistant Floor Manager">
                     Assistant Floor Manager
                   </Option>
-                  <Option value="teamlead">Team Lead</Option>
-                  <Option value="teamleadwfh">Team Lead (WFH)</Option>
-                  <Option value="qualitycontrol">Quality Control (QC)</Option>
+                  <Option value="Team Lead">Team Lead</Option>
+                  <Option value="Team Lead WFH">Team Lead (WFH)</Option>
+                  <Option value="QC">Quality Control (QC)</Option>
                   <Option value="agent">Agent</Option>
                 </Select>
               </Form.Item>
@@ -240,16 +242,16 @@ const AddNewUser = () => {
                 rules={[{ required: true }]}
               >
                 <Select placeholder="Select shift">
-                  {(selectedRole === "superadmin" ||
-                    selectedRole === "hr" ||
-                    selectedRole === "floormanager") && (
+                  {(selectedRole === "Super Admin" ||
+                    selectedRole === "HR" ||
+                    selectedRole === "Floor Manager") && (
                     <Option value="allshifts">All Shifts</Option>
                   )}
                   <Option value="morning">Morning</Option>
                   <Option value="evening">Evening</Option>
                   <Option value="night">Night</Option>
                   {/* Extra shifts only for Assistant Floor Manager */}
-                  {selectedRole === "assistancefloormanager" && (
+                  {selectedRole === "Assistant Floor Manager" && (
                     <>
                       <Option value="morning-evening">Morning & Evening</Option>
                       <Option value="evening-night">Evening & Night</Option>
@@ -269,7 +271,7 @@ const AddNewUser = () => {
               >
                 <Select placeholder="Select Branch">
                   {/* ✅ Show only when role is superadmin */}
-                  {selectedRole === "superadmin" && (
+                  {selectedRole === "Super Admin" && (
                     <Option value="All Branches">All Branches</Option>
                   )}
 

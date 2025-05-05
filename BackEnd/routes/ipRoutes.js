@@ -7,6 +7,7 @@ import {
   getMonthlyIPCounts,
   getDailyAgentIPsWithHistory,
   updateAgentIPWithHistory,
+  getAgentsMonthlyIPs,
 } from "../controllers/ipController.js";
 import {
   authMiddleware,
@@ -15,16 +16,13 @@ import {
 
 const router = express.Router();
 
-// Submit Daily Clicks & Sessions
 router.post("/submit", submitIPData);
-router.get("/", getAllIPData);
-
-// Get User's IP Submission Data
-router.get("/:userId", getUserIPData);
+router.get("/daily-reports", getDailyAgentIPsWithHistory);
+router.get("/myagentsagents/monthly", getAgentsMonthlyIPs); // 🥇 move this UP
 router.get("/getcardssummery/:userId", getDashboardSessionsClicksNew);
 router.get("/monthlyips/:userId", getMonthlyIPCounts);
-
-router.get("/daily-reports", getDailyAgentIPsWithHistory);
+router.get("/:userId", getUserIPData); // 🥲 generic param last!
+router.get("/", getAllIPData);
 
 router.put("/update-ip/:id", updateAgentIPWithHistory);
 

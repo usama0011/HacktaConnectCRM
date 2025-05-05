@@ -175,7 +175,7 @@ const SingleUserAttendance = () => {
         />
       </div>
       <br />
-      <div className="attendance-summary-row-flex">
+      {/* <div className="attendance-summary-row-flex">
         {cards.map((card, idx) => (
           <Card className="summary-card-flex" key={idx}>
             <div className="summary-card-content">
@@ -194,7 +194,7 @@ const SingleUserAttendance = () => {
             </div>
           </Card>
         ))}
-      </div>
+      </div> */}
 
       <Card className="attendance-table-card">
         <Title level={4} style={{ marginBottom: 20 }}>

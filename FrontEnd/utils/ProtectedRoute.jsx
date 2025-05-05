@@ -14,10 +14,10 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   if (!allowedRoles.includes(user.role)) {
     // If user role is not allowed, navigate based on role
     const adminRoles = [
-      "superadmin",
-      "hr",
-      "floormanager",
-      "assistancefloormanager",
+      "Super Admin",
+      "HR",
+      "Floor Manager",
+      "Assistant Floor Manager",
     ];
     if (adminRoles.includes(user.role)) {
       return <Navigate to="/admin/dashboard" replace />;

@@ -173,3 +173,13 @@
   width: 48%;
   height: 40px;
 }
+.attendance-info {
+  margin-top: 20px;
+  padding: 12px;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+.attendance-info p {
+  margin: 0;
+  font-size: 14px;
+}

@@ -1,0 +1,37 @@
+.singleuserip-container {
+  padding: 24px;
+}
+
+.singleuserip-header-card {
+  background: white;
+  color: black;
+  margin-bottom: 20px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-name {
+  color: black;
+  text-transform: capitalize;
+  margin: 0;
+}
+
+.month-display {
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+.singleuserip-chart-card {
+  margin-bottom: 20px;
+}
+
+.singleuserip-table-card {
+  margin-bottom: 20px;
+}

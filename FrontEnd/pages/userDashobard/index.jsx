@@ -39,39 +39,6 @@ const UserDashboard = () => {
 
   const { user } = useUserContext();
   console.log(user._id);
-  // Mock 30-day data (replace with real backend data)
-  const ipData = [
-    { date: "Mar 21", totalIPs: 104 },
-    { date: "Mar 22", totalIPs: 58 },
-    { date: "Mar 23", totalIPs: 75 },
-    { date: "Mar 24", totalIPs: 190 },
-    { date: "Mar 25", totalIPs: 156 },
-    { date: "Mar 26", totalIPs: 122 },
-    { date: "Mar 27", totalIPs: 138 },
-    { date: "Mar 28", totalIPs: 144 },
-    { date: "Mar 29", totalIPs: 91 },
-    { date: "Mar 30", totalIPs: 69 },
-    { date: "Mar 31", totalIPs: 132 },
-    { date: "Apr 01", totalIPs: 149 },
-    { date: "Apr 02", totalIPs: 174 },
-    { date: "Apr 03", totalIPs: 88 },
-    { date: "Apr 04", totalIPs: 99 },
-    { date: "Apr 05", totalIPs: 180 },
-    { date: "Apr 06", totalIPs: 63 },
-    { date: "Apr 07", totalIPs: 133 },
-    { date: "Apr 08", totalIPs: 151 },
-    { date: "Apr 09", totalIPs: 139 },
-    { date: "Apr 10", totalIPs: 171 },
-    { date: "Apr 11", totalIPs: 65 },
-    { date: "Apr 12", totalIPs: 70 },
-    { date: "Apr 13", totalIPs: 195 },
-    { date: "Apr 14", totalIPs: 127 },
-    { date: "Apr 15", totalIPs: 91 },
-    { date: "Apr 16", totalIPs: 130 },
-    { date: "Apr 17", totalIPs: 83 },
-    { date: "Apr 18", totalIPs: 93 },
-    { date: "Apr 19", totalIPs: 189 },
-  ];
 
   const ipConfig = {
     data: monthlyIPs.map((item) => ({

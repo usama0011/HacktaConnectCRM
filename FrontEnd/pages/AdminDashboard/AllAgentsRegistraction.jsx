@@ -448,15 +448,15 @@ const AllAgentsRegistraction = () => {
             <Col xs={24} md={8}>
               <Form.Item name="role" label="Role" rules={[{ required: true }]}>
                 <Select onChange={(value) => setSelectedRole(value)}>
-                  <Option value="superadmin">Super Admin</Option>
-                  <Option value="hr">HR</Option>
-                  <Option value="floormanager">Floor Manager</Option>
-                  <Option value="assistancefloormanager">
+                  <Option value="Super Admin">Super Admin</Option>
+                  <Option value="HR">HR</Option>
+                  <Option value="Floor Manager">Floor Manager</Option>
+                  <Option value="Assistant Floor Manager">
                     Assistant Floor Manager
                   </Option>
-                  <Option value="teamlead">Team Lead</Option>
-                  <Option value="teamleadwfh">Team Lead (WFH)</Option>
-                  <Option value="qualitycontrol">Quality Control (QC)</Option>
+                  <Option value="Team Lead">Team Lead</Option>
+                  <Option value="Team Lead WFH">Team Lead (WFH)</Option>
+                  <Option value="QC">Quality Control (QC)</Option>
                   <Option value="agent">Agent</Option>
                 </Select>
               </Form.Item>
@@ -468,13 +468,13 @@ const AllAgentsRegistraction = () => {
                 rules={[{ required: true }]}
               >
                 <Select>
-                  {["superadmin", "hr", "floormanager"].includes(
+                  {["Super Admin", "HR", "Floor Manager"].includes(
                     selectedRole
                   ) && <Option value="allshifts">All Shifts</Option>}
                   <Option value="morning">Morning</Option>
                   <Option value="evening">Evening</Option>
                   <Option value="night">Night</Option>
-                  {selectedRole === "assistancefloormanager" && (
+                  {selectedRole === "Assistant Floor Manager" && (
                     <>
                       <Option value="morning-evening">Morning & Evening</Option>
                       <Option value="evening-night">Evening & Night</Option>
@@ -553,7 +553,7 @@ const AllAgentsRegistraction = () => {
                 rules={[{ required: true }]}
               >
                 <Select placeholder="Select Branch">
-                  {selectedRole === "superadmin" && (
+                  {selectedRole === "Super Admin" && (
                     <Option value="All Branches">All Branches</Option>
                   )}
                   <Option value="Branch A">Branch A</Option>

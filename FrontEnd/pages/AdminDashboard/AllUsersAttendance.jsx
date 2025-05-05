@@ -1,113 +1,101 @@
-import React, { useState, useEffect } from "react";
-import { Table, Typography, Avatar, DatePicker, Tag } from "antd";
-import { UserOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import { Table, Typography, Avatar, DatePicker, Tag, Button } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 import moment from "moment";
 import "../../styles/Attendance.css";
 import { useNavigate } from "react-router-dom";
-import API from "../../utils/BaseURL";
 
 const { Title, Text } = Typography;
 
 const AllUsersAttendance = () => {
-  const [selectedDate, setSelectedDate] = useState(moment());
-  const [users, setUsers] = useState([]);
-
+  const [selectedMonth, setSelectedMonth] = useState(moment());
   const navigate = useNavigate();
 
   const columns = [
     {
       title: "User",
-      dataIndex: "name",
-      key: "name",
-      render: (text, record) => (
-        <div
-          className="user-info clickable"
-          onClick={() =>
-            navigate(`/admin/dashboard/attendance/user/${record.name}`)
-          }
-        >
-          <Avatar src={record.avatar} icon={<UserOutlined />} />
-          <Text className="user-name">{text}</Text>
+      dataIndex: "user",
+      key: "user",
+      render: (user) => (
+        <div className="user-info">
+          <Avatar src={user.avatar} icon={<UserOutlined />} />
+          <Text className="user-name">{user.name}</Text>
         </div>
       ),
     },
     {
-      title: "Check-in Time",
-      key: "checkIn",
-      render: (record) => (
-        <span className="check-in-time">
-          <ClockCircleOutlined /> {record.attendance.today.checkIn || "—"}
-        </span>
-      ),
-    },
-    {
-      title: "Today’s Status",
-      key: "status",
-      render: (record) => {
-        const status = record.attendance.today.status;
+      title: "Today's Status",
+      dataIndex: "todayStatus",
+      key: "todayStatus",
+      render: (status) => {
         let color = "default";
         if (status === "Present") color = "green";
-        if (status === "Late") color = "orange";
-        if (status === "Absent") color = "red";
+        else if (status === "Late") color = "orange";
+        else if (status === "Absent") color = "red";
+        else if (status === "RotationOff") color = "blue";
+        else if (status === "Leave") color = "purple";
 
-        return <Tag color={color}>{status}</Tag>;
+        return <Tag color={color}>{status || "Pending"}</Tag>;
       },
     },
     {
       title: "Month Summary",
-      key: "summary",
-      render: (record) => {
-        const { present, absent, late } = record.attendance.month;
-        return (
-          <div className="month-summary">
-            <Tag color="green">Present: {present}</Tag>
-            <Tag color="red">Absent: {absent}</Tag>
-            <Tag color="orange">Late: {late}</Tag>
-          </div>
-        );
-      },
+      dataIndex: "monthSummary",
+      key: "monthSummary",
+      render: (summary) => (
+        <div className="month-summary">
+          <Tag color="green">Present: {summary.present}</Tag>
+          <Tag color="red">Absent: {summary.absent}</Tag>
+          <Tag color="orange">Late: {summary.late}</Tag>
+          <Tag color="purple">Leave: {summary.leave}</Tag>
+          <Tag color="blue">Rotation Off: {summary.rotationOff}</Tag>
+        </div>
+      ),
     },
     {
-      title: "Total Days",
-      key: "total",
-      render: (record) => <strong>{record.attendance.month.total}</strong>,
+      title: "Actions",
+      key: "actions",
+      render: (record) => (
+        <Button
+          type="primary"
+          className="view-button"
+          onClick={() =>
+            navigate(`/admin/dashboard/attendance/user/${record.id}`)
+          }
+        >
+          View Report
+        </Button>
+      ),
     },
   ];
 
-  useEffect(() => {
-    const fetchAttendance = async () => {
-      try {
-        const res = await API.get("/attendance/all-agents"); // 🆕 Axios and updated endpoint
-        const data = res.data;
-
-        const formatted = data.map((item, index) => ({
-          id: index + 1,
-          name: item.username,
-          avatar: `https://i.pravatar.cc/50?u=${item.username}`,
-          attendance: {
-            today: {
-              checkIn: item.checkInTime
-                ? moment(item.checkInTime).format("hh:mm A")
-                : "",
-              status: item.status,
-            },
-            month: {
-              present: item.present || 0,
-              absent: item.absent || 0,
-              late: item.late || 0,
-              total: item.total || 30,
-            },
-          },
-        }));
-
-        setUsers(formatted);
-      } catch (error) {
-        console.error("Failed to fetch attendance", error);
-      }
-    };
-
-    fetchAttendance();
-  }, []);
+  // Temporary dummy data
+  const dummyData = [
+    {
+      id: "user1",
+      user: { name: "Usama", avatar: "https://i.pravatar.cc/50?u=usama" },
+      todayStatus: "Present",
+      monthSummary: {
+        present: 20,
+        absent: 5,
+        late: 2,
+        leave: 1,
+        rotationOff: 2,
+      },
+    },
+    {
+      id: "user2",
+      user: { name: "Ali", avatar: "https://i.pravatar.cc/50?u=ali" },
+      todayStatus: "Late",
+      monthSummary: {
+        present: 18,
+        absent: 7,
+        late: 3,
+        leave: 1,
+        rotationOff: 1,
+      },
+    },
+  ];
 
   return (
     <div className="attendance-container">
@@ -116,7 +104,13 @@ const AllUsersAttendance = () => {
       </Title>
 
       <div className="attendance-header">
-        <div></div> {/* empty div to push date to right side */}
+        <DatePicker
+          picker="month"
+          value={selectedMonth}
+          onChange={(value) => setSelectedMonth(value)}
+          format="MMMM YYYY"
+          allowClear={false}
+        />
         <div className="attendance-current-date">
           📅 {moment().format("dddd D MMMM YYYY")}
         </div>
@@ -124,7 +118,7 @@ const AllUsersAttendance = () => {
 
       <Table
         columns={columns}
-        dataSource={users}
+        dataSource={dummyData}
         rowKey="id"
         pagination={{ pageSize: 5 }}
         bordered

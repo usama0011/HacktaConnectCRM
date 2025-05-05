@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   Avatar,
@@ -8,6 +8,7 @@ import {
   Row,
   Col,
   Card,
+  message,
 } from "antd";
 import {
   UserOutlined,
@@ -18,58 +19,44 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import API from "../../utils/BaseURL"; // ✅ your Axios base URL setup
 import "../../styles/IPSubmission.css";
-import TrophyIcon from "../../src/assets/tt.png";
-const { Title, Text } = Typography;
+import TrophyIcon from "../../src/assets/tt.png"; // fix your import path
 
-// Dummy Data
-const dummyUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    avatar: "https://i.pravatar.cc/40?u=johndoe",
-    totalClicks: 120,
-    totalSessions: 90,
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    avatar: "https://i.pravatar.cc/40?u=janesmith",
-    totalClicks: 100,
-    totalSessions: 80,
-  },
-  {
-    id: 3,
-    name: "Emily Johnson",
-    avatar: "https://i.pravatar.cc/40?u=emily",
-    totalClicks: 90,
-    totalSessions: 75,
-  },
-  {
-    id: 4,
-    name: "Michael Brown",
-    avatar: "https://i.pravatar.cc/40?u=michael",
-    totalClicks: 140,
-    totalSessions: 95,
-  },
-  {
-    id: 5,
-    name: "New Brown",
-    avatar: "https://i.pravatar.cc/40?u=michael",
-    totalClicks: 220,
-    totalSessions: 125,
-  },
-];
-//Agent Reports ................
-//name, avatar , shift , clicks ,sessions, clicks + sessions ,
-//show calender above that fetcht the data based on date wise .
-//Search by Username.
+const { Title, Text } = Typography;
 
 const AllUsersIPReport = () => {
   const navigate = useNavigate();
   const [selectedMonth, setSelectedMonth] = useState(moment());
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Table Columns
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const year = selectedMonth.format("YYYY");
+      const month = selectedMonth.format("MM");
+
+      const res = await API.get(`/ip/myagentsagents/monthly`, {
+        params: { year, month },
+      });
+
+      if (res.data.success) {
+        setUsers(res.data.agents);
+      } else {
+        message.error("Failed to fetch agents data");
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Error fetching agents data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [selectedMonth]);
 
   const columns = [
     {
@@ -79,8 +66,8 @@ const AllUsersIPReport = () => {
           User
         </>
       ),
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "username",
+      key: "username",
       render: (text, record) => (
         <div className="user-info">
           <Avatar src={record.avatar} icon={<UserOutlined />} />
@@ -117,9 +104,9 @@ const AllUsersIPReport = () => {
           Total IPs
         </>
       ),
-      dataIndex: "totalSessions",
-      key: "totalSessions",
-      render: (sessions) => <Text>{sessions}</Text>,
+      dataIndex: "totalIPs",
+      key: "totalIPs",
+      render: (ips) => <Text>{ips}</Text>,
     },
     {
       title: (
@@ -141,9 +128,6 @@ const AllUsersIPReport = () => {
       ),
     },
   ];
-  const filteredUsers = dummyUsers.filter(
-    () => selectedMonth.format("YYYY-MM") === "2025-04"
-  );
 
   return (
     <div className="ipreport-container">
@@ -168,17 +152,12 @@ const AllUsersIPReport = () => {
       <Row gutter={[24, 24]} className="top-performers-row">
         <Col span={24}>
           <Title level={4} className="section-heading">
-            🏆 Top 5 Performing Agents
+            🏆 Top 3 Performing Agents
           </Title>
           <div className="top-performers-list">
-            {dummyUsers
-              .sort(
-                (a, b) =>
-                  b.totalClicks +
-                  b.totalSessions -
-                  (a.totalClicks + a.totalSessions)
-              )
-              .slice(0, 5)
+            {users
+              .sort((a, b) => b.totalIPs - a.totalIPs)
+              .slice(0, 3)
               .map((user, index) => (
                 <Card key={user.id} className="top-performer-card">
                   <div className="performer-content">
@@ -186,7 +165,7 @@ const AllUsersIPReport = () => {
                       <div className="rank-circle">{index + 1}</div>
                       <Avatar size={48} src={user.avatar} />
                       <div className="performer-details">
-                        <Text className="performer-name">{user.name}</Text>
+                        <Text className="performer-name">{user.username}</Text>
                         <Text type="secondary" className="performer-meta">
                           Clicks: {user.totalClicks} | Sessions:{" "}
                           {user.totalSessions}
@@ -207,10 +186,11 @@ const AllUsersIPReport = () => {
       <br />
       <Table
         columns={columns}
-        dataSource={dummyUsers}
+        dataSource={users}
         rowKey="id"
         pagination={{ pageSize: 5 }}
         bordered
+        loading={loading}
         className="user-table-ppwork"
       />
     </div>

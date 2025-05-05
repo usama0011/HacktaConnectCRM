@@ -24,39 +24,103 @@ const Login = () => {
 
       const { user, token } = res.data;
 
+      const shift = (user.shift || "").toLowerCase(); // Normalize to lowercase
+
+      const shiftTimes = {
+        morning: { start: 8 * 60, end: 16 * 60 }, // 08:00 - 16:00
+        evening: { start: 16 * 60, end: 24 * 60 }, // 16:00 - 00:00
+        night: { start: 0, end: 8 * 60 }, // 00:00 - 08:00
+      };
+
+      const shiftTimings = {
+        morning: "08:00 AM - 04:00 PM",
+        evening: "04:00 PM - 12:00 AM",
+        night: "12:00 AM - 08:00 AM",
+      };
+
+      const shiftConfig = shiftTimes[shift];
+      const adminRoles = [
+        "Super Admin",
+        "HR",
+        "Floor Manager",
+        "Assistant Floor Manager",
+      ];
+
+      const isAdmin = adminRoles.includes(user.role);
+
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMinutes = now.getMinutes();
+      const totalCurrentMinutes = currentHour * 60 + currentMinutes;
+
+      // ✅ For Non-Admins: Validate Shift
+      if (!isAdmin) {
+        if (!shiftConfig) {
+          setLoading(false);
+          return message.error("Your shift is not recognized. Contact admin.");
+        }
+
+        const { start, end } = shiftConfig;
+
+        const isInShift =
+          shift === "night"
+            ? totalCurrentMinutes >= 0 && totalCurrentMinutes < 480
+            : totalCurrentMinutes >= start && totalCurrentMinutes < end;
+
+        if (!isInShift) {
+          setLoading(false);
+          const readableTime = shiftTimings[shift] || "Unknown Timing";
+          return message.error(
+            `You can only login during your shift hours (${user.shift} Shift: ${readableTime}).`
+          );
+        }
+
+        // ✅ Mark attendance and check for lateness
+        const minutesLate = totalCurrentMinutes - start;
+        const markAttendancePayload = {
+          userId: user._id,
+          username: user.username,
+          ...(minutesLate > 40 ? { status: "Late" } : {}),
+        };
+
+        try {
+          await API.post("/attendance/mark", markAttendancePayload);
+        } catch (err) {
+          console.warn(
+            "Attendance marking skipped:",
+            err.response?.data?.message
+          );
+        }
+      } else {
+        // ✅ Admins get normal attendance marking
+        try {
+          await API.post("/attendance/mark", {
+            userId: user._id,
+            username: user.username,
+          });
+        } catch (err) {
+          console.warn(
+            "Admin attendance marking skipped:",
+            err.response?.data?.message
+          );
+        }
+      }
+
+      // ✅ Login Success
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
       login(user, token);
 
       message.success("Login successful!");
 
-      // ✅ Attempt to mark attendance
-      try {
-        await API.post("/attendance/mark", {
-          userId: user._id,
-          username: user.username,
-        });
-      } catch (err) {
-        console.warn(
-          "Attendance marking skipped:",
-          err.response?.data?.message
-        );
-      }
-
-      // ✅ Role-based navigation
-      const adminRoles = [
-        "superadmin",
-        "hr",
-        "floormanager",
-        "assistancefloormanager",
-      ];
-      if (adminRoles.includes(user.role)) {
+      if (isAdmin) {
         navigate("/admin/dashboard");
       } else {
         navigate("/user/dashboard");
       }
     } catch (error) {
       message.error(error?.response?.data?.message || "Login failed.");
+      console.log(error);
     } finally {
       setLoading(false);
     }
