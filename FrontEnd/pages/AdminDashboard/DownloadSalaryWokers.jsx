@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Card,
   Row,
@@ -12,9 +12,11 @@ import {
 } from "antd";
 import moment from "moment";
 import { DownloadOutlined } from "@ant-design/icons";
-import { saveAs } from "file-saver";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import API from "../../utils/BaseURL";
+import MainLogoBrand from '../../src/assets/mainlogo.png'
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { EnvironmentOutlined } from "@ant-design/icons";
 
 import "../../styles/DownloadSalaryWokers.css";
 const { Option } = Select;
@@ -69,185 +71,144 @@ const DownloadSalaryWokers = () => {
     }
   };
 
-  const handleDownload = async () => {
-    try {
-      const url = "/SalaryTemplate.pdf";
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Failed to fetch PDF template.");
-      const existingPdfBytes = await response.arrayBuffer();
-
-      const pdfDoc = await PDFDocument.load(existingPdfBytes);
-      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-      const existingPages = pdfDoc.getPages();
-      const hasTemplatePage = existingPages.length > 0;
-      const templatePage = hasTemplatePage
-        ? existingPages[0]
-        : pdfDoc.addPage();
-      const templateSize = templatePage.getSize();
-      const { width, height } = templateSize;
-
-      const [templateBackground] = await pdfDoc.embedPages([templatePage]);
-      if (hasTemplatePage) pdfDoc.removePage(0);
-
-      const itemsPerPage = 25;
-      const pagesRequired = Math.ceil(filteredData.length / itemsPerPage);
-      let totalSalary = 0;
-      const currentDate = new Date().toLocaleDateString("en-GB");
-
-      for (let i = 0; i < pagesRequired; i++) {
-        const page = pdfDoc.addPage([width, height]);
-        page.drawPage(templateBackground);
-
-        let cursorY = height - 100;
-
-        // ---------------- HEADER ----------------
-        if (i === 0) {
-          page.drawText("To,", { x: 50, y: cursorY, size: 12, font });
-          cursorY -= 18;
-          page.drawText("Manager", { x: 50, y: cursorY, size: 12, font });
-          cursorY -= 18;
-          page.drawText(`Bank Name: ${formValues.bankName}`, {
-            x: 50,
-            y: cursorY,
-            size: 12,
-            font,
-          });
-          page.drawText(`Date: ${currentDate}`, {
-            x: width - 150,
-            y: height - 60,
-            size: 12,
-            font,
-          });
-          cursorY -= 35;
-        }
-
-        // --------------- TABLE CONFIG ----------------
-        const headers = [
-          "Sr No",
-          "Bank",
-          "Account Title",
-          "Account No",
-          "Salary",
-        ];
-        const colWidths = [50, 100, 150, 180, 100];
-        const colX = [50, 100, 200, 350, 480];
-        const rowHeight = 22;
-        const tableTop = cursorY;
-        let y = tableTop;
-
-        // ------------ TITLE HEADER ROW (SPANNED) ------------
-        const fullTitle = `HACTA CONNECT PVT LTD Salary Sheet - ${
-          formValues.sheetName || "Unnamed"
-        }`;
-        page.drawText(fullTitle, {
-          x: colX[0] + 10,
-          y: y + 5,
-          size: 11,
-          font: boldFont,
-        });
-        y -= rowHeight;
-
-        // ------------ COLUMN HEADERS ------------
-        headers.forEach((text, idx) => {
-          page.drawText(text, {
-            x: colX[idx] + 5,
-            y: y + 5,
-            size: 10,
-            font: boldFont,
-          });
-        });
-        y -= rowHeight;
-
-        // ------------ DATA ROWS ------------
-        const dataSlice = filteredData.slice(
-          i * itemsPerPage,
-          (i + 1) * itemsPerPage
-        );
-        dataSlice.forEach((item) => {
-          const values = [
-            `${item.srNo}`,
-            item.bank,
-            item.accountTitle,
-            item.accountNumber,
-            `Rs ${item.salary}`,
-          ];
-          values.forEach((text, idx) => {
-            page.drawText(text, {
-              x: colX[idx] + 5,
-              y: y + 5,
-              size: 10,
-              font,
-            });
-          });
-          totalSalary += item.salary;
-          y -= rowHeight;
-        });
-
-        const isLastPage = i === pagesRequired - 1;
-
-        // ------------ TOTAL SALARY ROW ------------
-        if (isLastPage) {
-          const values = ["", "", "", "Total Salary:", `Rs ${totalSalary}`];
-          values.forEach((text, idx) => {
-            page.drawText(text, {
-              x: colX[idx] + 5,
-              y: y + 5,
-              size: 10,
-              font: boldFont,
-            });
-          });
-          y -= rowHeight;
-        }
-
-        // ------------ TABLE BORDERS (CLEAN) ------------
-        const totalRows = dataSlice.length + 2 + (isLastPage ? 1 : 0); // title + header + total
-        const totalCols = headers.length;
-
-        for (let r = 0; r <= totalRows; r++) {
-          const lineY = tableTop - r * rowHeight - 5;
-          page.drawLine({
-            start: { x: colX[0], y: lineY },
-            end: {
-              x: colX[totalCols - 1] + colWidths[totalCols - 1],
-              y: lineY,
-            },
-            thickness: 1.2,
-            color: rgb(0.2, 0.2, 0.2),
-          });
-        }
-
-        for (let c = 0; c <= totalCols; c++) {
-          const x = c === totalCols ? colX[c - 1] + colWidths[c - 1] : colX[c];
-          page.drawLine({
-            start: { x, y: tableTop + 15 },
-            end: { x, y: y + rowHeight + 5 },
-            thickness: 1.2,
-            color: rgb(0.2, 0.2, 0.2),
-          });
-        }
-
-        // ------------ CEO Signature (First Page) ------------
-        if (i === 0) {
-          page.drawText("CEO: Awais Ahmad", {
-            x: width - 200,
-            y: y - 40,
-            size: 12,
-            font: boldFont,
-          });
-        }
-      }
-
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: "application/pdf" });
-      saveAs(blob, `${formValues.sheetName || "SalarySheet"}.pdf`);
-    } catch (err) {
-      console.error("PDF Generation Failed:", err);
-      message.error("Could not generate the PDF. Please check the console.");
+  const handleDownload = () => {
+    if (filteredData.length === 0) {
+      message.warning("No data available to download.");
+      return;
     }
+  
+    const doc = new jsPDF();
+    const logo = "../../src/assets/mainlogo.png"; 
+    const footerImage = "../../src/assets/footerImage.png";
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const entriesPerPage = 25;
+    let currentPage = 1;
+    let startY = 70;
+    let totalSalary = 0;
+  
+    // Function to render the header on each page
+    const renderHeader = () => {
+      doc.addImage(logo, "PNG", 10, 5, 30, 30);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("CONNECT PVT. LTD", 45, 20);
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "normal");
+      doc.text("Digital World of Tech", 45, 28);
+      doc.text(`Date: ${new Date().toISOString().split("T")[0]}`, 160, 20);
+  
+      // "To" Section
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text("To:", 14, 50);
+      doc.text("The Manager", 14, 55);
+      doc.text(`${formValues.bankName || "Your Bank Name"} Bank`, 14, 60);
+    };
+  
+    // Function to render footer on each page
+    const renderFooter = () => {
+      const adjustedFooterY = pageHeight - 25;
+      doc.setFontSize(10);
+      doc.setTextColor(0, 180, 255);
+      doc.setFont("helvetica", "bold");
+      doc.text("HEAD OFFICE", 14, adjustedFooterY);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(0, 0, 0);
+      doc.text("Munir plaza, Lower Ground of silk bank", 14, adjustedFooterY + 5);
+      doc.text("Next to D-Watson Chandni Chowk, Rawalpindi.", 14, adjustedFooterY + 10);
+  
+      doc.setTextColor(0, 180, 255);
+      doc.setFont("helvetica", "bold");
+      doc.text("BRANCH OFFICE", pageWidth / 2 + 10, adjustedFooterY);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(0, 0, 0);
+      doc.text("Ground Floor Building No. 146, Block C,", pageWidth / 2 + 10, adjustedFooterY + 5);
+      doc.text("Main Civic Center, Phase-4, Bahria Town,", pageWidth / 2 + 10, adjustedFooterY + 10);
+      doc.text("Rawalpindi.", pageWidth / 2 + 10, adjustedFooterY + 15);
+      doc.addImage(footerImage, "PNG", 0, pageHeight - 10, pageWidth, 10);
+    };
+  
+    // Split data into pages
+    for (let i = 0; i < filteredData.length; i += entriesPerPage) {
+      if (currentPage > 1) {
+        doc.addPage();
+        startY = 50; // Adjusted for new page header
+        renderHeader();
+      } else {
+        renderHeader();
+      }
+  
+      const pageData = filteredData.slice(i, i + entriesPerPage);
+      const tableData = pageData.map((item, index) => {
+        totalSalary += item.salary;
+        return [
+          index + 1 + i,
+          item.bank,
+          item.branch || "N/A",
+          item.accountTitle,
+          item.accountNumber,
+          `Rs ${item.salary}`,
+        ];
+      });
+  
+      // If this is the last page, add the Total row
+      if (i + entriesPerPage >= filteredData.length) {
+        tableData.push([
+          { content: "Total", colSpan: 5, styles: { fontStyle: "bold", halign: "right" } },
+          { content: `Rs ${totalSalary}`, styles: { fontStyle: "bold", halign: "right" } }
+        ]);
+      }
+  
+      autoTable(doc, {
+        startY,
+        head: [
+          [
+            {
+              content: `HACKTA CONNECT Pvt Ltd. SALARY SHEET - ${formValues.sheetName || "Management March-2025"}`,
+              colSpan: 6,
+              styles: {
+                fontSize: 10,
+                fontStyle: "bold",
+                halign: "center",
+                textColor: [0, 0, 0],
+              },
+            },
+          ],
+          ["Sr No", "Bank", "Branch", "Account Title", "Account Number", "Salary"],
+        ],
+        body: tableData,
+        theme: "grid",
+        styles: {
+          fontSize: 9,
+          font: "helvetica",
+          textColor: [0, 0, 0],
+          lineColor: [0, 0, 0],
+          lineWidth: 0.2,
+          cellPadding: 2,
+          fillColor: null,
+          valign: "middle",
+          halign: "center",
+        },
+        margin: { bottom: 30 }, // Ensure footer doesn't overlap
+      });
+  
+      renderFooter();
+      currentPage++;
+    }
+  
+    // Save PDF file
+    const fileName = formValues.sheetName
+      ? `${formValues.sheetName}.pdf`
+      : "SalarySheet.pdf";
+    doc.save(fileName);
   };
-
+  
+  
+  
+  
+  
+  
   return (
     <div className="download-salary-container">
       <h1 className="download-salary-title">Download Salary Sheet - Workers</h1>
@@ -301,7 +262,9 @@ const DownloadSalaryWokers = () => {
             <label>Agent Type</label>
             <Select
               value={filters.agentType}
-              onChange={(value) => setFilters({ ...filters, agentType: value })}
+              onChange={(value) =>
+                setFilters({ ...filters, agentType: value })
+              }
               placeholder="Select Agent Type"
               allowClear
               style={{ width: "100%" }}
@@ -322,11 +285,7 @@ const DownloadSalaryWokers = () => {
         </Row>
 
         <div className="download-button-wrapper">
-          <Button
-            type="default"
-            onClick={handleSubmit}
-            style={{ marginRight: 10, color: "white" }}
-          >
+          <Button type="default" onClick={handleSubmit} style={{ marginRight: 10, color: "white" }}>
             Submit
           </Button>
           <Button
@@ -335,7 +294,7 @@ const DownloadSalaryWokers = () => {
             style={{ color: "white" }}
             icon={<DownloadOutlined />}
             onClick={handleDownload}
-            disabled={filteredData.length === 0} // 👈 disable if no data
+            disabled={filteredData.length === 0}
           >
             Download Report
           </Button>
@@ -343,11 +302,7 @@ const DownloadSalaryWokers = () => {
       </Card>
 
       <Card className="download-salary-table">
-        <Table
-          columns={columns}
-          dataSource={filteredData}
-          pagination={{ pageSize: 6 }}
-        />
+        <Table columns={columns} dataSource={filteredData} pagination={{ pageSize: 6 }} />
       </Card>
     </div>
   );

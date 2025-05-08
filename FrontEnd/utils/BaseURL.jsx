@@ -3,7 +3,7 @@
 import axios from "axios";
 //https://hackta-connect-crm-client.vercel.app/api
 //http://localhost:5000/api
-const baseURL = "http://localhost:5000/api";
+const baseURL = "https://hackta-connect-crm-client.vercel.app/api";
 
 const API = axios.create({
   baseURL,
