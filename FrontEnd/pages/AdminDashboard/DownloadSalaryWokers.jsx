@@ -13,11 +13,11 @@ import {
 import moment from "moment";
 import { DownloadOutlined } from "@ant-design/icons";
 import API from "../../utils/BaseURL";
-import MainLogoBrand from '../../src/assets/mainlogo.png'
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { EnvironmentOutlined } from "@ant-design/icons";
-
+import MainLogo from "../../src/assets/mainlogo.png";
+import FooterImage from "../../src/assets/footerImage.png";
 import "../../styles/DownloadSalaryWokers.css";
 const { Option } = Select;
 
@@ -78,8 +78,7 @@ const DownloadSalaryWokers = () => {
     }
   
     const doc = new jsPDF();
-    const logo = "../../src/assets/mainlogo.png"; 
-    const footerImage = "../../src/assets/footerImage.png";
+       
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const entriesPerPage = 25;
@@ -89,7 +88,7 @@ const DownloadSalaryWokers = () => {
   
     // Function to render the header on each page
     const renderHeader = () => {
-      doc.addImage(logo, "PNG", 10, 5, 30, 30);
+      doc.addImage(MainLogo, "PNG", 10, 5, 30, 30);
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.text("CONNECT PVT. LTD", 45, 20);
@@ -126,7 +125,7 @@ const DownloadSalaryWokers = () => {
       doc.text("Ground Floor Building No. 146, Block C,", pageWidth / 2 + 10, adjustedFooterY + 5);
       doc.text("Main Civic Center, Phase-4, Bahria Town,", pageWidth / 2 + 10, adjustedFooterY + 10);
       doc.text("Rawalpindi.", pageWidth / 2 + 10, adjustedFooterY + 15);
-      doc.addImage(footerImage, "PNG", 0, pageHeight - 10, pageWidth, 10);
+      doc.addImage(FooterImage, "PNG", 0, pageHeight - 10, pageWidth, 10);
     };
   
     // Split data into pages
