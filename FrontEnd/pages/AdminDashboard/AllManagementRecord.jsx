@@ -29,8 +29,6 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import "../../styles/ManagerUsers.css";
-import ProjectInfoCard from "../../components/ProjectInfoCard";
-import axios from "axios";
 import moment from "moment"; // Make sure this is imported at the top
 import { useNavigate } from "react-router-dom";
 import API from "../../utils/BaseURL";

@@ -83,3 +83,40 @@
   background-color: #005343;
   border-color: #005343;
 }
+
+/* Fixes the dropdown style of the month picker */
+.custom-month-picker-dropdown .ant-picker-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 10px;
+}
+
+.custom-month-picker-dropdown .ant-picker-cell {
+  width: auto !important;
+  text-align: center;
+}
+
+.custom-month-picker-dropdown .ant-picker-cell-inner {
+  font-size: 14px;
+  color: #003c2f;
+  font-weight: 500;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.custom-month-picker-dropdown .ant-picker-cell-inner:hover {
+  background-color: #e6f7ff;
+  color: #003c2f;
+}
+
+.custom-month-picker-dropdown .ant-picker-cell-selected .ant-picker-cell-inner {
+  background-color: #003c2f !important;
+  color: #ffffff !important;
+}
+
+.custom-month-picker-dropdown .ant-picker-cell-selected .ant-picker-cell-inner:hover {
+  background-color: #004d40 !important;
+  color: #ffffff !important;
+}

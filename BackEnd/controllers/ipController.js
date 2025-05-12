@@ -287,6 +287,7 @@ export const getMonthlyIPCounts = async (req, res) => {
   }
 };
 
+// ✅ Controller to Get Daily Agent IPs with History
 export const getDailyAgentIPsWithHistory = async (req, res) => {
   try {
     const { date } = req.query;
@@ -295,26 +296,56 @@ export const getDailyAgentIPsWithHistory = async (req, res) => {
     const startOfDay = moment(date).startOf("day").toDate();
     const endOfDay = moment(date).endOf("day").toDate();
 
+    // Build agent query
+    const agentQuery = { role: "agent" };
+
+    // Restrict Team Lead to view only their shift and agent type agents
+    if (req.user.role === "Team Lead") {
+      agentQuery.shift = req.user.shift;
+      if (req.user.agentType) {
+        agentQuery.agentType = req.user.agentType;
+      }
+    }
+
+    // Fetch Agents based on query
+    const agents = await User.find(agentQuery, "_id username userImage shift agentType");
+    if (!agents.length) {
+      return res.status(404).json({ message: "No agents found" });
+    }
+
+    const agentIds = agents.map((agent) => agent._id);
+
+    // Fetch IP records for the selected date and filtered agents
     const records = await IP.find({
+      userId: { $in: agentIds },
       date: { $gte: startOfDay, $lte: endOfDay },
     })
       .populate("userId", "userImage") // Populate avatar if user has image
       .sort({ createdAt: -1 });
 
-    const response = records.map((item) => ({
-      _id: item._id,
-      username: item.username,
-      avatar: item.avatar || item.userId?.userImage || "",
-      sessions: item.sessions,
-      clicks: item.clicks,
-      totalIPs: item.sessions + item.clicks,
-      history: item.history || [],
-    }));
+    // Prepare response data
+    const response = agents.map((agent) => {
+      const ipRecord = records.find(
+        (record) => record.userId && record.userId.toString() === agent._id.toString()
+      );
+
+      return {
+        _id: agent._id,
+        username: agent.username,
+        avatar: agent.userImage || "https://i.pravatar.cc/50?u=default",
+        shift: agent.shift,
+        agentType: agent.agentType || "N/A",
+        sessions: ipRecord ? ipRecord.sessions : 0,
+        clicks: ipRecord ? ipRecord.clicks : 0,
+        totalIPs: ipRecord ? ipRecord.sessions + ipRecord.clicks : 0,
+        history: ipRecord ? ipRecord.history || [] : [],
+      };
+    });
 
     res.status(200).json(response);
   } catch (error) {
     console.error("Error fetching daily agent IPs:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -352,6 +383,8 @@ export const updateAgentIPWithHistory = async (req, res) => {
   }
 };
 
+
+// ✅ Controller to Get Agents' Monthly IPs
 export const getAgentsMonthlyIPs = async (req, res) => {
   try {
     const { year, month } = req.query;
@@ -361,14 +394,22 @@ export const getAgentsMonthlyIPs = async (req, res) => {
         .json({ success: false, message: "Month and Year are required" });
     }
 
-    const startOfMonth = moment(`${year}-${month}-01`)
-      .startOf("month")
-      .toDate();
+    const startOfMonth = moment(`${year}-${month}-01`).startOf("month").toDate();
     const endOfMonth = moment(`${year}-${month}-01`).endOf("month").toDate();
 
-    // First find all Agents
-    const agents = await User.find({ role: "agent" });
+    // Build agent query
+    const agentQuery = { role: "agent" };
 
+    // Restrict Team Lead to view only their shift and agent type agents
+    if (req.user.role === "Team Lead") {
+      agentQuery.shift = req.user.shift;
+      if (req.user.agentType) {
+        agentQuery.agentType = req.user.agentType;
+      }
+    }
+
+    // Fetch Agents based on query
+    const agents = await User.find(agentQuery, "username userImage shift agentType");
     if (!agents.length) {
       return res
         .status(404)
@@ -406,7 +447,9 @@ export const getAgentsMonthlyIPs = async (req, res) => {
       return {
         id: agent._id,
         username: agent.username,
-        avatar: agent.userImage || "", // if available
+        avatar: agent.userImage || "https://i.pravatar.cc/50?u=default",
+        shift: agent.shift,
+        agentType: agent.agentType || "N/A",
         totalClicks: ipData.totalClicks,
         totalSessions: ipData.totalSessions,
         totalIPs: ipData.totalClicks + ipData.totalSessions,
@@ -421,3 +464,4 @@ export const getAgentsMonthlyIPs = async (req, res) => {
       .json({ success: false, message: "Server error", error: error.message });
   }
 };
+

@@ -3,26 +3,52 @@ import QCPoint from "../models/qcPointModel.js";
 import moment from "moment";
 import IP from "../models/ipmodel.js"; // ✅ Import IP model
 
+// ✅ Controller to Get QC Points by Date
 export const getQCPointsByDate = async (req, res) => {
   try {
-    const date = req.query.date; // ✅ Declare first
+    const date = req.query.date;
+    if (!date) {
+      return res.status(400).json({ message: "Date is required" });
+    }
 
     const start = moment(date).startOf("day").toDate();
     const end = moment(date).endOf("day").toDate();
-    const agents = await User.find({ role: "agent" });
-    const points = await QCPoint.find({ date: { $gte: start, $lte: end } });
 
+    // Build agent query
+    const agentQuery = { role: "agent" };
+
+    // Restrict Team Lead to view only their shift and agent type agents
+    if (req.user.role === "Team Lead") {
+      agentQuery.shift = req.user.shift;
+      if (req.user.agentType) {
+        agentQuery.agentType = req.user.agentType;
+      }
+    }
+
+    // Fetch Agents based on query
+    const agents = await User.find(agentQuery, "username userImage role shift agentType");
+    if (!agents.length) {
+      return res.status(404).json({ message: "No agents found" });
+    }
+
+    // Fetch QC Points for the selected date and agents
+    const agentIds = agents.map((agent) => agent._id);
+    const points = await QCPoint.find({
+      userId: { $in: agentIds },
+      date: { $gte: start, $lte: end },
+    });
+
+    // Merge Agents with their QC Points Data
     const merged = agents.map((agent) => {
-      const point = points.find(
-        (p) => p.userId.toString() === agent._id.toString()
-      );
+      const point = points.find((p) => p.userId.toString() === agent._id.toString());
 
       return {
         _id: agent._id,
         name: agent.username,
-        avatar: agent.userImage,
+        avatar: agent.userImage || "https://i.pravatar.cc/50?u=default",
         role: agent.role,
         shift: agent.shift,
+        agentType: agent.agentType || "N/A",
         ...(point
           ? {
               ...point._doc,
@@ -43,6 +69,7 @@ export const getQCPointsByDate = async (req, res) => {
 
     res.status(200).json(merged);
   } catch (error) {
+    console.error("Error fetching QC Points by Date:", error);
     res
       .status(500)
       .json({ message: "Failed to fetch points", error: error.message });
@@ -99,17 +126,44 @@ export const upsertQCPoint = async (req, res) => {
   }
 };
 
+// ✅ Controller to Get Monthly QC Points Summary
 export const getMonthlyQCPointsSummary = async (req, res) => {
   try {
     const { year, month } = req.query;
+    if (!year || !month) {
+      return res
+        .status(400)
+        .json({ message: "Year and Month are required" });
+    }
 
     const start = moment(`${year}-${month}-01`).startOf("month").toDate();
     const end = moment(`${year}-${month}-01`).endOf("month").toDate();
 
+    // Build user query for QC Points
+    const userQuery = { role: "agent" };
+
+    // Restrict Team Lead to view only their shift and agent type agents
+    if (req.user.role === "Team Lead") {
+      userQuery.shift = req.user.shift;
+      if (req.user.agentType) {
+        userQuery.agentType = req.user.agentType;
+      }
+    }
+
+    // Fetch Users based on the query
+    const agents = await User.find(userQuery, "username userImage shift agentType");
+    if (!agents.length) {
+      return res.status(404).json({ message: "No agents found" });
+    }
+
+    const agentNames = agents.map((agent) => agent.username);
+
+    // Fetch QC Points Summary for the selected month and users
     const summary = await QCPoint.aggregate([
       {
         $match: {
           date: { $gte: start, $lte: end },
+          name: { $in: agentNames }, // Only include agents in the filtered list
         },
       },
       {
@@ -140,6 +194,7 @@ export const getMonthlyQCPointsSummary = async (req, res) => {
       top5,
     });
   } catch (error) {
+    console.error("Error fetching monthly QC points:", error);
     res.status(500).json({
       message: "Failed to fetch monthly QC points",
       error: error.message,

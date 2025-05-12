@@ -4,12 +4,13 @@ import {
   getWFHSalaryFormula,
   updateWFHSalaryFormula,
 } from "../controllers/wfhSalaryFormulaController.js";
+import { adminSideAuthMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // Save or Update WFH Formula
-router.post("/", saveWFHSalaryFormula);
-router.put("/", updateWFHSalaryFormula);
+router.post("/",adminSideAuthMiddleware, saveWFHSalaryFormula);
+router.put("/", adminSideAuthMiddleware,updateWFHSalaryFormula);
 
 // Get WFH Formula
 router.get("/", getWFHSalaryFormula);

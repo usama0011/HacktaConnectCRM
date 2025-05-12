@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema(
     shiftStartTime: { type: String }, // 🆕 Added
     shiftEndTime: { type: String }, // 🆕 Added
     editHistory: [editHistorySchema],
+    bankaccountstatus:{type:Boolean,default:false}
   },
   {
     timestamps: true,

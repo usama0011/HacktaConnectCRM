@@ -1,17 +1,22 @@
 import express from "express";
 import {
   getTodayAttendance,
-  markAttendance,
-  markCheckoutTime,
+  getAllUsersAttendance,
+  markAttendanceForAgent,
+  agentCheckout,
   updateAttendanceStatus,
+  getSingleUserAttendance
 } from "../controllers/attendanceController.js";
+import { adminSideAuthMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // **Mark Attendance (Check-in & Check-out)**
-router.post("/mark", markAttendance);
-router.put("/updatestatus", updateAttendanceStatus);
 router.get("/today/:userId", getTodayAttendance);
-router.put("/checkout", markCheckoutTime);
+router.get("/all", adminSideAuthMiddleware, getAllUsersAttendance);
+router.post("/mark", markAttendanceForAgent); // ✅ New route for marking attendance
+router.put("/checkout", agentCheckout); // ✅ New route for agent checkout
+router.put("/update-status", updateAttendanceStatus); // ✅ New Route
+router.get("/user/:userId",adminSideAuthMiddleware, getSingleUserAttendance);
 
 export default router;

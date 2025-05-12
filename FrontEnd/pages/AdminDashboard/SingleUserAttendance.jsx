@@ -1,63 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Typography,
-  Card,
-  Row,
-  Col,
-  Table,
-  DatePicker,
-  Tag,
-  Space,
-} from "antd";
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  ClockCircleOutlined,
-  CalendarOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { Typography, Card, Row, Col, Table, DatePicker, Tag, message, Spin, Avatar } from "antd";
+import { CalendarOutlined, UserOutlined } from "@ant-design/icons";
 import moment from "moment";
-import "../../styles/SingleUserAttandance.css";
-import PresentIcon from "../../src/assets/present.png";
-import AbsentIcon from "../../src/assets/absent.png";
-import totalDaysIcon from "../../src/assets/totaldays.png";
-import LeaveIcon from "../../src/assets/leave.png";
-import LateIcon from "../../src/assets/late.png";
-import { Column } from "@ant-design/plots";
+import API from "../../utils/BaseURL";
 
 const { Title, Text } = Typography;
-
-const dummyAttendanceData = [
-  { date: "2025-04-01", status: "Present", checkIn: "09:03 AM" },
-  { date: "2025-04-02", status: "Late", checkIn: "09:45 AM" },
-  { date: "2025-04-03", status: "Absent", checkIn: "" },
-  { date: "2025-04-04", status: "Present", checkIn: "09:01 AM" },
-  { date: "2025-04-05", status: "Late", checkIn: "09:35 AM" },
-  { date: "2025-04-06", status: "Present", checkIn: "09:00 AM" },
-];
 
 const SingleUserAttendance = () => {
   const { username } = useParams();
   const [selectedMonth, setSelectedMonth] = useState(moment());
+  const [userData, setUserData] = useState(null);
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [stats, setStats] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const stats = {
-    present: dummyAttendanceData.filter((d) => d.status === "Present").length,
-    absent: dummyAttendanceData.filter((d) => d.status === "Absent").length,
-    late: dummyAttendanceData.filter((d) => d.status === "Late").length,
-    total: dummyAttendanceData.length,
-  };
+  useEffect(() => {
+    fetchUserAttendance(username, selectedMonth);
+  }, [username, selectedMonth]);
 
-  const statusColorMap = {
-    Present: "green",
-    Late: "orange",
-    Absent: "red",
-  };
-
-  const statusIconMap = {
-    Present: <CheckCircleOutlined />,
-    Late: <ClockCircleOutlined />,
-    Absent: <CloseCircleOutlined />,
+  const fetchUserAttendance = async (username, month) => {
+    try {
+      setLoading(true);
+      const res = await API.get(`/attendance/user/${username}`, {
+        params: { date: month.startOf("month").toISOString() },
+      });
+      setUserData(res.data.user);
+      setStats(res.data.stats);
+      setAttendanceData(res.data.attendanceData);
+    } catch (error) {
+      console.error("Failed to fetch user attendance:", error);
+      message.error("Failed to fetch user attendance.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const columns = [
@@ -65,183 +41,64 @@ const SingleUserAttendance = () => {
       title: "📅 Date",
       dataIndex: "date",
       key: "date",
-      render: (date) => (
-        <Text>
-          <CalendarOutlined style={{ marginRight: 6 }} />
-          {moment(date).format("dddd, MMM D, YYYY")}
-        </Text>
-      ),
+      render: (date) => <Text>{moment(date).format("YYYY-MM-DD")}</Text>,
     },
     {
       title: "🕒 Check-in Time",
-      dataIndex: "checkIn",
-      key: "checkIn",
-      render: (checkIn) =>
-        checkIn ? (
-          <Tag icon={<ClockCircleOutlined />} color="blue">
-            {checkIn}
-          </Tag>
-        ) : (
-          <Tag>—</Tag>
-        ),
+      dataIndex: "checkInTime",
+      key: "checkInTime",
     },
     {
-      title: "🕒 CheckOut Time",
-      dataIndex: "checkIn",
-      key: "checkIn",
-      render: (checkIn) =>
-        checkIn ? (
-          <Tag icon={<ClockCircleOutlined />} color="blue">
-            {checkIn}
-          </Tag>
-        ) : (
-          <Tag>—</Tag>
-        ),
+      title: "🕒 Check-out Time",
+      dataIndex: "checkOutTime",
+      key: "checkOutTime",
     },
     {
       title: "✅ Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => (
-        <Tag color={statusColorMap[status]} icon={statusIconMap[status]}>
-          {status}
-        </Tag>
-      ),
-    },
-  ];
-  const cards = [
-    {
-      label: "Present Days",
-      value: stats.present,
-      icon: <img src={PresentIcon} alt="" />,
-    },
-    {
-      label: "Absent Days",
-      value: stats.absent,
-      icon: <img src={AbsentIcon} alt="" />,
-    },
-    {
-      label: "Late Days",
-      value: stats.late,
-      icon: <img src={LateIcon} alt="" />,
-    },
+      render: (status) => {
+        let color = "default";
+        if (status === "Present") color = "green";
+        else if (status === "Late") color = "orange";
+        else if (status === "Absent") color = "red";
+        else if (status === "Leave") color = "purple";
+        else if (status === "RotationOff") color = "blue";
 
-    {
-      label: "Total Leaves",
-      value: stats.total,
-      icon: <img src={LeaveIcon} alt="" />,
+        return <Tag color={color}>{status}</Tag>;
+      },
     },
-    {
-      label: "Total Days",
-      value: stats.total,
-      icon: <img src={totalDaysIcon} alt="" />,
-    },
-  ];
-  const attendanceGraphData = [
-    { date: "Mar 01", hours: 6.71 },
-    { date: "Mar 02", hours: 7.45 },
-    { date: "Mar 03", hours: 5.04 },
-    { date: "Mar 04", hours: 5.62 },
-    { date: "Mar 05", hours: 7.44 },
-    { date: "Mar 06", hours: 0 },
-    { date: "Mar 07", hours: 8.21 },
-    { date: "Mar 08", hours: 7.31 },
-    { date: "Mar 09", hours: 6.9 },
-    { date: "Mar 10", hours: 0 },
-    { date: "Mar 11", hours: 8 },
-    { date: "Mar 12", hours: 7.8 },
-    { date: "Mar 13", hours: 6.5 },
-    { date: "Mar 14", hours: 7.25 },
-    { date: "Mar 15", hours: 0 },
   ];
 
   return (
     <div className="single-user-attendance-container">
       <div className="attendance-user-header">
-        <div>
-          <Title level={3}>
-            <UserOutlined /> {username}'s Attendance Overview
-          </Title>
-          <Text type="secondary">
-            A detailed breakdown of daily attendance and check-ins
-          </Text>
-        </div>
-        <br />
-        <DatePicker
-          picker="month"
-          value={selectedMonth}
-          onChange={setSelectedMonth}
-          className="attendance-month-picker"
-        />
+        <Avatar src={userData?.avatar} size={64} />
+        <Title level={3}>{userData?.name}'s Attendance Overview</Title>
+        <DatePicker picker="month" value={selectedMonth} onChange={setSelectedMonth} />
       </div>
-      <br />
-      {/* <div className="attendance-summary-row-flex">
-        {cards.map((card, idx) => (
-          <Card className="summary-card-flex" key={idx}>
-            <div className="summary-card-content">
-              <div
-                className="summary-icon"
-                style={{ backgroundColor: card.color }}
-              >
-                {card.icon}
-              </div>
-              <div>
-                <Text className="summary-label">{card.label}</Text>
-                <Title level={3} className="summary-value">
-                  {card.value}
-                </Title>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div> */}
 
-      <Card className="attendance-table-card">
-        <Title level={4} style={{ marginBottom: 20 }}>
-          📊 Daily Breakdown
-        </Title>
+      <Spin spinning={loading}>
+        <Row gutter={[16, 16]}>
+          {Object.keys(stats).map((key) => (
+            <Col xs={12} sm={8} md={4} key={key}>
+              <Card className="attendance-stat-card">
+                <Title level={4}>{key.charAt(0).toUpperCase() + key.slice(1)}</Title>
+                <Text>{stats[key]}</Text>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+
         <Table
           columns={columns}
-          dataSource={dummyAttendanceData}
+          dataSource={attendanceData}
           rowKey="date"
           pagination={{ pageSize: 10 }}
           className="user-attendance-table"
+          style={{ marginTop: 20 }}
         />
-      </Card>
-      <br />
-      <Card className="attendance-chart-card">
-        <div className="attendance-chart-header">
-          <span className="attendance-chart-title">
-            📊 Monthly Working Hours
-          </span>
-        </div>
-        <div style={{ height: 320 }}>
-          <Column
-            data={attendanceGraphData}
-            xField="date"
-            yField="hours"
-            columnWidthRatio={0.6}
-            xAxis={{
-              label: { rotate: -45, style: { fontSize: 10 } },
-            }}
-            yAxis={{
-              title: { text: "Hours Worked" },
-              min: 0,
-              max: 8,
-            }}
-            label={{
-              position: "middle",
-              style: {
-                fill: "#fff",
-                fontSize: 12,
-              },
-            }}
-            style={{
-              fill: "#003c2f",
-            }}
-          />
-        </div>
-      </Card>
+      </Spin>
     </div>
   );
 };

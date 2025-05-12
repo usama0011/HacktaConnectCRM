@@ -30,18 +30,19 @@ const AdminDashboard = () => {
         <OverViewMiniDetailCards />
         <div className="CRM-leaderboard-ribbon">
           <div className="CRM-ribbon-left" />
-          <div className="CRM-ribbon-center">Company Statistics</div>
+          <div className="CRM-ribbon-center" style={{textTransform:"uppercase"}}>Company Statistics</div>
           <div className="CRM-ribbon-right" />
         </div>
 
         <AdminRegisterProxyStats />
-        <br />
+        
         <div className="CRM-leaderboard-ribbon">
           <div className="CRM-ribbon-left" />
-          <div className="CRM-ribbon-center">Downlaod Statistics</div>
+          <div className="CRM-ribbon-center" style={{textTransform:"uppercase"}}>Downlaod Statistics</div>
           <div className="CRM-ribbon-right" />
         </div>
       </div>
+      <br />
       <AgentSalaryAggrigation />
       <Outlet />
     </Content>

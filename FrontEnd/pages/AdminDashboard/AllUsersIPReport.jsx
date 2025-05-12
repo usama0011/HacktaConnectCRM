@@ -188,7 +188,7 @@ const AllUsersIPReport = () => {
         columns={columns}
         dataSource={users}
         rowKey="id"
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize:50 }}
         bordered
         loading={loading}
         className="user-table-ppwork"

@@ -65,6 +65,9 @@
 .recharts-responsive-container {
   margin: 0 auto;
 }
+.donatgraphcharforme{
+  max-height: 420px !important;
+}
 
 /* ===================== Users Table ===================== */
 

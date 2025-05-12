@@ -15,7 +15,7 @@
 .record-card {
   background: #ffffff;
   border-radius: 16px;
-  padding: 24px;
+  padding: 10px;
   text-align: center;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;

@@ -4,14 +4,15 @@ import {
   saveSalaryFormula,
   updateSalaryFormula,
 } from "../controllers/salaryFormulaControllerOfficeAgents.js";
+import { adminSideAuthMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // Save or Update
-router.post("/", saveSalaryFormula);
+router.post("/",adminSideAuthMiddleware, saveSalaryFormula);
 
-router.put("/", updateSalaryFormula); // ✅ New Route
+router.put("/",adminSideAuthMiddleware, updateSalaryFormula); // ✅ New Route
 
-router.get("/", getSalaryFormula);
+router.get("/",adminSideAuthMiddleware, getSalaryFormula);
 
 export default router;

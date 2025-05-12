@@ -20,6 +20,7 @@ import {
 } from "@ant-design/icons";
 import MainWebSiteLogo from "../src/assets/mainlogo.jpeg";
 import "../styles/UserDashboard.css";
+import { useUserContext } from "../context/UserContext";
 
 const { Header, Sider, Content } = Layout;
 
@@ -27,6 +28,7 @@ const UserLayout = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); // ✅ Add this state
+  const { user } = useUserContext();
 
   const handleLogout = () => {
     localStorage.clear();
@@ -126,7 +128,7 @@ const UserLayout = () => {
       <Content className="user-dashboard-content">
         <Header className="custom-user-header">
           <div className="header-left">
-            <h2>Welcome Usama!</h2>
+            <h2>Welcome {user?.username}!</h2>
           </div>
 
           <div className="header-center">

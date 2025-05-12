@@ -164,7 +164,7 @@ const AllUsersQCPoints = () => {
         dataSource={users}
         loading={loading}
         rowKey="_id"
-        pagination={{ pageSize: 20 }}
+        pagination={{ pageSize: 50 }}
         bordered
         className="qupointsAddTable"
       />

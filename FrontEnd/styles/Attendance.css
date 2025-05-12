@@ -1,6 +1,5 @@
 .attendance-container {
   padding: 24px;
-  background-color: #f9fafb;
   min-height: 100vh;
 }
 
@@ -45,4 +44,50 @@
 
 .view-button:hover {
   background-color: #005640;
+}
+/* Custom Table Header Styles */
+.attendance-table .ant-table-thead > tr > th {
+  background-color: #003c2f !important;
+  color: white !important;
+  font-weight: 600;
+  font-size: 14px;
+}/* Attendance.css */
+
+.top-performers-container {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.top-performers-title {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.top-performer-card {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  transition: box-shadow 0.3s ease;
+}
+
+.top-performer-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.performer-avatar {
+  margin-bottom: 8px;
+}
+
+.performer-name {
+  font-size: 16px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.performer-stats {
+  font-size: 14px;
+  color: #4caf50;
 }

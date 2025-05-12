@@ -33,7 +33,7 @@ const { Title, Text } = Typography;
 const QCPoints = () => {
   const editor = localStorage.getItem("editorName") || "Abdul Moiz";
   const [loading, setLoading] = useState(false);
-
+  const [disableAttendanceStatus, setDisableAttendanceStatus] = useState(false);
   const [users, setUsers] = useState([]);
   const [attendanceStatus, setAttendanceStatus] = useState(null);
   const [attendanceCheckInTime, setAttendanceCheckInTime] = useState(null);
@@ -90,7 +90,7 @@ const QCPoints = () => {
       }
 
       // 🛠 Always update status (whether new or old)
-      await API.put("/attendance/updatestatus", {
+      await API.put("/attendance/update-status", {
         userId: editingUser._id,
         date: selectedDate.format("YYYY-MM-DD"),
         newStatus: fieldValues.attendanceStatus,
@@ -104,7 +104,10 @@ const QCPoints = () => {
       const updatedUsers = users.map((u) =>
         u._id === updated.userId ? { ...u, ...updated } : u
       );
-
+      // ✅ If the status is "Late", keep it disabled
+      if (fieldValues.attendanceStatus === "Late") {
+        setDisableAttendanceStatus(true);
+      }
       setUsers(updatedUsers);
       message.success({
         content: "QC Point & Attendance Saved!",
@@ -149,6 +152,12 @@ const QCPoints = () => {
           attendanceStatus: data.status,
         }));
         form.setFieldValue("attendanceStatus", data.status);
+        // ✅ Disable status dropdown if status is "Late"
+        if (data.status === "Late") {
+          setDisableAttendanceStatus(true);
+        } else {
+          setDisableAttendanceStatus(false);
+        }
       }
     } catch (err) {
       console.error("No attendance marked today yet.");
@@ -296,7 +305,7 @@ const QCPoints = () => {
         dataSource={users}
         loading={loading}
         rowKey="_id"
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 50 }}
         bordered
         className="qupointsAddTable"
       />
@@ -324,7 +333,7 @@ const QCPoints = () => {
           {[
             { key: "time", label: "Time" },
             { key: "profilePattern", label: "Profile Pattern" },
-            { key: "pacePerHour", label: "Pace Per Hour" },
+            { key: "pacePerHour", label: "Pace" },
             { key: "perHourReport", label: "Per Hour Report" },
             { key: "workingBehavior", label: "Working Behavior" },
           ].map((item, index) => (
@@ -402,7 +411,14 @@ const QCPoints = () => {
                 setFieldValues(updated);
                 form.setFieldValue("attendanceStatus", e.target.value);
               }}
-              style={{ width: "100%", padding: "8px", borderRadius: "4px" }}
+              style={{
+                width: "100%",
+                padding: "8px",
+                borderRadius: "4px",
+                cursor: disableAttendanceStatus ? "not-allowed" : "pointer",
+                backgroundColor: disableAttendanceStatus ? "#f5f5f5" : "white",
+              }}
+              disabled={disableAttendanceStatus} // ✅ Disabled if status is "Late"
             >
               <option value="pending">Pending</option>
               <option value="Present">Present</option>

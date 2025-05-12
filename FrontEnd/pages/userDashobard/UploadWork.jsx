@@ -22,11 +22,9 @@ import {
 import API from "../../utils/BaseURL";
 import moment from "moment";
 import "../../styles/UploadWork.css";
-import ProjectInfoCard from "../../components/ProjectInfoCard";
 import { useUserContext } from "../../context/UserContext";
 
 const { Title, Text } = Typography;
-//Add here to upload work then there noted at the checkout time okay
 const UploadWork = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -152,17 +150,20 @@ const UploadWork = () => {
         status: "Pending",
         avatar: user?.userImage || "",
       };
-
+  
       // ✅ Submit IP work data
       await API.post("/ip/submit", payload);
-
-      // ✅ Mark attendance checkout time
-      await API.put("/attendance/checkout", {
-        userId: user._id,
-        date: moment().format("YYYY-MM-DD"),
-      });
-
-      message.success("Work & checkout recorded successfully!");
+  
+      // ✅ Mark Checkout Time for Agent
+      if (user.role === "agent") {
+        await API.put("/attendance/checkout", {
+          userId: user._id,
+        });
+        message.success("Work recorded and checkout marked successfully!");
+      } else {
+        message.success("Work recorded successfully!");
+      }
+  
       form.resetFields();
       form.setFieldsValue({ date: moment() });
     } catch (err) {
@@ -172,6 +173,7 @@ const UploadWork = () => {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     if (user?.username) {

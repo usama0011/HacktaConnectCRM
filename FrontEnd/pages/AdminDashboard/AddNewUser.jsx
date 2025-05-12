@@ -11,6 +11,7 @@ import {
   Divider,
   DatePicker,
   Upload,
+  Checkbox,
 } from "antd";
 import {
   UserOutlined,
@@ -33,6 +34,7 @@ const AddNewUser = () => {
   const [loading, setLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [superAdminExists, setSuperAdminExists] = useState(false);
+  const [noBankAccount, setNoBankAccount] = useState(true);
 
   const handleSubmit = async (values) => {
     setLoading(true);
@@ -40,48 +42,65 @@ const AddNewUser = () => {
       const imageFile = values.userImage?.[0]?.originFileObj;
       if (!imageFile) {
         message.error("Please upload a user image");
+        setLoading(false);
         return;
       }
-
+  
       // Upload image to backend for S3
       const formData = new FormData();
       formData.append("image", imageFile);
-
+  
       const uploadRes = await axios.post(
         "https://hackta-connect-crm-client.vercel.app/api/upload",
         formData
       );
+  
       const imageUrl = uploadRes.data.url;
-      console.log("Submitted values:", {
-        ...values,
-        userImage: imageUrl,
-      });
-
-      await API.post("/auth/signup", {
+      if (!imageUrl) {
+        message.error("Image upload failed. Please try again.");
+        setLoading(false);
+        return;
+      }
+  
+      const userData = {
         username: values.username,
         password: values.password,
         role: values.role,
         shift: values.shift,
         agentType: values.agentType,
         agentName: values.agentName,
-        accountTitle: values.accountTitle,
-        bankName: values.bankName,
-        bankNumber: values.bankNumber,
         branch: values.branch,
         joiningDate: values.joiningDate,
         cnic: values.cnic,
         userImage: imageUrl,
         CreatedBy: "Abdul Moiz",
-      });
-
+        bankaccountstatus: noBankAccount,
+      };
+  
+      if (!noBankAccount) {
+        userData.accountTitle = values.accountTitle;
+        userData.bankName = values.bankName;
+        userData.bankNumber = values.bankNumber;
+      }
+  
+      await API.post("/auth/signup", userData);
+  
       message.success(`User "${values.username}" added successfully!`);
       form.resetFields();
+      setNoBankAccount(true);
     } catch (err) {
-      message.error(err?.response?.data?.message || "Something went wrong!");
+      if (err.response) {
+        message.error(`Error: ${err.response.data.message}`);
+      } else if (err.request) {
+        message.error("No response from server. Please check your connection.");
+      } else {
+        message.error("Something went wrong. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
+  
   useEffect(() => {
     const checkSuperAdmin = async () => {
       try {
@@ -315,42 +334,55 @@ const AddNewUser = () => {
               </Form.Item>
             </Col>
           </Row>
-
           <Divider orientation="left">
             <BankOutlined /> Banking Details
           </Divider>
-          <Row gutter={16}>
-            <Col xs={24} md={12}>
-              <Form.Item name="bankName" label="Bank Account Name">
-                <Input
-                  prefix={<BankOutlined />}
-                  placeholder="Enter bank account name"
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item name="bankNumber" label="Bank Account Number">
-                <Input
-                  prefix={<BankOutlined />}
-                  placeholder="Enter bank account number"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col xs={24} md={12}>
-              <Form.Item
-                name="accountTitle"
-                label="Account Title"
-                rules={[{ message: "Please enter account title" }]}
-              >
-                <Input
-                  prefix={<BankOutlined />}
-                  placeholder="Enter account title"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+
+          <Form.Item>
+            <Checkbox
+              checked={!noBankAccount} // ✅ Inverted logic (checked means showing details)
+              onChange={(e) => setNoBankAccount(!e.target.checked)} // ✅ Inverted logic
+            >
+              User has Bank Details
+            </Checkbox>
+          </Form.Item>
+
+          {!noBankAccount && (
+            <>
+              <Row gutter={16}>
+                <Col xs={24} md={12}>
+                  <Form.Item name="bankName" label="Bank Account Name">
+                    <Input
+                      prefix={<BankOutlined />}
+                      placeholder="Enter bank account name"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                  <Form.Item name="bankNumber" label="Bank Account Number">
+                    <Input
+                      prefix={<BankOutlined />}
+                      placeholder="Enter bank account number"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name="accountTitle"
+                    label="Account Title"
+                    rules={[{ message: "Please enter account title" }]}
+                  >
+                    <Input
+                      prefix={<BankOutlined />}
+                      placeholder="Enter account title"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </>
+          )}
 
           <Form.Item>
             <Button

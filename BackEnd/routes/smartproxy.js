@@ -1,5 +1,6 @@
 import express from "express";
 import axios from "axios";
+import { adminSideAuthMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ const DECODO_API_KEY =
   "13d48119ba2c29771cb0a8bbadd304e19952266099c9c29020bbb5296911e38bf36bbfaa7ee84eaf34d53a48ee653f921d06971a07befb824ea590ebe46cca624ee653e0a1231b591ee663d3e305";
 
 // GET subscription info
-router.get("/subscriptions", async (req, res) => {
+router.get("/subscriptions",adminSideAuthMiddleware,  async (req, res) => {
   try {
     const response = await axios.get(
       `${DECODO_API_URL}?api-key=${DECODO_API_KEY}`,
@@ -32,7 +33,7 @@ router.get("/subscriptions", async (req, res) => {
 });
 
 // Get All Whitelisted IPs
-router.get("/whitelisted-ips", async (req, res) => {
+router.get("/whitelisted-ips",adminSideAuthMiddleware, async (req, res) => {
   try {
     const response = await axios.get(
       `https://api.decodo.com/v2/whitelisted-ips?api-key=${DECODO_API_KEY}`,
@@ -48,7 +49,7 @@ router.get("/whitelisted-ips", async (req, res) => {
 });
 
 // Add New Whitelisted IP
-router.post("/whitelisted-ips", async (req, res) => {
+router.post("/whitelisted-ips",adminSideAuthMiddleware, async (req, res) => {
   try {
     const { ip, tag } = req.body;
     const response = await axios.post(
@@ -72,7 +73,7 @@ router.post("/whitelisted-ips", async (req, res) => {
 });
 
 // Delete Whitelisted IP by ID
-router.delete("/whitelisted-ips/:id", async (req, res) => {
+router.delete("/whitelisted-ips/:id",adminSideAuthMiddleware, async (req, res) => {
   try {
     const id = req.params.id;
     const response = await axios.delete(
@@ -89,7 +90,7 @@ router.delete("/whitelisted-ips/:id", async (req, res) => {
 });
 
 // Fetch Sub-Users
-router.get("/sub-users", async (req, res) => {
+router.get("/sub-users",adminSideAuthMiddleware, async (req, res) => {
   try {
     const response = await axios.get(
       `https://api.decodo.com/v2/sub-users?api-key=${DECODO_API_KEY}`,

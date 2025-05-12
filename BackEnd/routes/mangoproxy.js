@@ -1,5 +1,6 @@
 import express from "express";
 import axios from "axios";
+import { adminSideAuthMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -7,7 +8,7 @@ const MANGO_API_KEY =
   "mango_22c76ef87e5c7aa45ce31ab47d855d82b8b5bfc92f90b5a38696f47e605b949b";
 
 // GET Mango Proxy User Subscription Info
-router.get("/subscriptions", async (req, res) => {
+router.get("/subscriptions",adminSideAuthMiddleware, async (req, res) => {
   try {
     const response = await axios.get(
       "https://backend.mangoproxy.com/public-api/v1/user",

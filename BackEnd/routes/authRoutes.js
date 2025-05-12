@@ -10,12 +10,14 @@ import {
   CheckSuperAdiminUser,
   getAllAgents,
   getAllManagementUsers,
+  getAgentCountByShift, // ✅ New Controller
 } from "../controllers/authController.js";
+import { adminSideAuthMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // Signup (Register)
-router.post("/signup", registerUser);
+router.post("/signup",adminSideAuthMiddleware, registerUser);
 router.get("/users", getAllUsers);
 router.get("/user/:id", getSingleUser); // ✅ New Route
 
@@ -27,6 +29,8 @@ router.put("/edit/:id", editUser); // PUT /api/auth/edit/:id
 router.post("/logout", logoutUser);
 router.get("/check-superadmin", CheckSuperAdiminUser);
 router.delete("/delete/:id", deleteUser);
-router.get("/agents", getAllAgents);
-router.get("/management", getAllManagementUsers);
+router.get("/agents",adminSideAuthMiddleware, getAllAgents);
+router.get("/management", adminSideAuthMiddleware, getAllManagementUsers);
+// ✅ New Route: Get Agent Count by Shift
+router.get("/agents/shift-count", adminSideAuthMiddleware, getAgentCountByShift);
 export default router;

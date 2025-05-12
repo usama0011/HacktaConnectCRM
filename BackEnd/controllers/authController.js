@@ -40,6 +40,7 @@ export const registerUser = async (req, res) => {
     branch,
     joiningDate,
     cnic,
+    bankaccountstatus,
     CreatedBy,
     userImage,
   } = req.body;
@@ -62,10 +63,12 @@ export const registerUser = async (req, res) => {
       bankName,
       bankNumber,
       branch,
+      bankaccountstatus,
       joiningDate,
       cnic,
       userImage,
       CreatedBy,
+      
     });
 
     await newUser.save();
@@ -90,30 +93,16 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
 
     // Generate JWT Token
-    const token = jwt.sign({ id: user._id, role: user.role }, "usama226390", {
+    const token = jwt.sign({ id: user._id,
+      role: user.role,
+      username: user.username,
+      shift: user.shift || null,       // Only if user has a shift
+      branch: user.branch || null,     // Only if user has a branch
+      agentType: user.agentType || null  }, "usama226390@", {
       expiresIn: "1d",
     });
 
-    // Mark Attendance (One entry per day)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    let attendance = await Attendance.findOne({
-      userId: user._id,
-      date: today,
-    });
-
-    if (!attendance) {
-      attendance = new Attendance({
-        userId: user._id,
-        username: user.username,
-        status: "Present",
-        checkInTime: new Date(),
-      });
-      await attendance.save();
-    }
-
-    res.json({ message: "Login successful", token, user, attendance });
+    res.json({ message: "Login successful", token, user });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -175,6 +164,7 @@ export const editUser = async (req, res) => {
     branch,
     joiningDate,
     cnic,
+    bankaccountstatus,
     userImage,
     editorUsername, // 🆕 Add editor fields
     editorAvatar, // 🆕 Add editor fields
@@ -205,6 +195,7 @@ export const editUser = async (req, res) => {
     user.joiningDate = joiningDate || user.joiningDate;
     user.cnic = cnic || user.cnic;
     user.userImage = userImage || user.userImage;
+    user.bankaccountstatus = bankaccountstatus || user.bankaccountstatus;
 
     // ✨ Push Edit History (coming from req.body now)
     if (editorUsername && editorAvatar) {
@@ -260,7 +251,13 @@ export const getAllAgents = async (req, res) => {
   try {
     const { username, shift, agentType, branch } = req.query;
     const query = { role: "agent" };
+       console.log(req.user)
+    // Restrict Team Lead to view only their shift agents
+    if (req.user.role === "Team Lead") {
+      query.shift = req.user.shift; // Only show agents with the Team Lead's shift
+    }
 
+    // Apply query filters if provided
     if (username) {
       query.username = { $regex: username, $options: "i" };
     }
@@ -283,6 +280,7 @@ export const getAllAgents = async (req, res) => {
   }
 };
 
+
 // For fetching Management Users (non-agents)
 export const getAllManagementUsers = async (req, res) => {
   try {
@@ -304,6 +302,42 @@ export const getAllManagementUsers = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Failed to fetch management users",
+      error: error.message,
+    });
+  }
+};
+export const getAgentCountByShift = async (req, res) => {
+  try {
+    // Fetch all agents (role: agent)
+    const agents = await User.find({ role: "agent" });
+
+    // Calculate the count of agents for each shift
+    const shiftCounts = {
+      morning: 0,
+      evening: 0,
+      night: 0,
+      unknown: 0,
+    };
+
+    agents.forEach((agent) => {
+      const shift = agent.shift ? agent.shift.toLowerCase() : "unknown";
+      if (shiftCounts[shift] !== undefined) {
+        shiftCounts[shift]++;
+      } else {
+        shiftCounts.unknown++;
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      shiftCounts,
+      totalAgents: agents.length,
+    });
+  } catch (error) {
+    console.error("Error fetching agent shift count:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch agent shift count",
       error: error.message,
     });
   }

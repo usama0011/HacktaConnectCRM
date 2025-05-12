@@ -9,16 +9,13 @@ import {
   updateAgentIPWithHistory,
   getAgentsMonthlyIPs,
 } from "../controllers/ipController.js";
-import {
-  authMiddleware,
-  adminMiddleware,
-} from "../middleware/authMiddleware.js";
+import { adminSideAuthMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.post("/submit", submitIPData);
-router.get("/daily-reports", getDailyAgentIPsWithHistory);
-router.get("/myagentsagents/monthly", getAgentsMonthlyIPs); // 🥇 move this UP
+router.get("/daily-reports", adminSideAuthMiddleware, getDailyAgentIPsWithHistory);
+router.get("/myagentsagents/monthly", adminSideAuthMiddleware, getAgentsMonthlyIPs); // 🥇 move this UP
 router.get("/getcardssummery/:userId", getDashboardSessionsClicksNew);
 router.get("/monthlyips/:userId", getMonthlyIPCounts);
 router.get("/:userId", getUserIPData); // 🥲 generic param last!

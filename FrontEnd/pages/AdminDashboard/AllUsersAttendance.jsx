@@ -1,15 +1,43 @@
-import React, { useState } from "react";
-import { Table, Typography, Avatar, DatePicker, Tag, Button } from "antd";
+import React, { useState, useEffect } from "react";
+import { Table, Typography, Avatar, DatePicker, Tag, Button, message, Spin, Card, Row, Col } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import moment from "moment";
 import "../../styles/Attendance.css";
 import { useNavigate } from "react-router-dom";
+import API from "../../utils/BaseURL"; // Make sure this is correctly set
 
 const { Title, Text } = Typography;
 
 const AllUsersAttendance = () => {
   const [selectedMonth, setSelectedMonth] = useState(moment());
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [topPerformers, setTopPerformers] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch attendance data when the component loads or when the month changes
+    fetchAttendanceData(selectedMonth);
+  }, [selectedMonth]);
+
+  // ✅ Function to fetch attendance data from the backend
+  const fetchAttendanceData = async (month) => {
+    try {
+      setLoading(true);
+      const res = await API.get("/attendance/all", {
+        params: {
+          date: month.startOf("month").toISOString(),
+        },
+      });
+      setAttendanceData(res.data.attendanceData);
+      setTopPerformers(res.data.topPerformers);
+    } catch (error) {
+      console.error("Failed to fetch attendance data:", error);
+      message.error("Failed to fetch attendance data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const columns = [
     {
@@ -69,34 +97,6 @@ const AllUsersAttendance = () => {
     },
   ];
 
-  // Temporary dummy data
-  const dummyData = [
-    {
-      id: "user1",
-      user: { name: "Usama", avatar: "https://i.pravatar.cc/50?u=usama" },
-      todayStatus: "Present",
-      monthSummary: {
-        present: 20,
-        absent: 5,
-        late: 2,
-        leave: 1,
-        rotationOff: 2,
-      },
-    },
-    {
-      id: "user2",
-      user: { name: "Ali", avatar: "https://i.pravatar.cc/50?u=ali" },
-      todayStatus: "Late",
-      monthSummary: {
-        present: 18,
-        absent: 7,
-        late: 3,
-        leave: 1,
-        rotationOff: 1,
-      },
-    },
-  ];
-
   return (
     <div className="attendance-container">
       <Title level={2} className="attendance-title">
@@ -116,14 +116,34 @@ const AllUsersAttendance = () => {
         </div>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={dummyData}
-        rowKey="id"
-        pagination={{ pageSize: 5 }}
-        bordered
-        className="attendance-table"
-      />
+      {/* Top Performers Section */}
+      <div className="top-performers-container">
+        <Title level={3} className="top-performers-title">🏆 Top 5 Attendance Performers</Title>
+        <Row gutter={[16, 16]}>
+          {topPerformers.map((performer, index) => (
+            <Col xs={24} sm={12} md={8} lg={6} key={index}>
+              <Card className="top-performer-card">
+                <Avatar src={performer.avatar} size={64} className="performer-avatar" />
+                <Text className="performer-name">{performer.name}</Text>
+                <Text className="performer-stats">
+                  Present: {performer.presentDays} / {performer.totalDays} days
+                </Text>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </div>
+
+      <Spin spinning={loading}>
+        <Table
+          columns={columns}
+          dataSource={attendanceData}
+          rowKey="id"
+          pagination={{ pageSize: 50 }}
+          bordered
+          className="attendance-table"
+        />
+      </Spin>
     </div>
   );
 };

@@ -1,8 +1,7 @@
 import "../styles/AdminRegisterProxyStats.css";
 import React, { useEffect, useState } from "react";
-import { Table, Tag, Avatar } from "antd";
-import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
-import axios from "axios";
+import { Table, Tag, Avatar, Skeleton, message } from "antd";
+import { Pie } from "@ant-design/plots";
 import {
   UserOutlined,
   IdcardOutlined,
@@ -12,37 +11,43 @@ import {
 } from "@ant-design/icons";
 import API from "../utils/BaseURL";
 
-const COLORS = ["#28a745", "#ffc107", "#ff7043"]; // green, yellow, orange
 const AdminRegisterProxyStats = () => {
   const [users, setUsers] = useState([]);
   const [shiftStats, setShiftStats] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      const { data } = await API.get("/auth/users");
+    const fetchStatistics = async () => {
+      try {
+        setLoading(true);
+        
+        // ✅ Fetch user list
+        const { data: userData } = await API.get("/auth/management");
+        console.log("Fetched Users:", userData);
+        setUsers(userData);
 
-      // Sort users by creation date (latest first)
-      const sorted = [...data].sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
+        // ✅ Fetch shift statistics directly from API
+        const { data: shiftData } = await API.get("/auth/agents/shift-count");
+        console.log("Fetched Shift Stats:", shiftData);
 
-      // ✅ Take only latest 5 users
-      const latestFive = sorted.slice(0, 5);
-      setUsers(latestFive);
+        // ✅ Transform API response for chart
+        const stats = Object.entries(shiftData.shiftCounts).map(
+          ([type, value]) => ({
+            type: type.charAt(0).toUpperCase() + type.slice(1),
+            value,
+          })
+        );
 
-      // Calculate shift stats from only these 5 users
-      const shiftCounts = latestFive.reduce((acc, user) => {
-        acc[user.shift] = (acc[user.shift] || 0) + 1;
-        return acc;
-      }, {});
-
-      const stats = Object.entries(shiftCounts).map(([name, value]) => ({
-        name,
-        value,
-      }));
-      setShiftStats(stats);
+        setShiftStats(stats);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+        message.error("Failed to fetch data. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchUsers();
+    fetchStatistics();
   }, []);
 
   const columns = [
@@ -90,8 +95,8 @@ const AdminRegisterProxyStats = () => {
             ? "orange"
             : shift === "night"
             ? "red"
-            : "purple";
-        return <Tag color={color}>{shift}</Tag>;
+            : "gray";
+        return <Tag color={color}>{shift || "Unknown"}</Tag>;
       },
     },
     {
@@ -118,70 +123,74 @@ const AdminRegisterProxyStats = () => {
     },
   ];
 
+// Ant Design Pie Chart Configuration
+const pieConfig = {
+  appendPadding: 10,
+  data: shiftStats,
+  angleField: "value",
+  colorField: "type",
+  radius: 0.75,
+  innerRadius: 0.6,
+  height: 350,
+  color: ["#1890ff", "#37c661", "#fbce1e", "#2b3b79", "#8a4be2", "#1dc5c5"],
+  label: {
+    type: "outer",
+    formatter: (data) => {
+      if (!data || !data.type) return "";
+      return `${data.type}: ${data.value}`;
+    },
+    style: {
+      fontSize: 14,
+      fontWeight: 500,
+    },
+  },
+  legend: {
+    position: "right",
+    itemName: {
+      formatter: (text, item) => {
+        return `${item.value}: ${shiftStats.find(s => s.type === item.value)?.value || 0}`;
+      },
+    },
+  },
+  tooltip: {
+    formatter: (datum) => {
+      if (!datum || !datum.type) return { name: "Unknown", value: "0" };
+      return {
+        name: datum.type,
+        value: `${datum.value} Agents`,
+      };
+    },
+  },
+  interactions: [{ type: "element-active" }],
+};
+
+
   return (
     <div className="CRM-stats-orders-wrapper">
-      <div className="CRM-statistics-card">
-        <h2>
-          Statistics <span className="CRM-more-link">More ➔</span>
-        </h2>
-        <ResponsiveContainer width="100%" height={220}>
-          <PieChart>
-            <Pie
-              data={shiftStats}
-              innerRadius={60}
-              outerRadius={80}
-              paddingAngle={5}
-              dataKey="value"
-            >
-              {shiftStats.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-
-            {/* ✅ Hover interaction */}
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#fff",
-                border: "1px solid #ddd",
-                fontSize: "13px",
-                borderRadius: "8px",
-              }}
-              formatter={(value, name, props) => [
-                `${value} Users`,
-                name.toUpperCase(),
-              ]}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-
-        <ul className="CRM-legend">
-          {shiftStats.map((s, i) => (
-            <li key={i}>
-              <span
-                className={`CRM-dot CRM-${s.name
-                  .replace(" ", "")
-                  .toLowerCase()}`}
-              />
-              {s.name.toUpperCase()} — {s.value}
-            </li>
-          ))}
-        </ul>
+      <div className="CRM-statistics-card donatgraphcharforme">
+        <h2>Statistics <span className="CRM-more-link">More ➔</span></h2>
+        {loading ? (
+          <Skeleton active paragraph={{ rows: 4 }} />
+        ) : shiftStats.length > 0 ? (
+          <Pie {...pieConfig} />
+        ) : (
+          <p>No shift data available.</p>
+        )}
       </div>
 
       <div className="CRM-orders-card">
-        <h2>
-          Users List <span className="CRM-more-link">More ➔</span>
-        </h2>
-        <Table
-          className="CRM-orders-table"
-          columns={columns}
-          dataSource={users}
-          rowKey="_id"
-          pagination={false}
-        />
+        <h2>Users List <span className="CRM-more-link">More ➔</span></h2>
+        {loading ? (
+          <Skeleton active paragraph={{ rows: 5 }} />
+        ) : (
+          <Table
+            className="CRM-orders-table"
+            columns={columns}
+            dataSource={users}
+            rowKey="_id"
+            pagination={false}
+          />
+        )}
       </div>
     </div>
   );

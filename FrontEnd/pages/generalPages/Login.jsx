@@ -7,7 +7,9 @@ import LoginBanner from "../../src/assets/loginbanner.jpg";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/UserContext";
 import API from "../../utils/BaseURL";
+
 const { Title, Text } = Typography;
+
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -16,104 +18,41 @@ const Login = () => {
   const handleLogin = async (values) => {
     try {
       setLoading(true);
-
+  
+      // ✅ API Call to login
       const res = await API.post("/auth/login", {
         username: values.email,
         password: values.password,
       });
-
+  
       const { user, token } = res.data;
-
-      const shift = (user.shift || "").toLowerCase(); // Normalize to lowercase
-
-      const shiftTimes = {
-        morning: { start: 8 * 60, end: 16 * 60 }, // 08:00 - 16:00
-        evening: { start: 16 * 60, end: 24 * 60 }, // 16:00 - 00:00
-        night: { start: 0, end: 8 * 60 }, // 00:00 - 08:00
-      };
-
-      const shiftTimings = {
-        morning: "08:00 AM - 04:00 PM",
-        evening: "04:00 PM - 12:00 AM",
-        night: "12:00 AM - 08:00 AM",
-      };
-
-      const shiftConfig = shiftTimes[shift];
-      const adminRoles = [
-        "Super Admin",
-        "HR",
-        "Floor Manager",
-        "Assistant Floor Manager",
-      ];
-
-      const isAdmin = adminRoles.includes(user.role);
-
-      const now = new Date();
-      const currentHour = now.getHours();
-      const currentMinutes = now.getMinutes();
-      const totalCurrentMinutes = currentHour * 60 + currentMinutes;
-
-      // ✅ For Non-Admins: Validate Shift
-      if (!isAdmin) {
-        if (!shiftConfig) {
-          setLoading(false);
-          return message.error("Your shift is not recognized. Contact admin.");
-        }
-
-        const { start, end } = shiftConfig;
-
-        const isInShift =
-          shift === "night"
-            ? totalCurrentMinutes >= 0 && totalCurrentMinutes < 480
-            : totalCurrentMinutes >= start && totalCurrentMinutes < end;
-
-        if (!isInShift) {
-          setLoading(false);
-          const readableTime = shiftTimings[shift] || "Unknown Timing";
-          return message.error(
-            `You can only login during your shift hours (${user.shift} Shift: ${readableTime}).`
-          );
-        }
-
-        // ✅ Mark attendance and check for lateness
-        const minutesLate = totalCurrentMinutes - start;
-        const markAttendancePayload = {
-          userId: user._id,
-          username: user.username,
-          ...(minutesLate > 40 ? { status: "Late" } : {}),
-        };
-
-        try {
-          await API.post("/attendance/mark", markAttendancePayload);
-        } catch (err) {
-          console.warn(
-            "Attendance marking skipped:",
-            err.response?.data?.message
-          );
-        }
-      } else {
-        // ✅ Admins get normal attendance marking
-        try {
-          await API.post("/attendance/mark", {
-            userId: user._id,
-            username: user.username,
-          });
-        } catch (err) {
-          console.warn(
-            "Admin attendance marking skipped:",
-            err.response?.data?.message
-          );
-        }
-      }
-
-      // ✅ Login Success
+  
+      // ✅ Store user and token in localStorage
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
       login(user, token);
-
+  
       message.success("Login successful!");
-
-      if (isAdmin) {
+  
+      // ✅ If the user is an agent, mark attendance
+      if (user.role === "agent") {
+        await API.post("/attendance/mark", {
+          userId: user._id,
+          username: user.username,
+        });
+        message.success("Attendance marked for agent.");
+      }
+  
+      // ✅ Navigate to the appropriate dashboard
+      const adminRoles = [
+        "Super Admin",
+        "HR",
+        "Team Lead",
+        "Floor Manager",
+        "Assistant Floor Manager",
+      ];
+  
+      if (adminRoles.includes(user.role)) {
         navigate("/admin/dashboard");
       } else {
         navigate("/user/dashboard");
@@ -125,7 +64,7 @@ const Login = () => {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="login-container">
       {/* Left Section - Login Form */}
@@ -174,15 +113,15 @@ const Login = () => {
 
             {/* Login Button */}
             <Form.Item>
-              <Button
-                disabled={loading}
-                type="primary"
-                htmlType="submit"
-                className="login-button"
-              >
-                Sign in
-              </Button>
-            </Form.Item>
+  <Button
+    disabled={loading}
+    type="primary"
+    htmlType="submit"
+    className={`login-button ${loading ? "loading-wave" : ""}`}
+  >
+    {loading ? "Signing in..." : "Sign in"}
+  </Button>
+</Form.Item>
 
             {/* Google Sign-in */}
             <Button icon={<GoogleOutlined />} className="google-login">
@@ -245,40 +184,6 @@ const Login = () => {
               strokeWidth="2"
               fill="none"
             />
-          </svg>
-
-          <svg className="svg-shape zigzag" viewBox="0 0 100 100" fill="none">
-            <path
-              d="M10 30 L30 50 L50 30 L70 50 L90 30"
-              stroke="white"
-              strokeWidth="2"
-              fill="none"
-            />
-          </svg>
-          <svg
-            className="svg-shape dotted-grid"
-            viewBox="0 0 100 100"
-            fill="none"
-          >
-            <circle cx="20" cy="20" r="2" fill="white" />
-            <circle cx="40" cy="20" r="2" fill="white" />
-            <circle cx="60" cy="20" r="2" fill="white" />
-            <circle cx="80" cy="20" r="2" fill="white" />
-
-            <circle cx="20" cy="40" r="2" fill="white" />
-            <circle cx="40" cy="40" r="2" fill="white" />
-            <circle cx="60" cy="40" r="2" fill="white" />
-            <circle cx="80" cy="40" r="2" fill="white" />
-
-            <circle cx="20" cy="60" r="2" fill="white" />
-            <circle cx="40" cy="60" r="2" fill="white" />
-            <circle cx="60" cy="60" r="2" fill="white" />
-            <circle cx="80" cy="60" r="2" fill="white" />
-
-            <circle cx="20" cy="80" r="2" fill="white" />
-            <circle cx="40" cy="80" r="2" fill="white" />
-            <circle cx="60" cy="80" r="2" fill="white" />
-            <circle cx="80" cy="80" r="2" fill="white" />
           </svg>
 
           <img
