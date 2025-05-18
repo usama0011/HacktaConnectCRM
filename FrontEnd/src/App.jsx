@@ -39,10 +39,7 @@ const App = () => {
         <div className="crm-logo">{/* Logo image here */}</div>
         <ul className="crm-menu">
           <li>About</li>
-          <li>
-            {" "}
-            <Link to="features">Feature</Link>
-          </li>
+          
           <li>Policies</li>
           <li>
             <Link to="company">Company</Link>{" "}
@@ -52,7 +49,6 @@ const App = () => {
           <button className="login-btn" onClick={() => navigate("/login")}>
             Log In
           </button>
-          <button className="signup-btn">Sign Up</button>
         </div>
       </nav>
 
@@ -110,7 +106,8 @@ const App = () => {
           <img src={Image6} alt="" />
         </div>
       </section>
-
+<br />
+<br />
       {/* ============ FEATURE CARDS ============ */}
       <section className="crm-feature-section">
         <h2>Smart Automation, Limitless Possibilities</h2>
@@ -285,55 +282,7 @@ const App = () => {
       </section>
 
       {/* ============ FOOTER ============ */}
-      <footer className="crm-footer">
-        <div className="crm-footer-left">
-          <div className="crm-footer-logo">
-            <img src={AdminLogo} alt="" />
-          </div>
-          <p>
-            Empower your team with intelligent CRM solutions that boost
-            efficiency, automate workflows, and drive growth.
-          </p>
-        </div>
-        <div className="crm-footer-links">
-          <div>
-            <h4>Product</h4>
-            <ul>
-              <li>Marketing</li>
-              <li>Sales</li>
-              <li>CMS</li>
-              <li>Operations</li>
-            </ul>
-          </div>
-          <div>
-            <h4>Our Company</h4>
-            <ul>
-              <li>About Us</li>
-              <li>Team</li>
-              <li>Careers</li>
-              <li>Contact Us</li>
-            </ul>
-          </div>
-          <div>
-            <h4>Feature</h4>
-            <ul>
-              <li>Core Features</li>
-              <li>Advanced Features</li>
-              <li>Customization</li>
-              <li>Update</li>
-            </ul>
-          </div>
-          <div>
-            <h4>Resources</h4>
-            <ul>
-              <li>Blog</li>
-              <li>Whitepapers</li>
-              <li>Webinars</li>
-              <li>Case Studies</li>
-            </ul>
-          </div>
-        </div>
-      </footer>
+     
 
       <div className="crm-copyright">
         © 2024 Hackta Connect All Rights Reserved.

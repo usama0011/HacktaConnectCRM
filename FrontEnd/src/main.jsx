@@ -83,6 +83,7 @@ import GeneralSalaryCaculator from "../pages/AdminDashboard/GeneralSalaryCaculat
 import AllAgentsRegistraction from "../pages/AdminDashboard/AllAgentsRegistraction.jsx";
 import AllManagementRecord from "../pages/AdminDashboard/AllManagementRecord.jsx";
 import SingleAgentAttendance from "../pages/AdminDashboard/SingleAgentAttandance.jsx";
+import { ConfigProvider } from "antd";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -101,7 +102,13 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <UserProvider>
+  <ConfigProvider theme={{
+    token: {
+      fontFamily: 'Inter, sans-serif',
+    },
+  }}>
+
+      <UserProvider>
       <BrowserRouter>
         <Routes>
           {/* General Routes */}
@@ -257,5 +264,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </Routes>
       </BrowserRouter>
     </UserProvider>
+  </ConfigProvider>
   </React.StrictMode>
 );

@@ -3,7 +3,6 @@ body,
 html {
   margin: 0;
   padding: 0;
-  font-family: "Inter", sans-serif;
   color: #111;
   background-color: #fff;
 }
@@ -29,7 +28,7 @@ a {
 .crm-announcement {
   background-color: #003c2f;
   color: #fff;
-  font-size: 14px;
+  font-size: 12px;
   padding: 10px 20px;
   text-align: center;
   position: relative;
@@ -100,12 +99,12 @@ a {
   margin-bottom: 20px;
 }
 .crm-hero-left h1 {
-  font-size: 48px;
+  font-size: 42px;
   font-weight: 700;
   margin-bottom: 16px;
 }
 .crm-hero-left p {
-  font-size: 16px;
+  font-size: 15px;
   margin-bottom: 24px;
   line-height: 1.7;
   max-width: 660px;
@@ -181,8 +180,8 @@ a {
   gap: 40px;
 }
 .crm-partner-logos > img {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   background-position: center;
 }
@@ -366,7 +365,7 @@ a {
 /* =================== CTA =================== */
 .crm-cta {
   position: relative;
-  background-image: url("https://img.freepik.com/free-photo/aerial-view-business-team_53876-124515.jpg?t=st=1745044581~exp=1745048181~hmac=fb223fa22e35f4ad4e86cf83fe9f9ecc2d72aaf51310623c330f0ea189975cbf&w=1380");
+  background-image: url("https://images.unsplash.com/photo-1739056105219-6b524c74ade8?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -519,21 +518,22 @@ a {
 .crm-footer-links ul {
   margin-top: 10px;
 }
+.crm-footer-links 
 .crm-footer h4 {
   font-size: 16px;
   margin-bottom: 10px;
 }
-
+.liitemhere{font-size: 12px}
 /* =================== COPYRIGHT =================== */
 .crm-copyright {
   text-align: center;
   font-size: 13px;
-  background: #003c2f;
-  color: #fff;
+  background: white;
+  color:black;
   padding: 16px;
 }
 .crm-copyright a {
-  color: #fff;
+  color: black;
   text-decoration: underline;
   margin: 0 6px;
 }
