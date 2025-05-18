@@ -3,7 +3,7 @@ import User from "../models/usermodel.js";
 import mongoose from "mongoose";
 
 export const markAttendanceForAgent = async (req, res) => {
-  const { userId, username } = req.body;
+  const { userId, username,shift,agentType,branch } = req.body;
 
   try {
     // ✅ Fetch user details
@@ -51,15 +51,18 @@ export const markAttendanceForAgent = async (req, res) => {
       );
 
       // ✅ Set status based on delay (Late if > 40 minutes)
-      const status = timeDifferenceInMinutes > 40 ? "Late" : "Pending";
+      const status = timeDifferenceInMinutes > 40 ? "Late" : "pending";
 
       // ✅ Create attendance with calculated status
       attendance = new Attendance({
         userId,
         username,
+        shift,
+        agentType,
+        branch,
         date: now,
         checkInTime: now,
-        status, // ✅ Set as "Late" or "Pending"
+        status, // ✅ Set as "Late" or "pending"
       });
 
       await attendance.save();

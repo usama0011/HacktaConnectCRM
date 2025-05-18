@@ -18,6 +18,9 @@ const qcPointSchema = new mongoose.Schema({
   workingBehavior: String,
   totalPoints: Number,
   editedBy: String,
+  shift: { type: String },       // ✅ Added
+  agentType: { type: String },   // ✅ Added
+  branch: { type: String },      // ✅ Added
   history: [historySchema],
 });
 

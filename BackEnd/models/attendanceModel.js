@@ -18,7 +18,12 @@ const attendanceSchema = new mongoose.Schema(
     },
     checkInTime: { type: Date, default: null }, // Stores login timestamp
     checkOutTime: { type: Date, default: null }, // Stores logout timestamp
+     // ✅ New Fields
+    shift: { type: String, default: null },
+    agentType: { type: String, default: null },
+    branch: { type: String, default: null },
     updatedBy: { type: String, default: null }, // ✅ NEW: who updated the attendance status
+    
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields

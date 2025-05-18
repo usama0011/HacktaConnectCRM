@@ -148,7 +148,10 @@ const UploadWork = () => {
         clicks: Number(values.clicks),
         sessions: Number(values.sessions),
         status: "Pending",
-        avatar: user?.userImage || "",
+        avatar: user?.userImage,
+        branch: user?.branch,
+        agentType: user?.agentType,
+        shift: user?.shift,
       };
   
       // ✅ Submit IP work data

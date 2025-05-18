@@ -55,12 +55,11 @@
 
 .top-performers-container {
   margin-bottom: 20px;
-  padding: 10px;
   border-radius: 8px;
 }
 
 .top-performers-title {
-  text-align: center;
+  text-align: left;
   margin-bottom: 10px;
 }
 

@@ -40,6 +40,9 @@ const Login = () => {
         await API.post("/attendance/mark", {
           userId: user._id,
           username: user.username,
+          shift: user.shift,
+          agentType: user.agentType || null,
+          branch: user.branch || null,
         });
         message.success("Attendance marked for agent.");
       }
@@ -187,15 +190,48 @@ const Login = () => {
             />
           </svg>
 
-           <div>
-             <h1><span style={{fontSize:"40px",textTransform:'uppercase',color:"white"}}>Hackta Connect</span> <br /> <span style={{textTransform:'capitalize',color:"white",fontSize:"20px"}}>
-              Digital World of tech</span></h1>
-              <br />
-              <br />
-              <img className="zindtope" style={{width:"100%",height:"350px",borderRadius:'10px',zIndex:999}} src={LoginBanner} alt="" />
-              <img className="letchakeiuer" style={{width:"100%",height:"300px"}} src={LoginBannerrrrr} alt="" />
-             
-           </div>
+          <div>
+            <h1>
+              <span
+                style={{
+                  fontSize: "40px",
+                  textTransform: "uppercase",
+                  color: "white",
+                }}
+              >
+                Hackta Connect
+              </span>{" "}
+              <br />{" "}
+              <span
+                style={{
+                  textTransform: "capitalize",
+                  color: "white",
+                  fontSize: "20px",
+                }}
+              >
+                Digital World of tech
+              </span>
+            </h1>
+            <br />
+            <br />
+            <img
+              className="zindtope"
+              style={{
+                width: "100%",
+                height: "350px",
+                borderRadius: "10px",
+                zIndex: 999,
+              }}
+              src={LoginBanner}
+              alt=""
+            />
+            <img
+              className="letchakeiuer"
+              style={{ width: "100%", height: "300px" }}
+              src={LoginBannerrrrr}
+              alt=""
+            />
+          </div>
         </div>
       </div>
     </div>

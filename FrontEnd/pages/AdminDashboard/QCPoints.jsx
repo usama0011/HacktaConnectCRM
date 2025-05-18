@@ -29,6 +29,7 @@ import "../../styles/QCPoints.css";
 import API from "../../utils/BaseURL";
 
 const { Title, Text } = Typography;
+import { Select } from "antd";
 
 const QCPoints = () => {
   const editor = localStorage.getItem("editorName") || "Abdul Moiz";
@@ -43,6 +44,11 @@ const QCPoints = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [fieldValues, setFieldValues] = useState({});
+const [filters, setFilters] = useState({
+  shift: "",
+  agentType: "",
+  branch: "",
+});
 
   const [form] = Form.useForm();
 
@@ -67,11 +73,14 @@ const QCPoints = () => {
     const totalPoints = Object.values(fieldValues).filter(
       (v) => v === "1"
     ).length;
-
+    console.log(editingUser)
     const payload = {
       userId: editingUser._id,
       name: editingUser.name,
       avatar: editingUser.avatar,
+      shift: editingUser.shift,
+      agentType: editingUser.agentType,
+      branch: editingUser.branch,
       editor,
       date: selectedDate.format("YYYY-MM-DD"),
       values: fieldValues,
@@ -122,8 +131,15 @@ const QCPoints = () => {
   const fetchUsersAndPoints = async (date) => {
     try {
       setLoading(true);
-      const res = await API.get(`/qcpoints?date=${date}`);
-      setUsers(res.data); // Must match backend shape
+      const params = {
+      date,
+      shift: filters.shift || undefined,
+      agentType: filters.agentType || undefined,
+      branch: filters.branch || undefined,
+    };
+
+    const res = await API.get("/qcpoints", { params });
+    setUsers(res.data);
     } catch (error) {
       message.error("Failed to fetch QC points");
     } finally {
@@ -299,6 +315,56 @@ const QCPoints = () => {
           format="YYYY-MM-DD"
         />
       </div>
+      <div className="filter-row" style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}>
+  <div>
+    <label>Shift</label>
+    <select
+      value={filters.shift}
+      onChange={(e) => setFilters({ ...filters, shift: e.target.value })}
+      style={{ width: 180, padding: 6, borderRadius: 4 }}
+    >
+      <option value="">All</option>
+      <option value="morning">Morning</option>
+      <option value="evening">Evening</option>
+      <option value="night">Night</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Agent Type</label>
+    <select
+      value={filters.agentType}
+      onChange={(e) => setFilters({ ...filters, agentType: e.target.value })}
+      style={{ width: 180, padding: 6, borderRadius: 4 }}
+    >
+      <option value="">All</option>
+      <option value="Office Agent">Office Agent</option>
+      <option value="WFH Agent">WFH Agent</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Branch</label>
+    <select
+      value={filters.branch}
+      onChange={(e) => setFilters({ ...filters, branch: e.target.value })}
+      style={{ width: 180, padding: 6, borderRadius: 4 }}
+    >
+      <option value="">All</option>
+      <option value="Branch A">Branch A</option>
+      <option value="Branch B">Branch B</option>
+      <option value="Branch C">Branch C</option>
+      {/* Add more as needed */}
+    </select>
+  </div>
+
+  <div style={{ alignSelf: "flex-end" }}>
+    <Button type="primary" onClick={() => fetchUsersAndPoints(selectedDate.format("YYYY-MM-DD"))}>
+      Apply Filters
+    </Button>
+  </div>
+</div>
+
       <br />
       <Table
         columns={columns}

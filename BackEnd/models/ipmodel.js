@@ -23,6 +23,10 @@ const ipSchema = new mongoose.Schema(
     sessions: { type: Number, default: 0 }, // Total sessions submitted
     status: { type: String, required: true },
     avatar: { type: String, default: "" }, // ✅ New field to store user image
+    // ✅ New fields for organizational filtering
+    shift: { type: String, default: "" },
+    agentType: { type: String, default: "" },
+    branch: { type: String, default: "" },
     history: [editHistorySchema], // ✅ New array to store edit history
   },
   {

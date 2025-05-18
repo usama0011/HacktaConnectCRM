@@ -3,7 +3,7 @@ import User from "../models/usermodel.js";
 import moment from "moment";
 import mongoose from "mongoose";
 export const submitIPData = async (req, res) => {
-  const { username, clicks, sessions, date, status } = req.body;
+  const { username, clicks, sessions, date, status,shift,agentType,branch } = req.body;
 
   try {
     const user = await User.findOne({ username });
@@ -34,6 +34,9 @@ export const submitIPData = async (req, res) => {
       sessions,
       date: submissionDate,
       status,
+      shift,
+      agentType,
+      branch
     });
 
     await ipData.save();
@@ -290,16 +293,16 @@ export const getMonthlyIPCounts = async (req, res) => {
 // ✅ Controller to Get Daily Agent IPs with History
 export const getDailyAgentIPsWithHistory = async (req, res) => {
   try {
-    const { date } = req.query;
+    const { date, shift, agentType, branch } = req.query;
     if (!date) return res.status(400).json({ message: "Date is required" });
 
     const startOfDay = moment(date).startOf("day").toDate();
     const endOfDay = moment(date).endOf("day").toDate();
 
-    // Build agent query
+    // Build base agent query
     const agentQuery = { role: "agent" };
 
-    // Restrict Team Lead to view only their shift and agent type agents
+    // Team Lead restrictions
     if (req.user.role === "Team Lead") {
       agentQuery.shift = req.user.shift;
       if (req.user.agentType) {
@@ -307,26 +310,37 @@ export const getDailyAgentIPsWithHistory = async (req, res) => {
       }
     }
 
-    // Fetch Agents based on query
-    const agents = await User.find(agentQuery, "_id username userImage shift agentType");
+    // Apply additional filters from query params
+    if (shift) agentQuery.shift = shift;
+    if (agentType) agentQuery.agentType = agentType;
+    if (branch) agentQuery.branch = branch;
+
+    // Fetch Agents
+    const agents = await User.find(
+      agentQuery,
+      "_id username userImage shift agentType branch"
+    );
+
     if (!agents.length) {
       return res.status(404).json({ message: "No agents found" });
     }
 
     const agentIds = agents.map((agent) => agent._id);
 
-    // Fetch IP records for the selected date and filtered agents
+    // Fetch IP records for the filtered agents and date
     const records = await IP.find({
       userId: { $in: agentIds },
       date: { $gte: startOfDay, $lte: endOfDay },
     })
-      .populate("userId", "userImage") // Populate avatar if user has image
+      .populate("userId", "userImage")
       .sort({ createdAt: -1 });
 
-    // Prepare response data
+    // Prepare final response
     const response = agents.map((agent) => {
       const ipRecord = records.find(
-        (record) => record.userId && record.userId.toString() === agent._id.toString()
+        (record) =>
+          record.userId &&
+          record.userId.toString() === agent._id.toString()
       );
 
       return {
@@ -335,6 +349,7 @@ export const getDailyAgentIPsWithHistory = async (req, res) => {
         avatar: agent.userImage || "https://i.pravatar.cc/50?u=default",
         shift: agent.shift,
         agentType: agent.agentType || "N/A",
+        branch: agent.branch || "N/A",
         sessions: ipRecord ? ipRecord.sessions : 0,
         clicks: ipRecord ? ipRecord.clicks : 0,
         totalIPs: ipRecord ? ipRecord.sessions + ipRecord.clicks : 0,
@@ -387,7 +402,7 @@ export const updateAgentIPWithHistory = async (req, res) => {
 // ✅ Controller to Get Agents' Monthly IPs
 export const getAgentsMonthlyIPs = async (req, res) => {
   try {
-    const { year, month } = req.query;
+const { year, month, shift, agentType, branch } = req.query;
     if (!year || !month) {
       return res
         .status(400)
@@ -397,9 +412,10 @@ export const getAgentsMonthlyIPs = async (req, res) => {
     const startOfMonth = moment(`${year}-${month}-01`).startOf("month").toDate();
     const endOfMonth = moment(`${year}-${month}-01`).endOf("month").toDate();
 
-    // Build agent query
-    const agentQuery = { role: "agent" };
-
+  const agentQuery = { role: "agent" };
+if (shift) agentQuery.shift = shift;
+if (agentType) agentQuery.agentType = agentType;
+if (branch) agentQuery.branch = branch;
     // Restrict Team Lead to view only their shift and agent type agents
     if (req.user.role === "Team Lead") {
       agentQuery.shift = req.user.shift;

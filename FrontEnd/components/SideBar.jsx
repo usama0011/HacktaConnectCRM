@@ -120,20 +120,7 @@ const Sidebar = () => {
               </Link>
             </Menu.Item>
 
-            <Menu.Item
-              key="/admin/dashboard/noticeboard"
-              icon={<NotificationOutlined className="sidebariconspecial" />}
-            >
-              <Link to="/admin/dashboard/noticeboard">Notice Board</Link>
-            </Menu.Item>
-
-            <Menu.Item
-              key="/admin/dashboard/announcements"
-              icon={<FileProtectOutlined className="sidebariconspecial" />}
-            >
-              <Link to="/admin/dashboard/announcements">Announcements</Link>
-            </Menu.Item>
-
+            
             <Menu.Item
               key="/admin/dashboard/settings"
               icon={<SettingOutlined className="sidebariconspecial" />}
@@ -141,20 +128,7 @@ const Sidebar = () => {
               <Link to="/admin/dashboard/settings">Settings</Link>
             </Menu.Item>
 
-            <Menu.SubMenu
-              key="/admin/dashboard/newtask"
-              icon={<DatabaseFilled className="sidebariconspecial" />}
-              title="Task Creation"
-            >
-              <Menu.Item key="/admin/dashboard/newtask">
-                <Link to="/admin/dashboard/newtask">New Task</Link>
-              </Menu.Item>
-              <Menu.Item key="/admin/dashboard/viewtaskcreation">
-                <Link to="/admin/dashboard/viewtaskcreation">
-                  View Creations
-                </Link>
-              </Menu.Item>
-            </Menu.SubMenu>
+           
 
             <Menu.Item
               key="/admin/dashboard/termsandpolicies"
@@ -165,12 +139,6 @@ const Sidebar = () => {
               </Link>
             </Menu.Item>
 
-            <Menu.Item
-              key="/admin/dashboard/notifications"
-              icon={<BellOutlined className="sidebariconspecial" />}
-            >
-              <Link to="/admin/dashboard/notifications">Notifications</Link>
-            </Menu.Item>
           </Menu>
         </div>
 

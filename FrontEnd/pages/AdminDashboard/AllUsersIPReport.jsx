@@ -9,6 +9,7 @@ import {
   Col,
   Card,
   message,
+  Select,
 } from "antd";
 import {
   UserOutlined,
@@ -19,17 +20,23 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import API from "../../utils/BaseURL"; // ✅ your Axios base URL setup
+import API from "../../utils/BaseURL";
 import "../../styles/IPSubmission.css";
-import TrophyIcon from "../../src/assets/tt.png"; // fix your import path
+import TrophyIcon from "../../src/assets/tt.png";
 
 const { Title, Text } = Typography;
+const { Option } = Select;
 
 const AllUsersIPReport = () => {
   const navigate = useNavigate();
   const [selectedMonth, setSelectedMonth] = useState(moment());
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState({
+    shift: "",
+    agentType: "",
+    branch: "",
+  });
 
   const fetchUsers = async () => {
     try {
@@ -38,7 +45,13 @@ const AllUsersIPReport = () => {
       const month = selectedMonth.format("MM");
 
       const res = await API.get(`/ip/myagentsagents/monthly`, {
-        params: { year, month },
+        params: {
+          year,
+          month,
+          shift: filters.shift || undefined,
+          agentType: filters.agentType || undefined,
+          branch: filters.branch || undefined,
+        },
       });
 
       if (res.data.success) {
@@ -58,14 +71,13 @@ const AllUsersIPReport = () => {
     fetchUsers();
   }, [selectedMonth]);
 
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
   const columns = [
     {
-      title: (
-        <>
-          <UserOutlined style={{ marginRight: 6 }} />
-          User
-        </>
-      ),
+      title: "User",
       dataIndex: "username",
       key: "username",
       render: (text, record) => (
@@ -76,45 +88,32 @@ const AllUsersIPReport = () => {
       ),
     },
     {
-      title: (
-        <>
-          <FunnelPlotOutlined style={{ marginRight: 6 }} />
-          Total Clicks
-        </>
-      ),
+      title: "Shift",
+      dataIndex: "shift",
+      key: "shift",
+    },
+    {
+      title: "Agent Type",
+      dataIndex: "agentType",
+      key: "agentType",
+    },
+    {
+      title: "Total Clicks",
       dataIndex: "totalClicks",
       key: "totalClicks",
-      render: (clicks) => <Text>{clicks}</Text>,
     },
     {
-      title: (
-        <>
-          <FundProjectionScreenOutlined style={{ marginRight: 6 }} />
-          Total Sessions
-        </>
-      ),
+      title: "Total Sessions",
       dataIndex: "totalSessions",
       key: "totalSessions",
-      render: (sessions) => <Text>{sessions}</Text>,
     },
     {
-      title: (
-        <>
-          <GlobalOutlined style={{ marginRight: 6 }} />
-          Total IPs
-        </>
-      ),
+      title: "Total IPs",
       dataIndex: "totalIPs",
       key: "totalIPs",
-      render: (ips) => <Text>{ips}</Text>,
     },
     {
-      title: (
-        <>
-          <EyeOutlined style={{ marginRight: 6 }} />
-          Actions
-        </>
-      ),
+      title: "Actions",
       key: "actions",
       render: (_, record) => (
         <Button
@@ -148,6 +147,49 @@ const AllUsersIPReport = () => {
           className="ipreport-month-picker"
         />
       </div>
+
+      {/* 🔍 Filters */}
+      <div style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}>
+        <Select
+          placeholder="Select Shift"
+          value={filters.shift}
+          style={{ width: 180 }}
+          onChange={(value) => handleFilterChange("shift", value)}
+          allowClear
+        >
+          <Option value="morning">Morning</Option>
+          <Option value="evening">Evening</Option>
+          <Option value="night">Night</Option>
+        </Select>
+
+        <Select
+          placeholder="Select Agent Type"
+          value={filters.agentType}
+          style={{ width: 180 }}
+          onChange={(value) => handleFilterChange("agentType", value)}
+          allowClear
+        >
+          <Option value="Office Agent">Office Agent</Option>
+          <Option value="WFH Agent">WFH Agent</Option>
+        </Select>
+
+        <Select
+          placeholder="Select Branch"
+          value={filters.branch}
+          style={{ width: 180 }}
+          onChange={(value) => handleFilterChange("branch", value)}
+          allowClear
+        >
+          <Option value="Branch A">Branch A</Option>
+          <Option value="Branch B">Branch B</Option>
+          <Option value="Branch C">Branch C</Option>
+        </Select>
+
+        <Button type="primary" onClick={fetchUsers}>
+          Apply Filters
+        </Button>
+      </div>
+
       <br />
       <Row gutter={[24, 24]} className="top-performers-row">
         <Col span={24}>
@@ -165,7 +207,9 @@ const AllUsersIPReport = () => {
                       <div className="rank-circle">{index + 1}</div>
                       <Avatar size={48} src={user.avatar} />
                       <div className="performer-details">
-                        <Text className="performer-name">{user.username}</Text>
+                        <Text className="performer-name">
+                          {user.username}
+                        </Text>
                         <Text type="secondary" className="performer-meta">
                           Clicks: {user.totalClicks} | Sessions:{" "}
                           {user.totalSessions}
@@ -183,12 +227,12 @@ const AllUsersIPReport = () => {
           </div>
         </Col>
       </Row>
-      <br />
+<br />
       <Table
         columns={columns}
         dataSource={users}
         rowKey="id"
-        pagination={{ pageSize:50 }}
+        pagination={{ pageSize: 50 }}
         bordered
         loading={loading}
         className="user-table-ppwork"

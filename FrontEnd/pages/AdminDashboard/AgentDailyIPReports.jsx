@@ -10,29 +10,36 @@ import {
   DatePicker,
   Card,
   message,
+  Select,
+  Row,
+  Col,
 } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { useUserContext } from "../../context/UserContext"; // ✅ Import your context
+import { useUserContext } from "../../context/UserContext";
 import API from "../../utils/BaseURL";
 
 const { Title, Text } = Typography;
 
 const AgentDailyIPReports = () => {
   const [selectedDate, setSelectedDate] = useState(moment());
+  const [filters, setFilters] = useState({ shift: "", agentType: "", branch: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editHistory, setEditHistory] = useState([]);
   const [editingRecord, setEditingRecord] = useState(null);
   const [formData, setFormData] = useState({ sessions: 0, clicks: 0 });
   const [data, setData] = useState([]);
 
-  const { user } = useUserContext(); // ✅ Get the logged-in user
+  const { user } = useUserContext();
 
   const fetchData = async () => {
     try {
       const res = await API.get(`/ip/daily-reports`, {
         params: {
           date: selectedDate.format("YYYY-MM-DD"),
+          shift: filters.shift || undefined,
+          agentType: filters.agentType || undefined,
+          branch: filters.branch || undefined,
         },
       });
       setData(res.data || []);
@@ -59,11 +66,11 @@ const AgentDailyIPReports = () => {
       await API.put(`/ip/update-ip/${editingRecord._id}`, {
         sessions: formData.sessions,
         clicks: formData.clicks,
-        editor: user.username, // ✅ Send current user
+        editor: user.username,
       });
       message.success("Record updated successfully!");
       setIsModalOpen(false);
-      fetchData(); // 🔄 Refresh table
+      fetchData();
     } catch (error) {
       console.error("Error updating record:", error);
       message.error("Failed to update record.");
@@ -82,16 +89,8 @@ const AgentDailyIPReports = () => {
         </span>
       ),
     },
-    {
-      title: "📈 Sessions",
-      dataIndex: "sessions",
-      key: "sessions",
-    },
-    {
-      title: "🖱 Clicks",
-      dataIndex: "clicks",
-      key: "clicks",
-    },
+    { title: "📈 Sessions", dataIndex: "sessions", key: "sessions" },
+    { title: "🖱 Clicks", dataIndex: "clicks", key: "clicks" },
     {
       title: "📊 Total",
       key: "total",
@@ -124,6 +123,63 @@ const AgentDailyIPReports = () => {
         />
       </div>
 
+      {/* 🔍 Filters */}
+      <div style={{ marginTop: 16, marginBottom: 24 }}>
+        <Row gutter={16}>
+          <Col>
+            <label>Shift</label>
+            <Select
+              value={filters.shift}
+              onChange={(value) => setFilters({ ...filters, shift: value })}
+              style={{ width: 160 }}
+              placeholder="All"
+              allowClear
+            >
+              <Select.Option value="morning">Morning</Select.Option>
+              <Select.Option value="evening">Evening</Select.Option>
+              <Select.Option value="night">Night</Select.Option>
+            </Select>
+          </Col>
+          <Col>
+            <label>Agent Type</label>
+            <Select
+              value={filters.agentType}
+              onChange={(value) => setFilters({ ...filters, agentType: value })}
+              style={{ width: 160 }}
+              placeholder="All"
+              allowClear
+            >
+              <Select.Option value="Office Agent">Office Agent</Select.Option>
+              <Select.Option value="WFH Agent">WFH Agent</Select.Option>
+            </Select>
+          </Col>
+          <Col>
+            <label>Branch</label>
+            <Select
+              value={filters.branch}
+              onChange={(value) => setFilters({ ...filters, branch: value })}
+              style={{ width: 160 }}
+              placeholder="All"
+              allowClear
+            >
+              <Select.Option value="Branch A">Branch A</Select.Option>
+              <Select.Option value="Branch B">Branch B</Select.Option>
+              <Select.Option value="Branch C">Branch C</Select.Option>
+            </Select>
+          </Col>
+          <Col>
+            <Button
+              type="primary"
+              style={{ marginTop: 1 }}
+              onClick={fetchData}
+            >
+              Apply Filters
+            </Button>
+          </Col>
+        </Row>
+      </div>
+
+      {/* 📋 Table */}
       <Table
         columns={columns}
         dataSource={data}
@@ -133,6 +189,7 @@ const AgentDailyIPReports = () => {
         bordered
       />
 
+      {/* 📝 Modal */}
       <Modal
         title="Edit Agent Record"
         open={isModalOpen}
@@ -147,7 +204,7 @@ const AgentDailyIPReports = () => {
           </Text>
         </div>
 
-        <div className="modal-fields" style={{ marginTop: 20 }}>
+        <div style={{ marginTop: 20 }}>
           <Text>Sessions:</Text>
           <InputNumber
             min={0}
@@ -174,15 +231,8 @@ const AgentDailyIPReports = () => {
           </Title>
           {editHistory.length > 0 ? (
             editHistory.map((item, index) => (
-              <Card
-                key={index}
-                className="history-item"
-                size="small"
-                style={{ marginBottom: 10 }}
-              >
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
+              <Card key={index} className="history-item" size="small">
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <Text strong>
                     {item.isOriginal ? "📝 Original Submission" : item.editor}
                   </Text>

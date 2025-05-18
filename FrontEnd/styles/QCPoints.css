@@ -183,3 +183,39 @@
   margin: 0;
   font-size: 14px;
 }
+/* QCPoints.css */
+
+.filter-row {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.filter-row label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.filter-row select {
+  width: 180px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.filter-row select:focus {
+  border-color: #003c2f;
+  box-shadow: 0 0 0 2px rgba(0, 60, 47, 0.2);
+}
+
+.filter-row button {
+  height: 36px;
+  padding: 0 16px;
+}

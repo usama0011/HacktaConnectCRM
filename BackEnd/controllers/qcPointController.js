@@ -3,10 +3,10 @@ import QCPoint from "../models/qcPointModel.js";
 import moment from "moment";
 import IP from "../models/ipmodel.js"; // ✅ Import IP model
 
-// ✅ Controller to Get QC Points by Date
 export const getQCPointsByDate = async (req, res) => {
   try {
-    const date = req.query.date;
+    const { date, shift, agentType, branch } = req.query;
+    console.log(date,shift,agentType,branch)
     if (!date) {
       return res.status(400).json({ message: "Date is required" });
     }
@@ -17,6 +17,11 @@ export const getQCPointsByDate = async (req, res) => {
     // Build agent query
     const agentQuery = { role: "agent" };
 
+    // Apply filters if provided
+    if (shift) agentQuery.shift = shift;
+    if (agentType) agentQuery.agentType = agentType;
+    if (branch) agentQuery.branch = branch;
+
     // Restrict Team Lead to view only their shift and agent type agents
     if (req.user.role === "Team Lead") {
       agentQuery.shift = req.user.shift;
@@ -25,23 +30,19 @@ export const getQCPointsByDate = async (req, res) => {
       }
     }
 
-    // Fetch Agents based on query
-    const agents = await User.find(agentQuery, "username userImage role shift agentType");
+    const agents = await User.find(agentQuery, "username userImage role shift agentType branch");
     if (!agents.length) {
       return res.status(404).json({ message: "No agents found" });
     }
 
-    // Fetch QC Points for the selected date and agents
     const agentIds = agents.map((agent) => agent._id);
     const points = await QCPoint.find({
       userId: { $in: agentIds },
       date: { $gte: start, $lte: end },
     });
 
-    // Merge Agents with their QC Points Data
     const merged = agents.map((agent) => {
       const point = points.find((p) => p.userId.toString() === agent._id.toString());
-
       return {
         _id: agent._id,
         name: agent.username,
@@ -49,11 +50,9 @@ export const getQCPointsByDate = async (req, res) => {
         role: agent.role,
         shift: agent.shift,
         agentType: agent.agentType || "N/A",
+        branch: agent.branch,
         ...(point
-          ? {
-              ...point._doc,
-              id: point._id, // for table rowKey
-            }
+          ? { ...point._doc, id: point._id }
           : {
               time: "",
               profilePattern: "",
@@ -70,15 +69,28 @@ export const getQCPointsByDate = async (req, res) => {
     res.status(200).json(merged);
   } catch (error) {
     console.error("Error fetching QC Points by Date:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch points", error: error.message });
+    res.status(500).json({
+      message: "Failed to fetch points",
+      error: error.message,
+    });
   }
 };
 
+
 export const upsertQCPoint = async (req, res) => {
   try {
-    const { userId, date, values, editor, name, avatar } = req.body;
+    const {
+      userId,
+      date,
+      values,
+      editor,
+      name,
+      avatar,
+      shift,
+      agentType,
+      branch,
+    } = req.body;
+    console.log(branch)
 
     const start = moment(date).startOf("day").toDate();
     const end = moment(date).endOf("day").toDate();
@@ -101,6 +113,9 @@ export const upsertQCPoint = async (req, res) => {
         totalPoints,
         editedBy: editor,
         history: [...existing.history, historyEntry],
+        shift,
+        agentType,
+        branch,
       });
       await existing.save();
       return res.status(200).json(existing);
@@ -111,6 +126,9 @@ export const upsertQCPoint = async (req, res) => {
       date,
       name,
       avatar,
+      shift,
+      agentType,
+      branch,
       ...values,
       totalPoints,
       editedBy: editor,
@@ -126,23 +144,23 @@ export const upsertQCPoint = async (req, res) => {
   }
 };
 
-// ✅ Controller to Get Monthly QC Points Summary
 export const getMonthlyQCPointsSummary = async (req, res) => {
   try {
-    const { year, month } = req.query;
+    const { year, month, shift, agentType, branch } = req.query;
+
     if (!year || !month) {
-      return res
-        .status(400)
-        .json({ message: "Year and Month are required" });
+      return res.status(400).json({ message: "Year and Month are required" });
     }
 
     const start = moment(`${year}-${month}-01`).startOf("month").toDate();
     const end = moment(`${year}-${month}-01`).endOf("month").toDate();
 
-    // Build user query for QC Points
+    // Build user query
     const userQuery = { role: "agent" };
+    if (shift) userQuery.shift = shift;
+    if (agentType) userQuery.agentType = agentType;
+    if (branch) userQuery.branch = branch;
 
-    // Restrict Team Lead to view only their shift and agent type agents
     if (req.user.role === "Team Lead") {
       userQuery.shift = req.user.shift;
       if (req.user.agentType) {
@@ -150,7 +168,6 @@ export const getMonthlyQCPointsSummary = async (req, res) => {
       }
     }
 
-    // Fetch Users based on the query
     const agents = await User.find(userQuery, "username userImage shift agentType");
     if (!agents.length) {
       return res.status(404).json({ message: "No agents found" });
@@ -158,17 +175,16 @@ export const getMonthlyQCPointsSummary = async (req, res) => {
 
     const agentNames = agents.map((agent) => agent.username);
 
-    // Fetch QC Points Summary for the selected month and users
     const summary = await QCPoint.aggregate([
       {
         $match: {
           date: { $gte: start, $lte: end },
-          name: { $in: agentNames }, // Only include agents in the filtered list
+          name: { $in: agentNames },
         },
       },
       {
         $group: {
-          _id: "$name", // Group by user name
+          _id: "$name",
           totalPoints: { $sum: "$totalPoints" },
           avatar: { $first: "$avatar" },
         },
@@ -182,11 +198,10 @@ export const getMonthlyQCPointsSummary = async (req, res) => {
         },
       },
       {
-        $sort: { totalPoints: -1 }, // Sort by total points descending
+        $sort: { totalPoints: -1 },
       },
     ]);
 
-    // Get Top 5 from the sorted summary
     const top5 = summary.slice(0, 5);
 
     res.status(200).json({

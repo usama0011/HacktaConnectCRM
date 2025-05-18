@@ -25,25 +25,25 @@ const reportCards = [
     title: "QC Points Reports",
     subtitle: "Download QC Points Summary",
     icon: <img src={PointsIcon} alt="icon" />,
-    link: "/admin/dashboard/qcpoints",
+    link: "/admin/dashboard/qcpointsdownlaod",
   },
   {
     title: "Registered Users",
     subtitle: "Export All Registered Users",
     icon: <img src={UserIcons} alt="icon" />,
-    link: "/admin/dashboard/users",
+    link: "/admin/dashboard/registedusersdownlaodreports",
   },
   {
     title: "Agents IP Reports",
     subtitle: "Export IP Sessions & Clicks",
     icon: <img src={InsigntsIcon} alt="icon" />,
-    link: "/admin/dashboard/agentips",
+    link: "/admin/dashboard/agentreportsipsdownlaod",
   },
   {
     title: "Proxy Reports",
     subtitle: "Download Proxy Usage Log",
     icon: <img src={ProxyIcon} alt="icon" />,
-    link: "/admin/dashboard/proxy",
+    link: "/admin/dashboard/downlaodproxyreports",
   },
 ];
 

@@ -1,0 +1,87 @@
+.termpolicyclient-container {
+  padding: 40px;
+  max-width: 900px;
+  margin: auto;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.7;
+}
+
+.termpolicyclient-title {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  color: #003c2f;
+  margin-bottom: 10px;
+}
+
+.termpolicyclient-subtitle {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #003c2f;
+  padding-bottom: 8px;
+}
+
+.termpolicyclient-section {
+  margin-bottom: 40px;
+}
+
+.termpolicyclient-section h3 {
+  font-size: 20px;
+  color: #003c2f;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.termpolicyclient-section h4 {
+  font-size: 17px;
+  color: #1a1a1a;
+  font-weight: 600;
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
+
+.termpolicyclient-section p {
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.termpolicyclient-section ul {
+  padding-left: 20px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.termpolicyclient-section ul li {
+  margin-bottom: 6px;
+  font-size: 15px;
+  list-style-type: disc;
+}
+
+@media screen and (max-width: 768px) {
+  .termpolicyclient-container {
+    padding: 20px;
+  }
+
+  .termpolicyclient-title {
+    font-size: 26px;
+  }
+
+  .termpolicyclient-subtitle {
+    font-size: 20px;
+  }
+
+  .termpolicyclient-section h3 {
+    font-size: 18px;
+  }
+
+  .termpolicyclient-section h4 {
+    font-size: 16px;
+  }
+}
+
