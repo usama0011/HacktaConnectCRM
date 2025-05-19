@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Typography, Card, Row, Col, Table, DatePicker, Tag, message, Spin, Avatar } from "antd";
+import {
+  Typography,
+  Card,
+  Row,
+  Col,
+  Table,
+  DatePicker,
+  Tag,
+  message,
+  Spin,
+  Avatar,
+} from "antd";
 import { CalendarOutlined, UserOutlined } from "@ant-design/icons";
 import moment from "moment";
 import API from "../../utils/BaseURL";
@@ -75,15 +86,22 @@ const SingleUserAttendance = () => {
       <div className="attendance-user-header">
         <Avatar src={userData?.avatar} size={64} />
         <Title level={3}>{userData?.name}'s Attendance Overview</Title>
-        <DatePicker picker="month" value={selectedMonth} onChange={setSelectedMonth} />
+        <input
+          type="date"
+          className="simple-calendar"
+          value={selectedMonth.format("YYYY-MM-DD")}
+          onChange={(e) => setSelectedMonth(moment(e.target.value))}
+        />
       </div>
-
+      <br />
       <Spin spinning={loading}>
         <Row gutter={[16, 16]}>
           {Object.keys(stats).map((key) => (
             <Col xs={12} sm={8} md={4} key={key}>
               <Card className="attendance-stat-card">
-                <Title level={4}>{key.charAt(0).toUpperCase() + key.slice(1)}</Title>
+                <Title level={4}>
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </Title>
                 <Text>{stats[key]}</Text>
               </Card>
             </Col>

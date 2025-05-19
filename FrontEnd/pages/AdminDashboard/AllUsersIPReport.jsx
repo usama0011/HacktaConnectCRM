@@ -140,16 +140,19 @@ const AllUsersIPReport = () => {
             <strong>{selectedMonth.format("MMMM YYYY")}</strong>
           </Text>
         </div>
-        <DatePicker
-          picker="month"
-          value={selectedMonth}
-          onChange={(date) => setSelectedMonth(date || moment())}
-          className="ipreport-month-picker"
-        />
+        <input
+  type="month"
+  className="simple-calendar"
+  value={selectedMonth.format("YYYY-MM")}
+  onChange={(e) => setSelectedMonth(moment(e.target.value))}
+/>
+
       </div>
 
       {/* 🔍 Filters */}
-      <div style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}>
+      <div
+        style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
+      >
         <Select
           placeholder="Select Shift"
           value={filters.shift}
@@ -207,9 +210,7 @@ const AllUsersIPReport = () => {
                       <div className="rank-circle">{index + 1}</div>
                       <Avatar size={48} src={user.avatar} />
                       <div className="performer-details">
-                        <Text className="performer-name">
-                          {user.username}
-                        </Text>
+                        <Text className="performer-name">{user.username}</Text>
                         <Text type="secondary" className="performer-meta">
                           Clicks: {user.totalClicks} | Sessions:{" "}
                           {user.totalSessions}
@@ -227,7 +228,7 @@ const AllUsersIPReport = () => {
           </div>
         </Col>
       </Row>
-<br />
+      <br />
       <Table
         columns={columns}
         dataSource={users}

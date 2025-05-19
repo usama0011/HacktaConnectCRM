@@ -130,14 +130,11 @@ const AllUsersQCPoints = () => {
         <Text style={{ marginRight: "10px", color: "black" }}>
           Select Year & Month:
         </Text>
-        <DatePicker
-          picker="month"
-          value={selectedDate}
-          onChange={handleDateChange}
-          className="calendar-picker"
-          disabledDate={(current) =>
-            current && current > moment().endOf("month")
-          }
+        <input
+          type="month"
+          className="simple-calendar"
+          value={selectedDate.format("YYYY-MM")}
+          onChange={(e) => handleDateChange(moment(e.target.value))}
         />
       </div>
       <br />
@@ -204,32 +201,33 @@ const AllUsersQCPoints = () => {
           </Button>
         </div>
       </div>
-<br />
+      <br />
       {topUsers.length > 0 && (
         <>
           <Title style={{ color: "black" }} level={3}>
             🏆 Top 5 Performers of the Month
           </Title>
-          <Row gutter={[16, 16]}>
+          <div className="top-performer-grid">
             {topUsers.map((user, index) => (
-              <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4}>
-                <Card className="top-performer-card" bordered hoverable>
-                  <div style={{ textAlign: "center" }}>
+              <div className="performer-card-wrapper" key={index}>
+                <Card className="top-performer-grid-card" bordered hoverable>
+                  <div className="performer-card-inner">
                     <Avatar
                       size={64}
                       src={user.avatar}
                       icon={<UserOutlined />}
-                      style={{ marginBottom: 10 }}
+                      className="performer-avatar"
                     />
-                    <Title level={5} style={{ margin: 0 }}>
+                    <Title level={5} className="performer-name">
                       {user.name}
                     </Title>
                     <Text type="secondary">QC Points: {user.totalPoints}</Text>
                   </div>
                 </Card>
-              </Col>
+              </div>
             ))}
-          </Row>
+          </div>
+
           <br />
         </>
       )}

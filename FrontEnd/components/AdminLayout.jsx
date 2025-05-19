@@ -2,24 +2,9 @@ import React, { useState } from "react";
 import { Layout, Menu, Dropdown, Tooltip, Input, Button, Avatar } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import {
-  DashboardOutlined,
-  UserOutlined,
-  FolderOpenOutlined,
-  NotificationOutlined,
-  FileTextOutlined,
-  BarChartOutlined,
   SettingOutlined,
-  DollarCircleOutlined,
-  FileProtectOutlined,
   LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  BellOutlined,
   SearchOutlined,
-  QuestionCircleOutlined,
-  AppstoreAddOutlined,
-  DatabaseFilled,
-  NumberOutlined,
 } from "@ant-design/icons";
 import MainWebSiteLogo from "../src/assets/mainlogo.jpeg";
 import LogoutMainCharactor from "../src/assets/logoutcharactor.png";

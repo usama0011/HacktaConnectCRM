@@ -176,3 +176,12 @@
 .sidebar-scrollable::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
+
+.bitrix-menu .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  background-color: #003c2f !important;
+  color: white !important;
+  font-weight: 600;
+}
+.bitrix-menu .ant-menu-submenu-selected > .ant-menu-submenu-title .sidebariconspecial {
+  color: white !important;
+}

@@ -16,72 +16,75 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
-  padding: 0 20px;
-  background: transparent; /* subtle glass background */
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 10;
+  height: auto;
+  padding: 5px 24px;
+  background: white;
+  border-radius: 10px;
+  border-bottom: 1px solid #e0e0e0;
   position: sticky;
   top: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
-
-/* Left Section */
 .header-left {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex: 1;
 }
-.header-left > h2 {
-  color: #003c2f !important;
+
+.header-left > h1 {
+  color: #003c2f;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
 }
 
 .header-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid black;
+  border: 2px solid #e0e0e0;
+  object-fit: cover;
+  transition: all 0.3s ease;
 }
 
-.header-welcome {
-  color: black;
-  font-weight: 500;
-  font-size: 16px;
+.header-avatar:hover {
+  border-color: #003c2f;
 }
 
-/* Center Section */
 .header-center {
-  flex: 1;
+  flex: 2;
   display: flex;
   justify-content: center;
 }
 
 .header-search {
-  width: 60%;
+  width: 100%;
   max-width: 400px;
   border-radius: 20px;
-  padding-left: 12px;
-  border: none;
+  padding: 8px 16px;
+  border: 1px solid #ddd !important;
   outline: none;
-  background-color: white !important;
-  color: black;
-  transition: all 0.3s ease;
+  background-color: #fafafa !important;
+  color: black !important;
+  transition: all 0.3s ease !important;
 }
 
 .header-search input {
   background: transparent !important;
-  color: black;
+  color: black !important;
 }
 
 .header-search input::placeholder {
-  color: black;
+  color: #aaa;
 }
 
-/* Right Section */
 .header-right {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .header-icon {
@@ -104,31 +107,30 @@
   transition: background 0.3s;
 }
 
+
 @media (max-width: 768px) {
   .custom-admin-header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    height: auto;
-    padding: 12px;
+    align-items: stretch;
+    padding: 12px 16px;
+    gap: 12px;
   }
 
-  .header-left h1 {
-    font-size: 18px;
+  .header-left,
+  .header-center,
+  .header-right {
+    width: 100%;
   }
 
   .header-center {
-    width: 100%;
     justify-content: flex-start;
   }
 
-  .header-search {
-    width: 100%;
-    max-width: 100%;
+  .header-right {
+    justify-content: flex-end;
   }
 
-  .header-right {
-    width: 100%;
-    justify-content: flex-end;
+  .header-left > h1 {
+    font-size: 18px;
   }
 }

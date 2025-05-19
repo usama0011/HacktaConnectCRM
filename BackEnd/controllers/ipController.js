@@ -294,6 +294,7 @@ export const getMonthlyIPCounts = async (req, res) => {
 export const getDailyAgentIPsWithHistory = async (req, res) => {
   try {
     const { date, shift, agentType, branch } = req.query;
+    console.log(date)
     if (!date) return res.status(400).json({ message: "Date is required" });
 
     const startOfDay = moment(date).startOf("day").toDate();
@@ -337,11 +338,12 @@ export const getDailyAgentIPsWithHistory = async (req, res) => {
 
     // Prepare final response
     const response = agents.map((agent) => {
-      const ipRecord = records.find(
-        (record) =>
-          record.userId &&
-          record.userId.toString() === agent._id.toString()
-      );
+  const ipRecord = records.find(
+  (record) =>
+    record.userId &&
+    record.userId._id.toString() === agent._id.toString()
+);
+
 
       return {
         _id: agent._id,

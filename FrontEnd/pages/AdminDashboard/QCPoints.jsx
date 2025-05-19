@@ -44,11 +44,11 @@ const QCPoints = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [fieldValues, setFieldValues] = useState({});
-const [filters, setFilters] = useState({
-  shift: "",
-  agentType: "",
-  branch: "",
-});
+  const [filters, setFilters] = useState({
+    shift: "",
+    agentType: "",
+    branch: "",
+  });
 
   const [form] = Form.useForm();
 
@@ -67,15 +67,15 @@ const [filters, setFilters] = useState({
     setIsModalOpen(true);
 
     // 👇 Fetch attendance when modal opens
-    fetchUserAttendance(user._id);
+    fetchUserAttendance(user.userId || user._id); // fallback for safety
   };
   const handleUpdate = async () => {
     const totalPoints = Object.values(fieldValues).filter(
       (v) => v === "1"
     ).length;
-    console.log(editingUser)
+    console.log(editingUser);
     const payload = {
-      userId: editingUser._id,
+      userId: editingUser.userId || editingUser._id,
       name: editingUser.name,
       avatar: editingUser.avatar,
       shift: editingUser.shift,
@@ -93,14 +93,14 @@ const [filters, setFilters] = useState({
       // 🛠 If no attendance, mark it first
       if (attendanceStatus === null) {
         await API.post("/attendance/mark", {
-          userId: editingUser._id,
+          userId: editingUser.userId || editingUser._id,
           username: editingUser.name,
         });
       }
 
       // 🛠 Always update status (whether new or old)
       await API.put("/attendance/update-status", {
-        userId: editingUser._id,
+        userId: editingUser.userId || editingUser._id,
         date: selectedDate.format("YYYY-MM-DD"),
         newStatus: fieldValues.attendanceStatus,
         updatedBy: editor,
@@ -111,7 +111,7 @@ const [filters, setFilters] = useState({
       const updated = res.data;
 
       const updatedUsers = users.map((u) =>
-        u._id === updated.userId ? { ...u, ...updated } : u
+        (u.userId || u._id) === updated.userId ? { ...u, ...updated } : u
       );
       // ✅ If the status is "Late", keep it disabled
       if (fieldValues.attendanceStatus === "Late") {
@@ -124,7 +124,18 @@ const [filters, setFilters] = useState({
         duration: 2,
       });
     } catch (err) {
-      message.error("Failed to update QC point or attendance");
+      const errorMessage =
+        err?.response?.data?.message ||
+        "Failed to update QC point or attendance";
+
+      // 👇 Custom error for invalid attendance status
+      if (errorMessage.includes("Invalid attendance status")) {
+        message.error(
+          "⚠️ You must update the attendance status before saving otherwise no action."
+        );
+      } else {
+        message.error(errorMessage);
+      }
     }
   };
 
@@ -132,14 +143,14 @@ const [filters, setFilters] = useState({
     try {
       setLoading(true);
       const params = {
-      date,
-      shift: filters.shift || undefined,
-      agentType: filters.agentType || undefined,
-      branch: filters.branch || undefined,
-    };
+        date,
+        shift: filters.shift || undefined,
+        agentType: filters.agentType || undefined,
+        branch: filters.branch || undefined,
+      };
 
-    const res = await API.get("/qcpoints", { params });
-    setUsers(res.data);
+      const res = await API.get("/qcpoints", { params });
+      setUsers(res.data);
     } catch (error) {
       message.error("Failed to fetch QC points");
     } finally {
@@ -153,7 +164,6 @@ const [filters, setFilters] = useState({
         `/attendance/today/${userId}?date=${selectedDate.format("YYYY-MM-DD")}`
       );
       const data = res.data.today;
-
       setAttendanceStatus(data?.status || null);
       setAttendanceCheckInTime(
         data?.checkInTime ? moment(data.checkInTime).format("hh:mm A") : null
@@ -308,62 +318,72 @@ const [filters, setFilters] = useState({
         <Text style={{ color: "black", marginRight: "10px" }}>
           Select Date:
         </Text>
-        <DatePicker
-          value={selectedDate}
-          onChange={(date) => setSelectedDate(date || moment())}
-          className="calendar-picker"
-          format="YYYY-MM-DD"
+        <input
+          type="date"
+          className="simple-calendar"
+          value={selectedDate.format("YYYY-MM-DD")}
+          onChange={(e) => setSelectedDate(moment(e.target.value))}
         />
       </div>
-      <div className="filter-row" style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}>
-  <div>
-    <label>Shift</label>
-    <select
-      value={filters.shift}
-      onChange={(e) => setFilters({ ...filters, shift: e.target.value })}
-      style={{ width: 180, padding: 6, borderRadius: 4 }}
-    >
-      <option value="">All</option>
-      <option value="morning">Morning</option>
-      <option value="evening">Evening</option>
-      <option value="night">Night</option>
-    </select>
-  </div>
+      <div
+        className="filter-row"
+        style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
+      >
+        <div>
+          <label>Shift</label>
+          <select
+            value={filters.shift}
+            onChange={(e) => setFilters({ ...filters, shift: e.target.value })}
+            style={{ width: 180, padding: 6, borderRadius: 4 }}
+          >
+            <option value="">All</option>
+            <option value="morning">Morning</option>
+            <option value="evening">Evening</option>
+            <option value="night">Night</option>
+          </select>
+        </div>
 
-  <div>
-    <label>Agent Type</label>
-    <select
-      value={filters.agentType}
-      onChange={(e) => setFilters({ ...filters, agentType: e.target.value })}
-      style={{ width: 180, padding: 6, borderRadius: 4 }}
-    >
-      <option value="">All</option>
-      <option value="Office Agent">Office Agent</option>
-      <option value="WFH Agent">WFH Agent</option>
-    </select>
-  </div>
+        <div>
+          <label>Agent Type</label>
+          <select
+            value={filters.agentType}
+            onChange={(e) =>
+              setFilters({ ...filters, agentType: e.target.value })
+            }
+            style={{ width: 180, padding: 6, borderRadius: 4 }}
+          >
+            <option value="">All</option>
+            <option value="Office Agent">Office Agent</option>
+            <option value="WFH Agent">WFH Agent</option>
+          </select>
+        </div>
 
-  <div>
-    <label>Branch</label>
-    <select
-      value={filters.branch}
-      onChange={(e) => setFilters({ ...filters, branch: e.target.value })}
-      style={{ width: 180, padding: 6, borderRadius: 4 }}
-    >
-      <option value="">All</option>
-      <option value="Branch A">Branch A</option>
-      <option value="Branch B">Branch B</option>
-      <option value="Branch C">Branch C</option>
-      {/* Add more as needed */}
-    </select>
-  </div>
+        <div>
+          <label>Branch</label>
+          <select
+            value={filters.branch}
+            onChange={(e) => setFilters({ ...filters, branch: e.target.value })}
+            style={{ width: 180, padding: 6, borderRadius: 4 }}
+          >
+            <option value="">All</option>
+            <option value="Branch A">Branch A</option>
+            <option value="Branch B">Branch B</option>
+            <option value="Branch C">Branch C</option>
+            {/* Add more as needed */}
+          </select>
+        </div>
 
-  <div style={{ alignSelf: "flex-end" }}>
-    <Button type="primary" onClick={() => fetchUsersAndPoints(selectedDate.format("YYYY-MM-DD"))}>
-      Apply Filters
-    </Button>
-  </div>
-</div>
+        <div style={{ alignSelf: "flex-end" }}>
+          <Button
+            type="primary"
+            onClick={() =>
+              fetchUsersAndPoints(selectedDate.format("YYYY-MM-DD"))
+            }
+          >
+            Apply Filters
+          </Button>
+        </div>
+      </div>
 
       <br />
       <Table
@@ -374,6 +394,7 @@ const [filters, setFilters] = useState({
         pagination={{ pageSize: 50 }}
         bordered
         className="qupointsAddTable"
+        scroll={{ x: 800 }} // ✅ scrolls horizontally if screen is small
       />
 
       {/* Modal for Editing */}

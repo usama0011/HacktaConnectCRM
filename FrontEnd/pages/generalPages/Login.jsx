@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Card, Form, Input, Button, Typography, Checkbox, message } from "antd";
 import { LockOutlined, UserOutlined, GoogleOutlined } from "@ant-design/icons";
 import "../../styles/Login.css";
-import MainWebSiteLogo from "../../src/assets/mainlogo.jpeg";
+import MainWebSiteLogoo from "../../src/assets/mainlogo.jpeg";
+import MainWebSiteLogooo from "../../src/assets/mainlogo.png";
 import LoginBanner from "../../src/assets/10315339.jpg";
 import LoginBannerrrrr from "../../src/assets/thistime.png";
 import { useNavigate } from "react-router-dom";
@@ -73,7 +74,7 @@ const Login = () => {
     <div className="login-container">
       {/* Left Section - Login Form */}
       <div className="login-form-container">
-        <img src={MainWebSiteLogo} alt="Brand Logo" className="login-logo" />
+        <img src={MainWebSiteLogoo} alt="Brand Logo" className="login-logo" />
         <Title level={2} className="login-welcome">
           Welcome back
         </Title>
@@ -191,6 +192,8 @@ const Login = () => {
           </svg>
 
           <div>
+                    <img src={MainWebSiteLogoo} alt="Brand Logo" className="login-logo" />
+
             <h1>
               <span
                 style={{

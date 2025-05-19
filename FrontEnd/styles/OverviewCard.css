@@ -4,11 +4,23 @@
   gap: 24px;
   background-color: #f6f6f6;
 }
+.CRM-card-wave-header {
+  height: 80px;
+  width: 100%;
+  background: linear-gradient(135deg, #154238, #003c2f);
+  clip-path: path("M0,0 C50,80 150,80 200,0 L200,0 L0,0 Z"); /* Fallback in Safari */
+  clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  position: relative;
+  z-index: 1;
+  margin: -10px -10px 10px -10px;
+}
 
 .CRM-overview-carddd {
   border-radius: 18px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-  padding: 10px;
+  padding: 0px;
   background-color: #fff;
   border: none;
   display: flex;
@@ -102,52 +114,55 @@
 .CRM-points-icon {
   margin-right: 5px;
 }
-.CRM-leaderboard-ribbon {
+.CRM-leaderboard-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px auto 0px;
+  margin: 30px auto;
   position: relative;
+}
+
+.CRM-leaderboard-ribbon {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .CRM-ribbon-center {
   background: linear-gradient(to bottom, #003c2f, #02543d);
   color: white;
-  padding: 12px 40px;
+  padding: 12px 50px;
   border-radius: 8px;
   font-weight: bold;
   font-size: 20px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-  position: relative;
   z-index: 2;
+  position: relative;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .CRM-ribbon-left,
 .CRM-ribbon-right {
+  content: "";
   width: 0;
   height: 0;
-  border-top: 30px solid transparent;
-  border-bottom: 30px solid transparent;
+  border-top: 24px solid transparent;
+  border-bottom: 24px solid transparent;
   position: relative;
-  top: 0;
   z-index: 1;
 }
 
 .CRM-ribbon-left {
-  border-right: 30px solid #003c2f;
-  margin-right: -15px;
-  border-radius: 0 0 0 10px;
+  border-right: 20px solid #003c2f;
+  margin-right: -10px;
 }
 
 .CRM-ribbon-right {
-  border-left: 30px solid #003c2f;
-  margin-left: -15px;
-  border-radius: 0 0 10px 0;
+  border-left: 20px solid #003c2f;
+  margin-left: -10px;
 }
-.CRM-extra-info {
-  margin-top: 8px;
-}
+
 
 .CRM-shift,
 .CRM-totalips {
@@ -155,6 +170,7 @@
   font-size: 13px;
   color: #444;
 }
+
 
 @media (max-width: 992px) {
   .CRM-overview-container {

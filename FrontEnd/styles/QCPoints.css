@@ -219,3 +219,54 @@
   height: 36px;
   padding: 0 16px;
 }
+.top-performer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.performer-card-wrapper {
+  width: 100%;
+}
+
+.top-performer-grid-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+  text-align: center;
+}
+
+.top-performer-grid-card:hover {
+  box-shadow: 0 8px 22px rgba(0, 60, 47, 0.15);
+  transform: translateY(-4px);
+}
+
+.performer-card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.performer-avatar {
+  margin-bottom: 10px;
+  border: 2px solid #003c2f;
+  padding: 2px;
+}
+
+.performer-name {
+  margin: 0;
+  color: #003c2f;
+}
+
+@media (max-width: 600px) {
+  .date-filter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .qcpoints-title{
+    font-size: 20px !important;
+  }
+}

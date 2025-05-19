@@ -89,8 +89,8 @@ export const markAttendanceForAgent = async (req, res) => {
 export const getTodayAttendance = async (req, res) => {
   try {
     const userId = new mongoose.Types.ObjectId(req.params.userId);
+    console.log(req.params.userId)
     const dateParam = req.query.date;
-    console.log(userId, dateParam);
 
     if (!dateParam) {
       return res.status(400).json({
@@ -100,20 +100,18 @@ export const getTodayAttendance = async (req, res) => {
       });
     }
 
-    const startOfDayLocal = new Date(dateParam);
-    startOfDayLocal.setHours(0, 0, 0, 0);
-
-    const endOfDayLocal = new Date(dateParam);
-    endOfDayLocal.setHours(23, 59, 59, 999);
+    // 🔥 Create UTC-based range explicitly
+    const startOfDayUTC = new Date(`${dateParam}T00:00:00.000Z`);
+    const endOfDayUTC = new Date(`${dateParam}T23:59:59.999Z`);
 
     const todayAttendance = await Attendance.findOne({
       userId,
       date: {
-        $gte: startOfDayLocal,
-        $lte: endOfDayLocal,
+        $gte: startOfDayUTC,
+        $lte: endOfDayUTC,
       },
     });
-
+   console.log(todayAttendance)
     if (!todayAttendance) {
       return res.status(404).json({
         success: false,
@@ -134,6 +132,7 @@ export const getTodayAttendance = async (req, res) => {
     });
   }
 };
+
 // ✅ Controller for Agent Checkout
 export const agentCheckout = async (req, res) => {
   const { userId } = req.body;

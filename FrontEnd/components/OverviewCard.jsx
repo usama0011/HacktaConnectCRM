@@ -31,11 +31,14 @@ const OverviewCard = () => {
 
   return (
     <>
-      <div className="CRM-leaderboard-ribbon">
-        <div className="CRM-ribbon-left" />
-        <div className="CRM-ribbon-center">LEADERBOARD</div>
-        <div className="CRM-ribbon-right" />
+      <div className="CRM-leaderboard-wrapper">
+        <div className="CRM-leaderboard-ribbon">
+          <div className="CRM-ribbon-left"></div>
+          <div className="CRM-ribbon-center">LEADERBOARD</div>
+          <div className="CRM-ribbon-right"></div>
+        </div>
       </div>
+
       <br />
 
       <div className="CRM-overview-container">
@@ -47,20 +50,30 @@ const OverviewCard = () => {
             ))
           : cardData.map((card, index) => (
               <Card className="CRM-overview-carddd" key={index}>
+                <div className="CRM-card-wave-header" />
+
                 <div className="CRM-card-content">
                   <div className="CRM-card-text">
                     <p className="CRM-card-title">{card.rank}</p>
-                    <h2 className="CRM-card-value">{card.totalPoints} Points</h2>
+                    <h2 className="CRM-card-value">
+                      {card.totalPoints} Points
+                    </h2>
 
                     <p
                       className={`CRM-card-change ${
-                        card.changeType === "up" ? "CRM-positive" : "CRM-negative"
+                        card.changeType === "up"
+                          ? "CRM-positive"
+                          : "CRM-negative"
                       }`}
                     >
                       {card.changeType === "up" ? (
-                        <RiseOutlined style={{ color: "green", marginRight: 4 }} />
+                        <RiseOutlined
+                          style={{ color: "green", marginRight: 4 }}
+                        />
                       ) : (
-                        <FallOutlined style={{ color: "red", marginRight: 4 }} />
+                        <FallOutlined
+                          style={{ color: "red", marginRight: 4 }}
+                        />
                       )}
                       {card.lastMonthPoints === 0
                         ? "0 vs last month"
@@ -95,8 +108,12 @@ const OverviewCard = () => {
                     <span className="CRM-banner-name">{card.username}</span>
                   </div>
                   <div className="CRM-banner-points">
-                    <span className="CRM-points-icon"><HighlightFilled/></span>
-                    <span className="CRM-banner-score">{card.totalPoints} pts</span>
+                    <span className="CRM-points-icon">
+                      <HighlightFilled />
+                    </span>
+                    <span className="CRM-banner-score">
+                      {card.totalPoints} pts
+                    </span>
                   </div>
                 </div>
               </Card>

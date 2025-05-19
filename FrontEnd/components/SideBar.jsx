@@ -1,32 +1,61 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DashboardOutlined,
   BarChartOutlined,
   UserOutlined,
-  FolderOpenOutlined,
-  NotificationOutlined,
-  FileTextOutlined,
   FileProtectOutlined,
   DollarCircleOutlined,
   SettingOutlined,
-  BellOutlined,
   LogoutOutlined,
-  DatabaseFilled,
-  CalendarFilled,
   CalendarOutlined,
   DotChartOutlined,
 } from "@ant-design/icons";
 import "../styles/SideBar.css";
 import { Button, Layout, Menu } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import MainWebSiteLogo from "../src/assets/mainlogo.jpeg";
-import { useLocation } from "react-router-dom";
 
 const { Sider } = Layout;
 
 const Sidebar = () => {
   const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
+  const [openKeys, setOpenKeys] = useState([]);
+
+  const handleOpenChange = (keys) => {
+    setOpenKeys(keys);
+  };
+
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.includes("/manageusers") || path.includes("/addnewuser")) {
+      setOpenKeys(["/admin/dashboard/manageusers"]);
+    } else if (
+      path.includes("/ipreportsusers") ||
+      path.includes("/AllQCPoints") ||
+      path.includes("/addqcpointform") ||
+      path.includes("/dailyipreport")
+    ) {
+      setOpenKeys(["/admin/dashboard/ipreportsusers"]);
+    }
+  }, [location.pathname]);
+
+  // Highlight parent menu when in child route
+  const getHighlightedKey = () => {
+    const path = location.pathname;
+    if (path.includes("/manageusers") || path.includes("/addnewuser")) {
+      return "/admin/dashboard/manageusers";
+    }
+    if (
+      path.includes("/ipreportsusers") ||
+      path.includes("/AllQCPoints") ||
+      path.includes("/addqcpointform") ||
+      path.includes("/dailyipreport")
+    ) {
+      return "/admin/dashboard/ipreportsusers";
+    }
+    return location.pathname;
+  };
 
   return (
     <Sider
@@ -43,12 +72,14 @@ const Sidebar = () => {
         <div className="sidebar-logo">
           <img src={MainWebSiteLogo} alt="Logo" />
         </div>
-        {/* Made It Active Even on Submenu Even okay  */}
+
         <div className="sidebar-scrollable">
           <Menu
             mode="inline"
             theme="light"
-            selectedKeys={[location.pathname]}
+            selectedKeys={[getHighlightedKey()]}
+            openKeys={isHovered ? openKeys : []}
+            onOpenChange={handleOpenChange}
             className={`bitrix-menu ${isHovered ? "show-labels" : ""}`}
             inlineCollapsed={!isHovered}
           >
@@ -99,7 +130,9 @@ const Sidebar = () => {
                 </Link>
               </Menu.Item>
               <Menu.Item key="/admin/dashboard/AllQCPoints">
-                <Link to="/admin/dashboard/AllQCPoints">Agent QC Reports</Link>
+                <Link to="/admin/dashboard/AllQCPoints">
+                  Agent QC Reports
+                </Link>
               </Menu.Item>
               <Menu.Item key="/admin/dashboard/addqcpointform">
                 <Link to="/admin/dashboard/addqcpointform">Add QC Points</Link>
@@ -120,15 +153,12 @@ const Sidebar = () => {
               </Link>
             </Menu.Item>
 
-            
             <Menu.Item
               key="/admin/dashboard/settings"
               icon={<SettingOutlined className="sidebariconspecial" />}
             >
               <Link to="/admin/dashboard/settings">Settings</Link>
             </Menu.Item>
-
-           
 
             <Menu.Item
               key="/admin/dashboard/termsandpolicies"
@@ -138,7 +168,6 @@ const Sidebar = () => {
                 Terms & Policies
               </Link>
             </Menu.Item>
-
           </Menu>
         </div>
 

@@ -7,12 +7,20 @@ import {
   Tag,
   Button,
   message,
+  Tooltip,
   Spin,
   Card,
   Row,
   Col,
 } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import {
+  EnvironmentOutlined,
+  StarFilled,
+  CalendarOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import dayjs from "dayjs"; // or use moment if preferred
+
 import moment from "moment";
 import "../../styles/Attendance.css";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +31,10 @@ import { Select } from "antd";
 
 const AllUsersAttendance = () => {
   const [selectedMonth, setSelectedMonth] = useState(moment());
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+
   const [attendanceData, setAttendanceData] = useState([]);
   const [topPerformers, setTopPerformers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -35,16 +47,16 @@ const AllUsersAttendance = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch attendance data when the component loads or when the month changes
-    fetchAttendanceData(selectedMonth);
-  }, [selectedMonth]);
+    const date = dayjs(selectedDate).startOf("month");
+    fetchAttendanceData(date);
+  }, [selectedDate, filters]);
 
   const fetchAttendanceData = async (month) => {
     try {
       setLoading(true);
       const res = await API.get("/attendance/all", {
         params: {
-          date: month.startOf("month").toISOString(),
+          date: month.toISOString(), // ✅ sends same format as Ant Design
           shift: filters.shift || undefined,
           agentType: filters.agentType || undefined,
           branch: filters.branch || undefined,
@@ -124,15 +136,14 @@ const AllUsersAttendance = () => {
         📅 All Users Attendance
       </Title>
       <div className="attendance-header">
-        <DatePicker
-          picker="month"
-          value={selectedMonth}
-          onChange={(value) => setSelectedMonth(value)}
-          format="MMMM YYYY"
-          allowClear={false}
+        <input
+          type="date"
+          className="simple-calendar"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
         />
         <div className="attendance-current-date">
-          📅 {moment().format("dddd D MMMM YYYY")}
+          📅 {dayjs().format("dddd D MMMM YYYY")}
         </div>
       </div>
 
@@ -175,12 +186,13 @@ const AllUsersAttendance = () => {
           <Select.Option value="">All Branches</Select.Option>
           <Select.Option value="Branch A">Branch A</Select.Option>
           <Select.Option value="Branch B">Branch B</Select.Option>
-          <Select.Option value="Branch C">Branch C</Select.Option>
         </Select>
 
         <Button
           type="primary"
-          onClick={() => fetchAttendanceData(selectedMonth)}
+          onClick={() =>
+            fetchAttendanceData(dayjs(selectedDate).startOf("month"))
+          }
         >
           Apply Filters
         </Button>
@@ -194,16 +206,23 @@ const AllUsersAttendance = () => {
         <Row gutter={[16, 16]}>
           {topPerformers.map((performer, index) => (
             <Col xs={24} sm={12} md={8} lg={6} key={index}>
-              <Card className="top-performer-card">
-                <Avatar
-                  src={performer.avatar}
-                  size={64}
-                  className="performer-avatar"
-                />
-                <Text className="performer-name">{performer.name}</Text>
-                <Text className="performer-stats">
-                  Present: {performer.presentDays} / {performer.totalDays} days
-                </Text>
+              <Card className="wave-card" bordered={false}>
+                <div className="wave-bg" />
+                <div className="wave-card-inner">
+                  <Avatar
+                    size={72}
+                    src={performer.avatar}
+                    className="avatar-ring"
+                  />
+                  <Text strong className="performer-name">
+                    {performer.name}
+                  </Text>
+                  <div className="present-info">
+                    <CalendarOutlined style={{ marginRight: 6 }} />
+                    {performer.presentDays}/{performer.totalDays} Present
+                  </div>
+                  <div className="badge">#Best Performer {index + 1}</div>
+                </div>
               </Card>
             </Col>
           ))}

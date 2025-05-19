@@ -34,7 +34,7 @@ const AddNewUser = () => {
   const [loading, setLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [superAdminExists, setSuperAdminExists] = useState(false);
-  const [noBankAccount, setNoBankAccount] = useState(true);
+  const [hasBankAccount, setHasBankAccount] = useState(false);
 
   const handleSubmit = async (values) => {
     setLoading(true);
@@ -45,23 +45,23 @@ const AddNewUser = () => {
         setLoading(false);
         return;
       }
-  
+
       // Upload image to backend for S3
       const formData = new FormData();
       formData.append("image", imageFile);
-  
+
       const uploadRes = await axios.post(
         "https://hackta-connect-crm-client.vercel.app/api/upload",
         formData
       );
-  
+
       const imageUrl = uploadRes.data.url;
       if (!imageUrl) {
         message.error("Image upload failed. Please try again.");
         setLoading(false);
         return;
       }
-  
+
       const userData = {
         username: values.username,
         password: values.password,
@@ -74,21 +74,22 @@ const AddNewUser = () => {
         cnic: values.cnic,
         userImage: imageUrl,
         CreatedBy: "Abdul Moiz",
-        bankaccountstatus: noBankAccount,
+        bankaccountstatus: hasBankAccount,
       };
-  
-      if (!noBankAccount) {
+      if (hasBankAccount) {
         userData.accountTitle = values.accountTitle;
         userData.bankName = values.bankName;
         userData.bankNumber = values.bankNumber;
       }
-  
+
       await API.post("/auth/signup", userData);
-  
+
       message.success(`User "${values.username}" added successfully!`);
       form.resetFields();
-      setNoBankAccount(true);
+      setHasBankAccount(false); // ✅ this is the correct state setter function
     } catch (err) {
+      console.error("Submission Error:", err); // <-- Add this
+
       if (err.response) {
         message.error(`Error: ${err.response.data.message}`);
       } else if (err.request) {
@@ -100,7 +101,7 @@ const AddNewUser = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     const checkSuperAdmin = async () => {
       try {
@@ -340,14 +341,14 @@ const AddNewUser = () => {
 
           <Form.Item>
             <Checkbox
-              checked={!noBankAccount} // ✅ Inverted logic (checked means showing details)
-              onChange={(e) => setNoBankAccount(!e.target.checked)} // ✅ Inverted logic
+              checked={hasBankAccount}
+              onChange={(e) => setHasBankAccount(e.target.checked)}
             >
               User has Bank Details
             </Checkbox>
           </Form.Item>
 
-          {!noBankAccount && (
+          {hasBankAccount && (
             <>
               <Row gutter={16}>
                 <Col xs={24} md={12}>
@@ -401,7 +402,6 @@ const AddNewUser = () => {
           </Form.Item>
         </Form>
       </Card>
-      s
     </div>
   );
 };

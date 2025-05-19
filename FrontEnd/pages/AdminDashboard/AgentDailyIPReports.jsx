@@ -23,7 +23,11 @@ const { Title, Text } = Typography;
 
 const AgentDailyIPReports = () => {
   const [selectedDate, setSelectedDate] = useState(moment());
-  const [filters, setFilters] = useState({ shift: "", agentType: "", branch: "" });
+  const [filters, setFilters] = useState({
+    shift: "",
+    agentType: "",
+    branch: "",
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editHistory, setEditHistory] = useState([]);
   const [editingRecord, setEditingRecord] = useState(null);
@@ -116,10 +120,11 @@ const AgentDailyIPReports = () => {
     <div className="daily-ip-container">
       <div className="daily-ip-header">
         <Title level={3}>🗓 Agent IP Report - Daily</Title>
-        <DatePicker
-          value={selectedDate}
-          onChange={setSelectedDate}
-          className="daily-ip-picker"
+        <input
+          type="date"
+          className="simple-calendar"
+          value={selectedDate.format("YYYY-MM-DD")}
+          onChange={(e) => setSelectedDate(moment(e.target.value))}
         />
       </div>
 
@@ -168,11 +173,7 @@ const AgentDailyIPReports = () => {
             </Select>
           </Col>
           <Col>
-            <Button
-              type="primary"
-              style={{ marginTop: 1 }}
-              onClick={fetchData}
-            >
+            <Button type="primary" style={{ marginTop: 1 }} onClick={fetchData}>
               Apply Filters
             </Button>
           </Col>
@@ -185,7 +186,7 @@ const AgentDailyIPReports = () => {
         dataSource={data}
         rowKey="_id"
         className="user-table-singipoidsfisodf"
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 50 }}
         bordered
       />
 
@@ -232,7 +233,9 @@ const AgentDailyIPReports = () => {
           {editHistory.length > 0 ? (
             editHistory.map((item, index) => (
               <Card key={index} className="history-item" size="small">
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
                   <Text strong>
                     {item.isOriginal ? "📝 Original Submission" : item.editor}
                   </Text>

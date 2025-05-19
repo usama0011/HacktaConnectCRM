@@ -190,8 +190,8 @@ const UploadWork = () => {
     const fetchUserWorkData = async () => {
       try {
         if (user?._id) {
-          const res = await axios.get(
-            `http://localhost:5000/api/ip/${user._id}`
+          const res = await API.get(
+            `/ip/${user._id}`
           );
           setDataSource(res.data.ipRecords); // Assuming your backend sends an array
         }

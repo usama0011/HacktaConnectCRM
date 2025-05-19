@@ -83,30 +83,22 @@ const UserLayout = () => {
           <Menu.Item key="3" icon={<FileTextOutlined />}>
             <Link to="/user/dashboard/myrecord">My Records</Link>
           </Menu.Item>
-          <Menu.Item key="4" icon={<CalendarOutlined />}>
-            <Link to="/user/dashboard/noticecalendar">Notice Calendar</Link>
-          </Menu.Item>
-          <Menu.Item key="5" icon={<BellOutlined />}>
-            <Link to="/user/dashboard/notifications">Notifications</Link>
-          </Menu.Item>
-          <Menu.Item key="6" icon={<FolderOpenOutlined />}>
-            <Link to="/user/dashboard/usertasks">User Tasks</Link>
-          </Menu.Item>
+
           <Menu.Item key="7" icon={<UploadOutlined />}>
             <Link to="/user/dashboard/uploadwork">Upload Work</Link>
           </Menu.Item>
-          <Menu.Item key="7" icon={<CalculatorOutlined />}>
+          <Menu.Item key="8" icon={<CalculatorOutlined />}>
             <Link to="/user/dashboard/generalsalarycalculator">
               Salary Calculator
             </Link>
           </Menu.Item>
-          <Menu.Item key="8" icon={<SettingOutlined />}>
+          <Menu.Item key="9" icon={<SettingOutlined />}>
             <Link to="/user/dashboard/settings">Settings</Link>
           </Menu.Item>
-          <Menu.Item key="9" icon={<FileTextOutlined />}>
+          <Menu.Item key="10" icon={<FileTextOutlined />}>
             <Link to="/user/dashboard/termsandpolicies">Terms & Policies</Link>
           </Menu.Item>
-          <Menu.Item key="10" icon={<QuestionCircleOutlined />}>
+          <Menu.Item key="11" icon={<QuestionCircleOutlined />}>
             <Link to="/user/dashboard/faqs">Faqs</Link>
           </Menu.Item>
         </Menu>

@@ -28,7 +28,7 @@ import HeaderImage from "../../src/assets/headerImage.png";
 import FooterImage from "../../src/assets/footerImage.png";
 import "../../styles/DownloadSalaryWokers.css";
 const { Option } = Select;
-const { RangePicker, MonthPicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 
 const DownloadSalaryWokers = () => {
   const [filters, setFilters] = useState({
@@ -373,6 +373,7 @@ const DownloadSalaryWokers = () => {
               value={formValues.date}
               onChange={(val) => setFormValues({ ...formValues, date: val })}
               style={{ width: "100%" }}
+              inputReadOnly
             />
           </Col>
           <Col xs={24} sm={8}>
@@ -408,11 +409,22 @@ const DownloadSalaryWokers = () => {
         <Row gutter={16} style={{ marginTop: 20 }}>
           <Col xs={24} sm={8}>
             <label>Month</label>
-            <MonthPicker
-              onChange={handmymycage}
-              placeholder="Select month"
-              style={{ width: "100%" }}
-              format="YYYY-MM"
+            <input
+              type="month"
+              style={{
+                width: "100%",
+                padding: "8px",
+                borderRadius: "4px",
+                border: "1px solid #d9d9d9",
+              }}
+              onChange={(e) => {
+                const [year, month] = e.target.value.split("-");
+                setFilters((prev) => ({
+                  ...prev,
+                  year,
+                  month,
+                }));
+              }}
             />
           </Col>
           <Col xs={24} sm={8}>
