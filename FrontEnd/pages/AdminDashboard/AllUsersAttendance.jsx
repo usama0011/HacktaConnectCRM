@@ -201,8 +201,10 @@ const AllUsersAttendance = () => {
       {/* Top Performers Section */}
       <div className="top-performers-container">
         <Title level={3} className="top-performers-title">
+          <br />
           🏆 Top 5 Attendance Performers
         </Title>
+        <br />
         <Row gutter={[16, 16]}>
           {topPerformers.map((performer, index) => (
             <Col xs={24} sm={12} md={8} lg={6} key={index}>

@@ -231,17 +231,39 @@
 }
 
 .top-performer-grid-card {
-  border-radius: 12px;
+  border-radius: 16px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   height: 100%;
   text-align: center;
+  overflow: hidden;
+  position: relative;
+  padding: 0; /* Remove default Antd padding */
+}
+.top-performer-grid-card .ant-card-body {
+  padding: 0 !important;
 }
 
 .top-performer-grid-card:hover {
   box-shadow: 0 8px 22px rgba(0, 60, 47, 0.15);
   transform: translateY(-4px);
 }
+
+.performer-card-top-curve {
+  height: 40px;
+  width: 100%;
+  background: linear-gradient(135deg, #154238, #003c2f);
+  clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%);
+}
+
+.performer-card-bottom-curve {
+  height: 36px;
+  width: 100%;
+  background: linear-gradient(135deg, #003c2f, #154238);
+  clip-path: path("M0,0 C50,40 150,40 100%,0 L100%,100% L0,100%");
+  clip-path: polygon(0 40%, 25% 60%, 75% 60%, 100% 40%, 100% 100%, 0 100%);
+}
+
 
 .performer-card-inner {
   display: flex;

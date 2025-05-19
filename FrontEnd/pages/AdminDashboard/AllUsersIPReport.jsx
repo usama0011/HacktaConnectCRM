@@ -122,6 +122,7 @@ const AllUsersIPReport = () => {
             navigate(`/admin/dashboard/ipreport/user/${record.id}`)
           }
         >
+          {console.log(record)}
           View Details
         </Button>
       ),
@@ -141,12 +142,11 @@ const AllUsersIPReport = () => {
           </Text>
         </div>
         <input
-  type="month"
-  className="simple-calendar"
-  value={selectedMonth.format("YYYY-MM")}
-  onChange={(e) => setSelectedMonth(moment(e.target.value))}
-/>
-
+          type="month"
+          className="simple-calendar"
+          value={selectedMonth.format("YYYY-MM")}
+          onChange={(e) => setSelectedMonth(moment(e.target.value))}
+        />
       </div>
 
       {/* 🔍 Filters */}
@@ -196,9 +196,11 @@ const AllUsersIPReport = () => {
       <br />
       <Row gutter={[24, 24]} className="top-performers-row">
         <Col span={24}>
+        <br />
           <Title level={4} className="section-heading">
             🏆 Top 3 Performing Agents
           </Title>
+          <br />
           <div className="top-performers-list">
             {users
               .sort((a, b) => b.totalIPs - a.totalIPs)
@@ -207,7 +209,7 @@ const AllUsersIPReport = () => {
                 <Card key={user.id} className="top-performer-card">
                   <div className="performer-content">
                     <div className="performer-left">
-                      <div className="rank-circle">{index + 1}</div>
+                      <div className="rank-circle">#{index + 1}</div>
                       <Avatar size={48} src={user.avatar} />
                       <div className="performer-details">
                         <Text className="performer-name">{user.username}</Text>
@@ -223,11 +225,15 @@ const AllUsersIPReport = () => {
                       alt="rank"
                     />
                   </div>
+
+                  {/* ✅ Bottom wave */}
+                  <div className="performer-wave-footer" />
                 </Card>
               ))}
           </div>
         </Col>
       </Row>
+      <br />
       <br />
       <Table
         columns={columns}

@@ -96,6 +96,10 @@
   transition: 0.3s ease;
   padding: 0;
 }
+.top-performer-card .ant-card-body {
+  padding: 0px !important;
+  width: 100% !important;
+}
 
 .top-performer-card:hover {
   transform: translateY(-4px);
@@ -146,4 +150,15 @@
   width: 24px;
   height: 24px;
   object-fit: contain;
+}
+
+
+.performer-wave-footer {
+  height: 32px;
+  width: 100%;
+  background: linear-gradient(135deg, #003c2f, #02543d);
+  clip-path: polygon(0 40%, 100% 100%, 0% 100%);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  z-index: 1;
 }

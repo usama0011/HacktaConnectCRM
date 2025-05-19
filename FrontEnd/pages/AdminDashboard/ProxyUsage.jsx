@@ -46,11 +46,14 @@ const ProxyUsage = () => {
 
   return (
     <div className="proxy-dashboard-container">
-      <div className="CRM-leaderboard-ribbon">
-        <div className="CRM-ribbon-left" />
-        <div className="CRM-ribbon-center">PROXY USAGE</div>
-        <div className="CRM-ribbon-right" />
-      </div>
+     <div className="CRM-leaderboard-wrapper">
+          <div className="CRM-leaderboard-ribbon">
+            <div className="CRM-ribbon-left"></div>
+            <div className="CRM-ribbon-center">Company Statistics</div>
+            <div className="CRM-ribbon-right"></div>
+          </div>
+        </div>
+
       <br />
       <Row gutter={[24, 24]}>
         {proxies.map((proxy, idx) => (

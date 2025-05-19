@@ -17,27 +17,27 @@ import {
 import { useParams, useLocation } from "react-router-dom";
 import moment from "moment";
 import API from "../../utils/BaseURL";
-import { Column } from "@ant-design/plots"; // 📊 Chart
-import "../../styles/SingleUserIPReport.css"; // new separate CSS
+import { Column } from "@ant-design/plots";
+import "../../styles/SingleUserIPReport.css";
 
 const { Title, Text } = Typography;
 
 const SingleUserIPReport = () => {
   const { userId } = useParams();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-
-  const year = searchParams.get("year") || moment().format("YYYY");
-  const month = searchParams.get("month") || moment().format("MM");
-
+  const [loading, setLoading] = useState(false);
   const [userSubmissions, setUserSubmissions] = useState([]);
-  const [userInfo, setUserInfo] = useState(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [newClicks, setNewClicks] = useState(0);
   const [newSessions, setNewSessions] = useState(0);
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const year = searchParams.get("year") || moment().format("YYYY");
+  const month = searchParams.get("month") || moment().format("MM");
+
   const fetchUserMonthlyData = async () => {
+    setLoading(true);
     try {
       const res = await API.get(`/ip/monthlyips/${userId}`, {
         params: { year, month },
@@ -47,23 +47,13 @@ const SingleUserIPReport = () => {
       }
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const fetchUserInfo = async () => {
-    try {
-      const res = await API.get(`/users/${userId}`);
-      if (res.data) {
-        setUserInfo(res.data);
-      }
-    } catch (error) {
-      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchUserMonthlyData();
-    fetchUserInfo();
   }, [userId, month, year]);
 
   const handleEdit = (record) => {
@@ -110,30 +100,44 @@ const SingleUserIPReport = () => {
     },
   ];
 
-  const chartConfig = {
-    data: userSubmissions.map((item) => ({
-      date: moment(item.date, "D-M-YYYY").format("DD MMM"),
-      totalIPs: item.totalIPs,
-    })),
-    xField: "date",
-    yField: "totalIPs",
-    columnWidthRatio: 0.6,
-    color: "#003c2f",
+const chartConfig = {
+  data: userSubmissions.map((item) => ({
+    date: moment(item.date, "D-M-YYYY").format("DD MMM"),
+    totalIPs: item.totalIPs,
+  })),
+  xField: "date",
+  yField: "totalIPs",
+  columnWidthRatio: 0.6,
+
+  /** ✅ Use style for static color override */
+  style: {
+    fill: "#003c2f", // ← works reliably across versions
+  },
+
+  label: {
+    position: "middle",
+    style: { fill: "#fff", fontSize: 12 },
+  },
+
+  xAxis: {
     label: {
-      position: "middle",
-      style: { fill: "#fff", fontSize: 12 },
+      rotate: -45,
+      style: { fontSize: 10 },
     },
-    xAxis: { label: { rotate: -45, style: { fontSize: 10 } } },
-  };
+  },
+};
+
+  // Extract user info from first record
+  const firstRecord = userSubmissions[0];
 
   return (
     <div className="singleuserip-container">
       <Card className="singleuserip-header-card">
         <div className="header-top">
-          <Avatar src={userInfo?.userImage} icon={<UserOutlined />} size={64} />
+          <Avatar src={firstRecord?.avatar} icon={<UserOutlined />} size={64} />
           <div>
             <Title level={3} className="user-name">
-              {userInfo?.username || "Unknown User"}
+              {firstRecord?.username || "Unknown User"}
             </Title>
             <div className="month-display">
               <CalendarOutlined style={{ marginRight: 6 }} />
@@ -145,13 +149,6 @@ const SingleUserIPReport = () => {
         </div>
       </Card>
 
-      <Card className="singleuserip-chart-card">
-        <Title level={4}>📊 IP Activity Chart</Title>
-        <div style={{ height: 300 }}>
-          <Column {...chartConfig} />
-        </div>
-      </Card>
-
       <Card className="singleuserip-table-card">
         <Title level={4}>📅 Daily IPs Report</Title>
         <Table
@@ -160,7 +157,21 @@ const SingleUserIPReport = () => {
           rowKey="date"
           pagination={{ pageSize: 5 }}
           bordered
+          loading={loading}
         />
+      </Card>
+
+      <Card className="singleuserip-chart-card">
+        <Title level={4}>📊 IP Activity Chart</Title>
+        <div style={{ height: 300 }}>
+          {loading ? (
+            <div style={{ textAlign: "center", paddingTop: 100 }}>
+              <span className="ant-spin-dot ant-spin-dot-spin" />
+            </div>
+          ) : (
+            <Column {...chartConfig} />
+          )}
+        </div>
       </Card>
 
       <Modal

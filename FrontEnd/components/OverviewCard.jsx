@@ -79,10 +79,11 @@ const OverviewCard = () => {
                         ? "0 vs last month"
                         : `${card.change}% vs last month`}
                     </p>
+                    <br />
 
                     <div className="CRM-extra-info">
                       <p className="CRM-shift">
-                        Shift: <strong>{card.shift}</strong>
+                        Shift: <strong style={{textTransform:"capitalize"}}>{card.shift}</strong>
                       </p>
                       <p className="CRM-totalips">
                         Total IPs: <strong>{card.totalIPs}</strong>
@@ -98,24 +99,7 @@ const OverviewCard = () => {
                 </div>
 
                 {/* Bottom Banner */}
-                <div className="CRM-card-banner">
-                  <div className="CRM-banner-left">
-                    <img
-                      className="CRM-banner-avatar"
-                      src={card.avatar || ""}
-                      alt="profile"
-                    />
-                    <span className="CRM-banner-name">{card.username}</span>
-                  </div>
-                  <div className="CRM-banner-points">
-                    <span className="CRM-points-icon">
-                      <HighlightFilled />
-                    </span>
-                    <span className="CRM-banner-score">
-                      {card.totalPoints} pts
-                    </span>
-                  </div>
-                </div>
+               
               </Card>
             ))}
       </div>

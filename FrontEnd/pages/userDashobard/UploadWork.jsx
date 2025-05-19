@@ -153,10 +153,10 @@ const UploadWork = () => {
         agentType: user?.agentType,
         shift: user?.shift,
       };
-  
+
       // ✅ Submit IP work data
       await API.post("/ip/submit", payload);
-  
+
       // ✅ Mark Checkout Time for Agent
       if (user.role === "agent") {
         await API.put("/attendance/checkout", {
@@ -166,7 +166,7 @@ const UploadWork = () => {
       } else {
         message.success("Work recorded successfully!");
       }
-  
+
       form.resetFields();
       form.setFieldsValue({ date: moment() });
     } catch (err) {
@@ -176,7 +176,6 @@ const UploadWork = () => {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     if (user?.username) {
@@ -190,9 +189,7 @@ const UploadWork = () => {
     const fetchUserWorkData = async () => {
       try {
         if (user?._id) {
-          const res = await API.get(
-            `/ip/${user._id}`
-          );
+          const res = await API.get(`/ip/${user._id}`);
           setDataSource(res.data.ipRecords); // Assuming your backend sends an array
         }
       } catch (err) {

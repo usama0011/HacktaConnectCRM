@@ -229,16 +229,21 @@ const OfficeAgentsSalaryFormula = () => {
             💼 Salary Formula Summary
           </h2>
           <Row gutter={[24, 24]}>
-            {Object.entries(salaryDetails).map(([key, value]) => (
-              <Col key={key} xs={24} sm={12} md={8} lg={4}>
-                <Card className="salaryFormula-summaryCard">
-                  <p className="salaryFormula-summaryLabel">
-                    {key.replace(/_/g, " ").toUpperCase()}
-                  </p>
-                  <p className="salaryFormula-summaryValue">Rs {value}</p>
-                </Card>
-              </Col>
-            ))}
+            {Object.entries(salaryDetails)
+              .filter(
+                ([key]) =>
+                  !["id", "_id", "createdAt", "updatedAt"].includes(key)
+              )
+              .map(([key, value]) => (
+                <Col key={key} xs={24} sm={12} md={8} lg={4}>
+                  <Card className="salaryFormula-summaryCard">
+                    <p className="salaryFormula-summaryLabel">
+                      {key.replace(/_/g, " ").toUpperCase()}
+                    </p>
+                    <p className="salaryFormula-summaryValue">Rs {value}</p>
+                  </Card>
+                </Col>
+              ))}
           </Row>
         </div>
       )}

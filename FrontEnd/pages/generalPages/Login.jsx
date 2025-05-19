@@ -192,7 +192,11 @@ const Login = () => {
           </svg>
 
           <div>
-                    <img src={MainWebSiteLogoo} alt="Brand Logo" className="login-logo" />
+            <img
+              src={MainWebSiteLogoo}
+              alt="Brand Logo"
+              className="login-logo"
+            />
 
             <h1>
               <span

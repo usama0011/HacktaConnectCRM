@@ -238,17 +238,22 @@ export const getMonthlyIPCounts = async (req, res) => {
     const { userId } = req.params;
     const { year, month } = req.query;
 
-    if (!userId) {
-      return res.status(400).json({ message: "User ID is required" });
+    if (!userId || !year || !month) {
+      return res.status(400).json({ message: "User ID, Year, and Month are required." });
     }
 
     const startDate = moment(`${year}-${month}-01`).startOf("month").toDate();
     const endDate = moment(`${year}-${month}-01`).endOf("month").toDate();
 
+    const userObjectId = mongoose.Types.ObjectId.isValid(userId)
+      ? new mongoose.Types.ObjectId(userId)
+      : null;
+
+    // Step 1: Aggregate IP submissions
     const data = await IP.aggregate([
       {
         $match: {
-          userId: new mongoose.Types.ObjectId(userId),
+          userId: userObjectId,
           date: { $gte: startDate, $lte: endDate },
         },
       },
@@ -278,18 +283,32 @@ export const getMonthlyIPCounts = async (req, res) => {
           totalIPs: { $add: ["$totalSessions", "$totalClicks"] },
         },
       },
-      { $sort: { date: 1 } }, // Sort by date ascending
+      { $sort: { date: 1 } },
     ]);
 
-    res.status(200).json(data);
+    // Step 2: Fetch user info
+    const user = await User.findById(userObjectId, "username userImage");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Step 3: Add user info to each record
+    const enrichedData = data.map((entry) => ({
+      ...entry,
+      username: user.username,
+      avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
+    }));
+
+    return res.status(200).json(enrichedData);
   } catch (error) {
     console.error("Monthly IPs Error:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch monthly IPs", error: error.message });
+    return res.status(500).json({
+      message: "Failed to fetch monthly IPs",
+      error: error.message,
+    });
   }
 };
-
 // ✅ Controller to Get Daily Agent IPs with History
 export const getDailyAgentIPsWithHistory = async (req, res) => {
   try {

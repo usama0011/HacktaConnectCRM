@@ -20,23 +20,26 @@ const AdminRegisterProxyStats = () => {
     const fetchStatistics = async () => {
       try {
         setLoading(true);
-        
+
         // ✅ Fetch user list
         const { data: userData } = await API.get("/auth/management");
-        console.log("Fetched Users:", userData);
-        setUsers(userData);
+        // ✅ Sort by creation date (latest first) and take only 5 users
+        const latestUsers = userData
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 5);
+
+        setUsers(latestUsers);
 
         // ✅ Fetch shift statistics directly from API
         const { data: shiftData } = await API.get("/auth/agents/shift-count");
-        console.log("Fetched Shift Stats:", shiftData);
-
+        console.log(shiftData);
         // ✅ Transform API response for chart
-        const stats = Object.entries(shiftData.shiftCounts).map(
-          ([type, value]) => ({
+        const stats = Object.entries(shiftData.shiftCounts)
+          .filter(([type, value]) => type && value > 0)
+          .map(([type, value]) => ({
             type: type.charAt(0).toUpperCase() + type.slice(1),
             value,
-          })
-        );
+          }));
 
         setShiftStats(stats);
       } catch (error) {
@@ -123,52 +126,50 @@ const AdminRegisterProxyStats = () => {
     },
   ];
 
-// Ant Design Pie Chart Configuration
-const pieConfig = {
-  appendPadding: 10,
-  data: shiftStats,
-  angleField: "value",
-  colorField: "type",
-  radius: 0.75,
-  innerRadius: 0.6,
-  height: 350,
-  color: ["#1890ff", "#37c661", "#fbce1e", "#2b3b79", "#8a4be2", "#1dc5c5"],
-  label: {
-    type: "outer",
-    formatter: (data) => {
-      if (!data || !data.type) return "";
-      return `${data.type}: ${data.value}`;
-    },
-    style: {
-      fontSize: 14,
-      fontWeight: 500,
-    },
-  },
-  legend: {
-    position: "right",
-    itemName: {
-      formatter: (text, item) => {
-        return `${item.value}: ${shiftStats.find(s => s.type === item.value)?.value || 0}`;
+  const pieConfig = {
+    appendPadding: 10,
+    data: shiftStats.filter((item) => item.type && item.value > 0),
+    angleField: "value",
+    colorField: "type",
+    radius: 0.8,
+    height: 220,
+    // ✅ Custom color scale
+    scale: {
+      color: {
+        range: ["#003c2f", "#005745", "#007f5c", "#009973"], // your desired shades
       },
     },
-  },
-  tooltip: {
-    formatter: (datum) => {
-      if (!datum || !datum.type) return { name: "Unknown", value: "0" };
-      return {
-        name: datum.type,
-        value: `${datum.value} Agents`,
-      };
+    label: {
+      text: (d) => `${d.type}\n${d.value} Agents`,
+      position: "spider",
+      style: {
+        fontSize: 14,
+        fontWeight: 500,
+        fill: "#333", // darker text
+      },
     },
-  },
-  interactions: [{ type: "element-active" }],
-};
-
+    legend: {
+      color: {
+        title: false,
+        position: "right",
+        rowPadding: 5,
+      },
+    },
+    tooltip: {
+      formatter: (datum) => ({
+        name: datum?.type || "Unknown",
+        value: `${datum?.value ?? 0} Agents`,
+      }),
+    },
+    interactions: [{ type: "element-active" }],
+  };
 
   return (
     <div className="CRM-stats-orders-wrapper">
       <div className="CRM-statistics-card donatgraphcharforme">
-        <h2>Statistics <span className="CRM-more-link">More ➔</span></h2>
+        <h2>
+          Statistics <span className="CRM-more-link">More ➔</span>
+        </h2>
         {loading ? (
           <Skeleton active paragraph={{ rows: 4 }} />
         ) : shiftStats.length > 0 ? (
@@ -179,7 +180,9 @@ const pieConfig = {
       </div>
 
       <div className="CRM-orders-card">
-        <h2>Users List <span className="CRM-more-link">More ➔</span></h2>
+        <h2>
+          Users List <span className="CRM-more-link">More ➔</span>
+        </h2>
         {loading ? (
           <Skeleton active paragraph={{ rows: 5 }} />
         ) : (

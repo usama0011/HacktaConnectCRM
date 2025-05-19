@@ -202,6 +202,7 @@ const AllUsersQCPoints = () => {
         </div>
       </div>
       <br />
+      <br />
       {topUsers.length > 0 && (
         <>
           <Title style={{ color: "black" }} level={3}>
@@ -210,7 +211,14 @@ const AllUsersQCPoints = () => {
           <div className="top-performer-grid">
             {topUsers.map((user, index) => (
               <div className="performer-card-wrapper" key={index}>
-                <Card className="top-performer-grid-card" bordered hoverable>
+                <Card
+                  className="top-performer-grid-card"
+                  bordered={false}
+                  hoverable
+                >
+                  {/* Top Decoration */}
+                  <div className="performer-card-top-curve" />
+
                   <div className="performer-card-inner">
                     <Avatar
                       size={64}
@@ -223,6 +231,9 @@ const AllUsersQCPoints = () => {
                     </Title>
                     <Text type="secondary">QC Points: {user.totalPoints}</Text>
                   </div>
+
+                  {/* Bottom Decoration */}
+                  <div className="performer-card-bottom-curve" />
                 </Card>
               </div>
             ))}
@@ -231,6 +242,8 @@ const AllUsersQCPoints = () => {
           <br />
         </>
       )}
+      <br />
+      <br />
       <Table
         columns={columns}
         dataSource={users}
