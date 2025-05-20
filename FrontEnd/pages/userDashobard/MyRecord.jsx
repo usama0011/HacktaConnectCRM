@@ -114,6 +114,7 @@ const MyRecord = () => {
           columns={columns}
           pagination={{ pageSize: 5 }}
           rowKey="id"
+          scroll={{ x: "max-content" }} // ✅ Enable horizontal scroll
           className="myrecord-table"
         />
       </div>

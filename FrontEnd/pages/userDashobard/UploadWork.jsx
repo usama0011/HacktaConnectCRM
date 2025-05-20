@@ -305,13 +305,18 @@ const UploadWork = () => {
         <Title level={4} className="uploadwork-table-title">
           Your Performance
         </Title>
-        <Table
-          dataSource={dataSource}
-          columns={columns}
-          className="user-table"
-          pagination={{ pageSize: 5 }}
-          rowKey="_id"
-        />
+        <div className="uploadwork-table-wrapper">
+          {" "}
+          {/* ✅ Add wrapper */}
+          <Table
+            dataSource={dataSource}
+            columns={columns}
+            className="user-table"
+            pagination={{ pageSize: 5 }}
+            scroll={{ x: 800 }} // ✅ Set a fixed horizontal scroll width
+            rowKey="_id"
+          />
+        </div>
       </Card>
     </div>
   );

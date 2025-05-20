@@ -38,14 +38,15 @@ const AllUsersAttendance = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const [topPerformers, setTopPerformers] = useState([]);
   const [loading, setLoading] = useState(false);
-  // Inside your component
   const [filters, setFilters] = useState({
     shift: "",
     agentType: "",
     branch: "",
   });
   const navigate = useNavigate();
-
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
   useEffect(() => {
     const date = dayjs(selectedDate).startOf("month");
     fetchAttendanceData(date);
@@ -55,12 +56,12 @@ const AllUsersAttendance = () => {
     try {
       setLoading(true);
       const res = await API.get("/attendance/all", {
-        params: {
-          date: month.toISOString(), // ✅ sends same format as Ant Design
-          shift: filters.shift || undefined,
-          agentType: filters.agentType || undefined,
-          branch: filters.branch || undefined,
-        },
+       params: {
+      date: month.toISOString(),
+      shift: filters.shift || undefined,
+      agentType: filters.agentType || undefined,
+      branch: filters.branch || undefined,
+    },
       });
       setAttendanceData(res.data.attendanceData);
       setTopPerformers(res.data.topPerformers);
@@ -96,11 +97,7 @@ const AllUsersAttendance = () => {
         else if (status === "RotationOff") color = "blue";
         else if (status === "Leave") color = "purple";
 
-        return (
-          <div className="status-tag-wrapper">
-            <Tag color={color}>{status || "Pending"}</Tag>
-          </div>
-        );
+        return <Tag color={color}>{status || "Pending"}</Tag>;
       },
     },
     {
@@ -151,45 +148,51 @@ const AllUsersAttendance = () => {
         </div>
       </div>
 
-      {/* Filters UI */}
+      {/* 🔍 Filters */}
       <div
-        style={{ margin: "20px 0", display: "flex", flexWrap: "wrap", gap: 16 }}
+        style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
       >
         <Select
-          placeholder="Select Shift"
+          placeholder="Please select Shift"
+          value={filters.shift || undefined}
           style={{ width: 180 }}
-          value={filters.shift}
-          onChange={(val) => setFilters({ ...filters, shift: val })}
+          onChange={(value) => handleFilterChange("shift", value)}
           allowClear
         >
-          <Select.Option value="">All Shifts</Select.Option>
-          <Select.Option value="morning">Morning</Select.Option>
-          <Select.Option value="evening">Evening</Select.Option>
-          <Select.Option value="night">Night</Select.Option>
+          <Option disabled value="">
+            Please select Shift
+          </Option>
+          <Option value="morning">Morning</Option>
+          <Option value="evening">Evening</Option>
+          <Option value="night">Night</Option>
         </Select>
 
         <Select
-          placeholder="Select Agent Type"
+          placeholder="Please select Agent Type"
+          value={filters.agentType || undefined}
           style={{ width: 180 }}
-          value={filters.agentType}
-          onChange={(val) => setFilters({ ...filters, agentType: val })}
+          onChange={(value) => handleFilterChange("agentType", value)}
           allowClear
         >
-          <Select.Option value="">All Types</Select.Option>
-          <Select.Option value="Office Agent">Office Agent</Select.Option>
-          <Select.Option value="WFH Agent">WFH Agent</Select.Option>
+          <Option disabled value="">
+            Please select Agent Type
+          </Option>
+          <Option value="Office Agent">Office Agent</Option>
+          <Option value="WFH Agent">WFH Agent</Option>
         </Select>
 
         <Select
-          placeholder="Select Branch"
+          placeholder="Please select Branch"
+          value={filters.branch || undefined}
           style={{ width: 180 }}
-          value={filters.branch}
-          onChange={(val) => setFilters({ ...filters, branch: val })}
+          onChange={(value) => handleFilterChange("branch", value)}
           allowClear
         >
-          <Select.Option value="">All Branches</Select.Option>
-          <Select.Option value="Branch A">Branch A</Select.Option>
-          <Select.Option value="Branch B">Branch B</Select.Option>
+          <Option disabled value="">
+            Please select Branch
+          </Option>
+          <Option value="Branch A">Branch A</Option>
+          <Option value="Branch B">Branch B</Option>
         </Select>
 
         <Button
@@ -209,30 +212,32 @@ const AllUsersAttendance = () => {
           🏆 Top 5 Attendance Performers
         </Title>
         <br />
-        <Row gutter={[16, 16]}>
-          {topPerformers.map((performer, index) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={index}>
-              <Card className="wave-card" bordered={false}>
-                <div className="wave-bg" />
-                <div className="wave-card-inner">
-                  <Avatar
-                    size={72}
-                    src={performer.avatar}
-                    className="avatar-ring"
-                  />
-                  <Text strong className="performer-name">
-                    {performer.name}
-                  </Text>
-                  <div className="present-info">
-                    <CalendarOutlined style={{ marginRight: 6 }} />
-                    {performer.presentDays}/{performer.totalDays} Present
+        <div className="top-performer-row-wrapper">
+          <Row gutter={[16, 16]}>
+            {topPerformers.map((performer, index) => (
+              <Col xs={24} sm={12} md={8} lg={6} key={index}>
+                <Card className="wave-card" bordered={false}>
+                  <div className="wave-bg" />
+                  <div className="wave-card-inner">
+                    <Avatar
+                      size={72}
+                      src={performer.avatar}
+                      className="avatar-ring"
+                    />
+                    <Text strong className="performer-name">
+                      {performer.name}
+                    </Text>
+                    <div className="present-info">
+                      <CalendarOutlined style={{ marginRight: 6 }} />
+                      {performer.presentDays}/{performer.totalDays} Present
+                    </div>
+                    <div className="badge">#Best Performer {index + 1}</div>
                   </div>
-                  <div className="badge">#Best Performer {index + 1}</div>
-                </div>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </div>
       </div>
 
       <Spin spinning={loading}>

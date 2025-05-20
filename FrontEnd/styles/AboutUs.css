@@ -1,75 +1,114 @@
-.about-container {
-  padding: 40px 20px;
+.aboutus-wrapper {
   max-width: 1200px;
-  margin: 0 auto;
-}
-
-.about-title {
-  text-align: center;
-  font-size: 32px;
-  font-weight: 700;
-  color: #003c2f;
-  margin-bottom: 40px;
-}
-
-.about-grid {
+  margin: auto;
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 40px;
+  padding: 60px 20px;
+  align-items: center;
   justify-content: center;
 }
 
-.about-card {
-  flex: 1 1 450px;
-  background: #ffffff;
-  padding: 24px;
+.aboutus-left {
+  flex: 1 1 600px;
+}
+
+.aboutus-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, 200px);
+  gap: 20px;
+}
+
+.aboutus-image {
   border-radius: 16px;
+  overflow: hidden;
   box-shadow: 0 4px 16px rgba(0, 60, 47, 0.1);
-  text-align: center;
 }
 
-.about-heading {
-  font-size: 18px;
-  color: #00aaff;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-
-.about-card p {
-  margin: 4px 0;
-  font-size: 16px;
-  color: #222;
-}
-
-.about-map {
+.aboutus-image img {
   width: 100%;
-  height: 300px;
-  margin-top: 16px;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.aboutus-image.tall {
+  grid-row: span 2;
+  height: 100%;
+}
+
+.aboutus-right {
+  flex: 1 1 480px;
+}
+
+.aboutus-sub {
+  color: #003c2f;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.aboutus-heading {
+  font-size: 28px;
+  font-weight: 800;
+  color: #003c2f;
+  margin-bottom: 16px;
+}
+
+.aboutus-desc {
+  color: #444;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.aboutus-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.aboutus-btn {
+  background-color: #003c2f;
+  color: #fff;
+  font-weight: 600;
   border: none;
   border-radius: 8px;
+  padding: 10px 20px;
+  box-shadow: 0 8px 16px rgba(0, 60, 47, 0.15);
 }
 
-/* Responsive */
+.aboutus-btn:hover {
+  background-color: #005747;
+  color: #fff;
+}
+
+/* Responsive Layout */
 @media (max-width: 768px) {
-  .about-title {
-    font-size: 24px;
+  .aboutus-wrapper {
+    flex-direction: column;
+    padding: 40px 16px;
   }
 
-  .about-map {
-    height: 250px;
-  }
-}
-
-@media (max-width: 480px) {
-  .about-card {
-    padding: 16px;
+  .aboutus-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
-  .about-heading {
-    font-size: 16px;
-  }
-
-  .about-map {
+  .aboutus-image {
     height: 220px;
+  }
+
+  .aboutus-desc {
+    font-size: 15px;
+  }
+
+  .aboutus-btn {
+    width: 100%;
+    justify-content: center;
   }
 }

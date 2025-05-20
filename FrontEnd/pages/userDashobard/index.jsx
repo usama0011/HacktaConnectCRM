@@ -310,7 +310,7 @@ const UserDashboard = () => {
           <Card className="dash-card">
             <h3>More Analysis</h3>
             <p>There are more to view</p>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div className="morealnalysisclas">
               <Button className="dash-list-btn">
                 My Tasks <ArrowRightOutlined />
               </Button>
@@ -327,20 +327,6 @@ const UserDashboard = () => {
           </Card>
         </Col>
       </Row>
-      <Table
-        className="dash-store-table"
-        dataSource={recentTasks.map((task, index) => ({
-          key: index,
-          taskImage: task.taskImage,
-          taskSummary: task.taskSummary,
-          assignee: task.assignee,
-          startDate: new Date(task.startDate).toLocaleDateString(),
-          deadline: new Date(task.deadline).toLocaleDateString(),
-          duration: task.duration,
-        }))}
-        columns={columns}
-        pagination={false}
-      />
     </div>
   );
 };

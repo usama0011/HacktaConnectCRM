@@ -44,7 +44,8 @@ const Sidebar = ({ visible, onClose }) => {
       path.includes("/ipreportsusers") ||
       path.includes("/AllQCPoints") ||
       path.includes("/addqcpointform") ||
-      path.includes("/dailyipreport")
+      path.includes("/dailyipreport") ||
+      path.includes("/attendance/user")
     ) {
       setOpenKeys(["/admin/dashboard/ipreportsusers"]);
     }
@@ -56,16 +57,45 @@ const Sidebar = ({ visible, onClose }) => {
     if (path.includes("/manageusers") || path.includes("/addnewuser")) {
       return "/admin/dashboard/manageusers";
     }
+    if (path.includes("/proxyusage") ||
+     path.includes("/proxy/smart")  ||
+     path.includes("/proxy/mango")  ||
+     path.includes("/proxy/mangob")  ||
+     path.includes("/infaticaldashobard")  
+    
+    ) {
+      return "/admin/dashboard/proxyusage";
+    }
+     if (path.includes("/allusersattandance") || path.includes("/attendance/user/")) {
+      return "/admin/dashboard/allusersattandance";
+    }
+    if (path.includes("/salarymanagement") || 
+    path.includes("/downloadsalaryworker") ||
+     path.includes("/restemploysalary")  ||
+     path.includes("/salaryformula")    ||
+     path.includes("/officeagentsalaryformula")    ||
+     path.includes("/wfhsalaryformula")    ||
+     path.includes("/generalsalarycalculator")    
+  
+  ) 
+    
+    {
+      return "/admin/dashboard/salarymanagement";
+    }
     if (
       path.includes("/ipreportsusers") ||
       path.includes("/AllQCPoints") ||
       path.includes("/addqcpointform") ||
-      path.includes("/dailyipreport")
+      path.includes("/dailyipreport") ||
+      path.includes("/ipreport/user/") ||
+      path.includes("/qcpoints/user/") 
+      
     ) {
       return "/admin/dashboard/ipreportsusers";
     }
-    return location.pathname;
+    return path;
   };
+
   if (isMobile && !visible) return null;
 
   return (

@@ -8,12 +8,14 @@ import moment from "moment";
 
 export const calculateAgentSalaries = async (req, res) => {
   try {
-    const { shift, agentType, startDate, endDate } = req.query;
+    const { shift, agentType, startDate,branch, endDate } = req.query;
 
-    const userQuery = {};
-    if (shift) userQuery.shift = shift;
-    if (agentType) userQuery.agentType = agentType;
-
+    const userQuery = {
+  role: "agent", // ✅ Only include agents
+};
+  if (shift) userQuery.shift = shift;
+if (agentType) userQuery.agentType = agentType;
+if (branch) userQuery.branch = branch; // ✅ Add branch filter
     const users = await User.find(userQuery);
 
     let salaryFormula = null;

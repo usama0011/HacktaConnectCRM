@@ -24,6 +24,7 @@ const { Title, Text } = Typography;
 
 const SingleUserIPReport = () => {
   const { userId } = useParams();
+
   const [loading, setLoading] = useState(false);
   const [userSubmissions, setUserSubmissions] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -35,12 +36,13 @@ const SingleUserIPReport = () => {
   const searchParams = new URLSearchParams(location.search);
   const year = searchParams.get("year") || moment().format("YYYY");
   const month = searchParams.get("month") || moment().format("MM");
+  const [selectedMonth, setSelectedMonth] = useState(`${year}-${month}`);
 
-  const fetchUserMonthlyData = async () => {
+  const fetchUserMonthlyData = async (yr = year, mon = month) => {
     setLoading(true);
     try {
       const res = await API.get(`/ip/monthlyips/${userId}`, {
-        params: { year, month },
+        params: { year: yr, month: mon },
       });
       if (res.data) {
         setUserSubmissions(res.data);
@@ -53,8 +55,9 @@ const SingleUserIPReport = () => {
   };
 
   useEffect(() => {
-    fetchUserMonthlyData();
-  }, [userId, month, year]);
+    const [newYear, newMonth] = selectedMonth.split("-");
+    fetchUserMonthlyData(newYear, newMonth);
+  }, [selectedMonth]);
 
   const handleEdit = (record) => {
     setSelectedRecord(record);
@@ -124,19 +127,16 @@ const SingleUserIPReport = () => {
       },
     },
 
-   axis: {
+    axis: {
       x: {
-        labelFill: '#003c2f',
-        fontWeight:"bold"
+        labelFill: "#003c2f",
+        fontWeight: "bold",
       },
-       y: {
-        labelFill: '#003c2f',
-        fontWeight:"bold"
-      }
+      y: {
+        labelFill: "#003c2f",
+        fontWeight: "bold",
+      },
     },
-
-   
-  
   };
 
   // Extract user info from first record
@@ -144,6 +144,18 @@ const SingleUserIPReport = () => {
 
   return (
     <div className="singleuserip-container">
+      <div style={{ margin: "16px 0" }}>
+        <label>
+          <Text strong>Select Month: </Text>
+        </label>
+        <input
+          type="month"
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(e.target.value)}
+          className="simple-calendar"
+        />
+      </div>
+
       <Card className="singleuserip-header-card">
         <div className="header-top">
           <Avatar src={firstRecord?.avatar} icon={<UserOutlined />} size={64} />
@@ -170,8 +182,7 @@ const SingleUserIPReport = () => {
           pagination={{ pageSize: 50 }}
           bordered
           loading={loading}
-              scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
-
+          scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
         />
       </Card>
 

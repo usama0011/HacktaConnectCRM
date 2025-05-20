@@ -9,7 +9,7 @@ import moment from "moment";
 
 export const downloadSalarySheet = async (req, res) => {
   try {
-    const { shift, agentType, year, month } = req.query;
+const { shift, agentType, year, month, branch, hasBankAccount } = req.query;
 
     if (!shift || !agentType || !year || !month) {
       return res.status(400).json({ message: "Missing required parameters" });
@@ -18,8 +18,17 @@ export const downloadSalarySheet = async (req, res) => {
     const start = moment(`${year}-${month}-01`).startOf("month").toDate();
     const end = moment(`${year}-${month}-01`).endOf("month").toDate();
 
-    const users = await User.find({ shift, agentType });
+ // ✅ Build user query dynamically
+let userQuery = {
+  shift,
+  agentType,
+};
 
+if (branch) userQuery.branch = branch;
+if (hasBankAccount === "true") userQuery.bankaccountstatus = true;
+else if (hasBankAccount === "false") userQuery.bankaccountstatus = false;
+
+const users = await User.find(userQuery);
     let salaryFormula = null;
     if (agentType === "Office Agent") {
       salaryFormula = await SalaryFormulaOfficeAgents.findOne().sort({

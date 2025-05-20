@@ -77,3 +77,61 @@
   justify-content: flex-end;
   margin-top: 24px;
 }
+
+
+@media (max-width: 768px) {
+  .myprofile-card {
+    padding: 20px;
+    margin: 20px 12px;
+  }
+
+  .myprofile-title {
+    font-size: 22px;
+  }
+
+  .myprofile-subtext {
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  .myprofile-avatar-section {
+    margin-bottom: 30px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr; /* Force single column */
+    gap: 16px;
+  }
+
+  .myprofile-save-button {
+    width: 100%; /* Full width save button on mobile */
+  }
+
+  .submit-btn-container {
+    justify-content: center;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .myprofile-title {
+    font-size: 20px;
+  }
+
+  .myprofile-upload-button {
+    font-size: 14px;
+    padding: 0 12px;
+  }
+
+  .myprofile-form .ant-input {
+    font-size: 14px;
+  }
+
+  .myprofile-form .ant-form-item-label > label {
+    font-size: 14px;
+  }
+
+  .myprofile-avatar-section {
+    gap: 12px;
+  }
+}

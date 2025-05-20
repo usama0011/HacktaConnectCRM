@@ -479,29 +479,48 @@
   color: white !important;
 }
 
+/* Hide sidebar on mobile */
 @media (max-width: 768px) {
-  .custom-user-header {
+  .bitrix-sidebar {
+    display: none !important;
+  }
+  .custom-user-header{
     display: flex;
     align-items: center;
-    gap: 12px;
-    height: auto;
-    padding: 16px 12px;
+    height: 45px;
+    justify-content: space-between;
   }
-
   .header-left h2 {
-    font-size: 18px;
+    display: none; /* ✅ Hide Welcome {username} */
   }
 
   .header-center {
-    display: none !important;
+    display: none; /* ✅ Hide search bar */
   }
 
-  .header-search {
-    width: 100%;
-    max-width: 100%;
+  .bitrix-sidebar.expanded {
+    display: block !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 3000 !important; /* ✅ HIGHER z-index to appear above everything */
+    height: 100vh;
+    width: 260px !important;
+    background: #001529;
+    transition: transform 0.3s ease;
   }
 
-  .header-right {
-    width: 100%;
+  .user-dashboard-content {
+    margin-left: 0 !important;
+    padding: 70px 16px;
+  }
+
+  .toggle-sidebar-btn {
+    font-size: 18px;
+    color: #fff;
+    background: none;
+    border: none;
+    margin-right: 8px;
   }
 }
+

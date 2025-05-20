@@ -2,7 +2,7 @@
 .uploadwork-container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding-top: 50px;
 }
 
 /* ===== Title & Subtext ===== */
@@ -140,4 +140,113 @@
 .uploadwork-status-tag .status-tag.pending {
   background-color: #e6f4ff;
   color: #096dd9;
+}
+.uploadwork-table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.uploadwork-table-wrapper .ant-table {
+  min-width: 700px; /* Ensure the table has a scrollable width */
+}
+
+@media (max-width: 1024px) {
+  .uploadwork-card,
+  .uploadwork-table-card {
+    padding: 24px;
+  }
+
+  .uploadwork-button {
+    font-size: 15px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 768px) {
+  .uploadwork-container {
+    padding: 10px 5px;
+  }
+
+  .uploadwork-card,
+  .uploadwork-table-card {
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+
+  .uploadwork-subtext {
+    font-size: 14px;
+    padding: 0 8px;
+  }
+
+  .uploadwork-table-title {
+    font-size: 18px;
+  }
+
+  .uploadwork-form .ant-form-item {
+    margin-bottom: 16px;
+  }
+
+  .uploadwork-form input,
+  .uploadwork-form .ant-picker {
+    font-size: 14px;
+    height: 35px;
+  }
+
+  .uploadwork-button {
+    font-size: 14px;
+    height: 42px;
+  }
+
+  .user-table .ant-table-thead > tr > th,
+  .user-table .ant-table-tbody > tr > td {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .uploadwork-username,
+  .uploadwork-date {
+    font-size: 13px;
+  }
+
+  .uploadwork-status-tag .status-tag {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .uploadwork-subtext {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .uploadwork-table-title {
+    font-size: 16px;
+  }
+
+  .uploadwork-button {
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .uploadwork-form input,
+  .uploadwork-form .ant-picker {
+    font-size: 13px;
+  }
+
+  .user-table .ant-table-thead > tr > th,
+  .user-table .ant-table-tbody > tr > td {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .uploadwork-status-tag .status-tag {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .uploadwork-username,
+  .uploadwork-date {
+    gap: 6px;
+  }
 }

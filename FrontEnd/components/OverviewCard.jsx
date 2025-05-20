@@ -44,8 +44,8 @@ const OverviewCard = () => {
       <div className="CRM-overview-container">
         {loading
           ? Array.from({ length: 4 }).map((_, index) => (
-              <Card className="CRM-overview-carddd" key={index}>
-                <Skeleton active avatar paragraph={{ rows: 3 }} />
+              <Card style={{padding:"20px"}} className="CRM-overview-carddd" key={index}>
+                <Skeleton style={{padding:'20px'}} active avatar paragraph={{ rows: 3 }} />
               </Card>
             ))
           : cardData.map((card, index) => (

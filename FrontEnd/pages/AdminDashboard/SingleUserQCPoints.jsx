@@ -133,12 +133,13 @@ const SingleUserQCPoints = () => {
       </div>
 
       <br />
-      <DatePicker
-        picker="month"
-        value={selectedDate}
-        onChange={(date) => setSelectedDate(date)}
-        className="date-filter"
-      />
+     <input
+  type="month"
+  className="simple-calendar"
+  value={selectedDate.format("YYYY-MM")}
+  onChange={(e) => setSelectedDate(moment(e.target.value, "YYYY-MM"))}
+/>
+
       <br />
       <br />
       <Table

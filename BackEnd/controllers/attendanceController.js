@@ -1,6 +1,7 @@
 import Attendance from "../models/attendanceModel.js";
 import User from "../models/usermodel.js";
 import mongoose from "mongoose";
+import moment from "moment";
 
 export const markAttendanceForAgent = async (req, res) => {
   const { userId, username,shift,agentType,branch } = req.body;
@@ -235,20 +236,19 @@ export const updateAttendanceStatus = async (req, res) => {
 };
 
 
-// ✅ Controller to get all users' attendance for a selected month
 export const getAllUsersAttendance = async (req, res) => {
-  const { date } = req.query;
+  const { date, shift, agentType, branch } = req.query;
 
   try {
-    // Convert the selected month to start and end dates
     const selectedMonth = new Date(date);
     const startOfMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), 1);
     const endOfMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 0, 23, 59, 59, 999);
 
-    // Build user query
     const userQuery = { role: "agent" };
+    if (shift) userQuery.shift = shift;
+    if (agentType) userQuery.agentType = agentType;
+    if (branch) userQuery.branch = branch;
 
-    // Restrict Team Lead to view only their shift and agent type agents
     if (req.user.role === "Team Lead") {
       userQuery.shift = req.user.shift;
       if (req.user.agentType) {
@@ -256,16 +256,14 @@ export const getAllUsersAttendance = async (req, res) => {
       }
     }
 
-    // Get all users based on the query
     const users = await User.find(userQuery, "_id username userImage shift agentType");
 
-    // Fetch attendance for all users within the selected month
     const attendanceRecords = await Attendance.aggregate([
       {
         $match: {
           date: {
-            $gte: startOfMonth,
-            $lte: endOfMonth,
+            $gte: new Date(moment(startOfMonth).startOf("day").toISOString()),
+            $lte: new Date(moment(endOfMonth).endOf("day").toISOString()),
           },
         },
       },
@@ -282,17 +280,19 @@ export const getAllUsersAttendance = async (req, res) => {
       },
     ]);
 
-    // Prepare the response data
     const attendanceData = users.map((user) => {
       const userAttendance = attendanceRecords.find(
         (record) => record._id.toString() === user._id.toString()
       );
 
-      const todayStatus = userAttendance?.records.find((record) =>
-        new Date(record.date).toDateString() === new Date().toDateString()
-      )?.status || "pending";
+      const today = moment().startOf("day").toDate();
+      const tomorrow = moment(today).add(1, "day").toDate();
 
-      // Calculate month summary
+      const todayStatus = userAttendance?.records.find((record) => {
+        const recDate = new Date(record.date);
+        return recDate >= today && recDate < tomorrow;
+      })?.status || "pending";
+
       const monthSummary = {
         present: 0,
         absent: 0,
@@ -324,7 +324,6 @@ export const getAllUsersAttendance = async (req, res) => {
       };
     });
 
-    // ✅ Calculate Top 5 Best Performers based on Present days
     const topPerformers = [...attendanceData]
       .sort((a, b) => b.monthSummary.present - a.monthSummary.present)
       .slice(0, 4)
@@ -333,89 +332,99 @@ export const getAllUsersAttendance = async (req, res) => {
         name: performer.user.name,
         avatar: performer.user.avatar,
         presentDays: performer.monthSummary.present,
-        totalDays: 
-          performer.monthSummary.present + 
-          performer.monthSummary.absent + 
-          performer.monthSummary.late + 
-          performer.monthSummary.leave + 
+        totalDays:
+          performer.monthSummary.present +
+          performer.monthSummary.absent +
+          performer.monthSummary.late +
+          performer.monthSummary.leave +
           performer.monthSummary.rotationOff,
       }));
 
-    // ✅ Respond with both the attendance data and the top performers
-    res.status(200).json({
-      attendanceData,
-      topPerformers,
-    });
+    res.status(200).json({ attendanceData, topPerformers });
   } catch (error) {
     console.error("Error fetching attendance data:", error);
-    res.status(500).json({
-      message: "Failed to fetch attendance data",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Failed to fetch attendance data", error: error.message });
   }
 };
 
 
-// ✅ Controller to Get Single User's Attendance (Monthly)
+
+// ✅ Updated Controller: Get Full Month Attendance
 export const getSingleUserAttendance = async (req, res) => {
   const { userId } = req.params;
   const { date } = req.query;
 
   try {
-    // ✅ Convert the selected month to start and end dates
     const selectedMonth = new Date(date);
-    const startOfMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), 1);
-    const endOfMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 0, 23, 59, 59, 999);
+    const year = selectedMonth.getFullYear();
+    const month = selectedMonth.getMonth(); // 0-indexed
 
-    // ✅ Fetch user details
+    const startOfMonth = new Date(year, month, 1);
+    const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59, 999);
+
     const user = await User.findById(userId, "username userImage shift agentType");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // ✅ Restrict Team Lead to view only their shift and agent type users
+    // Optional Team Lead restrictions
     if (req.user.role === "Team Lead") {
       if (user.shift !== req.user.shift || (req.user.agentType && user.agentType !== req.user.agentType)) {
         return res.status(403).json({ message: "Access denied. Team Leads can only view users of their shift and type." });
       }
     }
 
-    // ✅ Fetch all attendance records for this user in the selected month
-    const attendanceRecords = await Attendance.find({
+    // Fetch records for the selected month
+    const records = await Attendance.find({
       userId,
-      date: {
-        $gte: startOfMonth,
-        $lte: endOfMonth,
-      },
+      date: { $gte: startOfMonth, $lte: endOfMonth },
     }).sort({ date: 1 });
 
-    // ✅ Calculate summary statistics
+    const recordMap = {};
+    records.forEach((r) => {
+      const key = r.date.toISOString().slice(0, 10);
+      recordMap[key] = r;
+    });
+
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    const attendanceData = [];
+
     const stats = {
       present: 0,
       absent: 0,
       late: 0,
       leave: 0,
       rotationOff: 0,
-      total: attendanceRecords.length,
+      total: totalDays,
     };
 
-    attendanceRecords.forEach((record) => {
-      if (record.status === "Present") stats.present++;
-      else if (record.status === "Absent") stats.absent++;
-      else if (record.status === "Late") stats.late++;
-      else if (record.status === "Leave") stats.leave++;
-      else if (record.status === "RotationOff") stats.rotationOff++;
-    });
+    for (let d = 1; d <= totalDays; d++) {
+      const day = new Date(year, month, d);
+      const key = day.toISOString().slice(0, 10);
+      const record = recordMap[key];
 
-    // ✅ Prepare the response data
-    const attendanceData = attendanceRecords.map((record) => ({
-      date: record.date,
-      status: record.status,
-      checkInTime: record.checkInTime ? record.checkInTime.toLocaleTimeString() : "-",
-      checkOutTime: record.checkOutTime ? record.checkOutTime.toLocaleTimeString() : "-",
-    }));
+      let entry;
 
-    res.status(200).json({
+      if (record) {
+        stats[record.status.toLowerCase()]++;
+        entry = {
+          date: day,
+          status: record.status,
+          checkInTime: record.checkInTime?.toLocaleTimeString() || "-",
+          checkOutTime: record.checkOutTime?.toLocaleTimeString() || "-",
+        };
+      } else {
+        stats.absent++;
+        entry = {
+          date: day,
+          status: "Absent",
+          checkInTime: "-",
+          checkOutTime: "-",
+        };
+      }
+
+      attendanceData.push(entry);
+    }
+
+    return res.status(200).json({
       user: {
         name: user.username,
         avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
@@ -426,7 +435,7 @@ export const getSingleUserAttendance = async (req, res) => {
       attendanceData,
     });
   } catch (error) {
-    console.error("Error fetching single user attendance data:", error);
+    console.error("Error fetching single user attendance:", error);
     res.status(500).json({
       message: "Failed to fetch attendance data",
       error: error.message,

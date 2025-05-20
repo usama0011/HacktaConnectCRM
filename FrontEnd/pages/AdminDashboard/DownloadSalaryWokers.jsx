@@ -90,6 +90,8 @@ const DownloadSalaryWokers = () => {
           agentType: filters.agentType,
           year: filters.year, // Use extracted year
           month: filters.month, // Use extracted month
+          branch: filters.branch, // ✅ Added
+          hasBankAccount: filters.hasBankAccount, // ✅ Added
         },
       });
 
@@ -438,8 +440,8 @@ const DownloadSalaryWokers = () => {
               allowClear
               style={{ width: "100%" }}
             >
-              <Option value="Has Account">Has Bank Account</Option>
-              <Option value="No Account">No Bank Account</Option>
+              <Option value="true">Has Bank Account</Option>
+              <Option value="false">No Bank Account</Option>
             </Select>
           </Col>
         </Row>

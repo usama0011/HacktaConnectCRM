@@ -1,39 +1,65 @@
 import React from "react";
-import '../../styles/AboutUs.css'
+import { Button } from "antd";
+import { EnvironmentOutlined } from "@ant-design/icons";
+import "../../styles/AboutUs.css";
 
 const AboutUs = () => {
   return (
-    <div className="about-container">
-      <h1 className="about-title">Our Offices</h1>
-      <div className="about-grid">
-        {/* Head Office */}
-        <div className="about-card">
-          <h2 className="about-heading">HEAD OFFICE</h2>
-          <p>Munir plaza, Lower Ground of Silk Bank</p>
-          <p>Next to D-Watson Chandni Chowk, Rawalpindi.</p>
-          <iframe
-            title="Head Office Map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3325.164772442772!2d73.12532159999999!3d33.54909500000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfed521ea5dac9%3A0x9b0f210dda3e5058!2sHackta%20Connect!5e0!3m2!1sen!2s!4v1747722552234!5m2!1sen!2s"
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
-            className="about-map"
-          ></iframe>
+    <div className="aboutus-wrapper">
+      <div className="aboutus-left">
+        <div className="aboutus-gallery">
+          <div className="aboutus-image square">
+            <img
+              src="https://images.unsplash.com/photo-1606857521015-7f9fcf423740?w=600"
+              alt="Office 1"
+            />
+          </div>
+          <div className="aboutus-image square">
+            <img
+              src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600"
+              alt="Office 2"
+            />
+          </div>
+          <div className="aboutus-image tall">
+            <img
+              src="https://images.unsplash.com/photo-1577412647305-991150c7d163"
+              alt="Office 3"
+            />
+          </div>
         </div>
+      </div>
 
-        {/* Branch Office */}
-        <div className="about-card">
-          <h2 className="about-heading">BRANCH OFFICE</h2>
-          <p>Ground Floor Building No. 146, Block C,</p>
-          <p>Main Civic Center, Phase-4, Bahria Town, Rawalpindi.</p>
-          <iframe
-            title="Branch Office Map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3325.164772442772!2d73.12532159999999!3d33.54909500000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfed521ea5dac9%3A0x9b0f210dda3e5058!2sHackta%20Connect!5e0!3m2!1sen!2s!4v1747722552234!5m2!1sen!2s"
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
-            className="about-map"
-          ></iframe>
+      <div className="aboutus-right">
+        <p className="aboutus-sub">A BIT</p>
+        <h1 className="aboutus-heading">ABOUT US</h1>
+        <p className="aboutus-desc">
+          From they fine john he give of rich he. They age and draw ms like.
+          Improving end distruts may instantly was household applauded
+          incommode. Why kept very ever home mrs. Considered sympathize ten
+          uncommonly occasional assistance sufficient not.
+        </p>
+        <div className="aboutus-buttons">
+          <Button
+            className="aboutus-btn"
+            icon={<EnvironmentOutlined />}
+            onClick={() =>
+              window.open(
+                "https://www.google.com/maps/place/Hackta+Connect,+Chandani,+Lower+Ground,+silk+bank.+Next+to+D-Watson+,+Chandani+Chwok,+Chowk,+Rawalpindi,+46000",
+                "_blank"
+              )
+            }
+          >
+            Head Office
+          </Button>
+          <Button
+            className="aboutus-btn"
+            icon={<EnvironmentOutlined />}
+            onClick={() =>
+              window.open("https://maps.app.goo.gl/B3aN7WxuPbfwhCyC9", "_blank")
+            }
+          >
+            Branch Office
+          </Button>
         </div>
       </div>
     </div>

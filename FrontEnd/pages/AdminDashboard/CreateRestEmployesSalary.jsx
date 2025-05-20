@@ -24,25 +24,16 @@ const AgentsSalaryRecord = () => {
   const [filters, setFilters] = useState({
     shift: "",
     agentType: "",
-    dateRange: [moment().startOf("month"), moment().endOf("month")],
+    branch: "",
+    startDate: moment().startOf("month").format("YYYY-MM-DD"),
+    endDate: moment().endOf("month").format("YYYY-MM-DD"),
   });
+
   const [visibleData, setVisibleData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleFilterChange = (field, value) => {
     setFilters({ ...filters, [field]: value });
-  };
-
-  const handleDateRangeChange = (dates) => {
-    if (dates && dates.length === 2 && dates[0] && dates[1]) {
-      setFilters({ ...filters, dateRange: dates });
-    } else {
-      setFilters({
-        ...filters,
-        dateRange: [moment().startOf("month"), moment().endOf("month")],
-      });
-      // Reset to current month if invalid
-    }
   };
 
   const fullColumns = [
@@ -214,31 +205,26 @@ const AgentsSalaryRecord = () => {
 
   const columns = filters.agentType === "WFH Agent" ? wfhColumns : fullColumns;
 
-  useEffect(() => {
-    const fetchSalaryData = async () => {
-      try {
-        setLoading(true);
-        const res = await API.get(`/salary/calculate`, {
-          params: {
-            shift: filters.shift,
-            agentType: filters.agentType,
-            startDate: filters.dateRange[0].format("YYYY-MM-DD"),
-            endDate: filters.dateRange[1].format("YYYY-MM-DD"),
-          },
-        });
-        setVisibleData(res.data);
-        console.log(res.data);
-      } catch (error) {
-        console.error("Failed to fetch salary data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (filters.agentType) {
-      fetchSalaryData();
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const res = await API.get(`/salary/calculate`, {
+        params: {
+          shift: filters.shift,
+          agentType: filters.agentType,
+          branch: filters.branch,
+          startDate: filters.startDate,
+          endDate: filters.endDate,
+        },
+      });
+      setVisibleData(res.data);
+      console.log(res.data);
+    } catch (error) {
+      console.error("Failed to fetch salary data", error);
+    } finally {
+      setLoading(false);
     }
-  }, [filters]);
+  };
 
   return (
     <div className="salaryRecord-container">
@@ -248,6 +234,20 @@ const AgentsSalaryRecord = () => {
 
       <Card className="salaryRecord-filterCard">
         <Row gutter={16}>
+          <Col xs={24} sm={8}>
+            <label>Branch</label>
+            <Select
+              value={filters.branch}
+              onChange={(value) => handleFilterChange("branch", value)}
+              placeholder="Please select branch filter" // ✅ Custom placeholder
+              className="salaryRecord-select"
+              allowClear
+            >
+              <Option value="Branch A">Branch A</Option>
+              <Option value="Branch B">Branch B</Option>
+            </Select>
+          </Col>
+
           <Col xs={24} sm={8}>
             <label>Shift</label>
             <Select
@@ -275,18 +275,38 @@ const AgentsSalaryRecord = () => {
               <Option value="WFH Agent">WFH Agent</Option>
             </Select>
           </Col>
-          <Col xs={24} sm={8}>
-            <label>Select Date Range</label>
-            <RangePicker
-              value={filters.dateRange}
-              onChange={handleDateRangeChange}
-              format="YYYY-MM-DD"
-              disabledDate={(current) =>
-                current && current > moment().endOf("day")
+
+          <Col style={{ marginTop: "10px" }} xs={24} sm={8}>
+            <label>Start Date</label>
+            <input
+              type="date"
+              value={filters.startDate}
+              max={moment().format("YYYY-MM-DD")}
+              onChange={(e) =>
+                setFilters({ ...filters, startDate: e.target.value })
               }
-              allowClear={false} // 👈 Important: Disable clearing empty dates
               className="salaryRecord-datePicker"
             />
+          </Col>
+          <Col style={{ marginTop: "10px" }} xs={24} sm={8}>
+            <label>End Date</label>
+            <input
+              type="date"
+              value={filters.endDate}
+              max={moment().format("YYYY-MM-DD")}
+              onChange={(e) =>
+                setFilters({ ...filters, endDate: e.target.value })
+              }
+              className="salaryRecord-datePicker"
+            />
+          </Col>
+          <Col xs={24} style={{ marginTop: 20, textAlign: "right" }}>
+            <button
+              className="salaryRecord-submitButton"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
           </Col>
         </Row>
       </Card>

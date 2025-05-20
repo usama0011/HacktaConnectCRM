@@ -238,18 +238,29 @@ export const getMonthlyIPCounts = async (req, res) => {
     const { userId } = req.params;
     const { year, month } = req.query;
 
+    // Validation
     if (!userId || !year || !month) {
       return res.status(400).json({ message: "User ID, Year, and Month are required." });
     }
 
-    const startDate = moment(`${year}-${month}-01`).startOf("month").toDate();
-    const endDate = moment(`${year}-${month}-01`).endOf("month").toDate();
+    const monthInt = parseInt(month, 10);
+    if (isNaN(monthInt) || monthInt < 1 || monthInt > 12) {
+      return res.status(400).json({ message: "Invalid month value." });
+    }
 
     const userObjectId = mongoose.Types.ObjectId.isValid(userId)
       ? new mongoose.Types.ObjectId(userId)
       : null;
 
-    // Step 1: Aggregate existing IP data for the user
+    if (!userObjectId) {
+      return res.status(400).json({ message: "Invalid User ID." });
+    }
+
+    // Define range
+    const startDate = moment(`${year}-${monthInt}-01`).startOf("month").toDate();
+    const endDate = moment(`${year}-${monthInt}-01`).endOf("month").toDate();
+
+    // Aggregate clicks + sessions
     const data = await IP.aggregate([
       {
         $match: {
@@ -285,18 +296,18 @@ export const getMonthlyIPCounts = async (req, res) => {
       },
     ]);
 
-    // Step 2: Get user info
+    // Fetch user info
     const user = await User.findById(userObjectId, "username userImage");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Step 3: Build full month range with default 0s
-    const totalDays = moment(`${year}-${month}`, "YYYY-MM").daysInMonth();
+    // Generate default entries for missing days
+    const totalDays = moment(`${year}-${monthInt}`, "YYYY-M").daysInMonth();
     const fullMonth = [];
 
     for (let day = 1; day <= totalDays; day++) {
-      const dateStr = `${day}-${parseInt(month)}-${year}`;
+      const dateStr = `${day}-${monthInt}-${year}`;
       const existing = data.find((d) => d.date === dateStr);
 
       fullMonth.push({

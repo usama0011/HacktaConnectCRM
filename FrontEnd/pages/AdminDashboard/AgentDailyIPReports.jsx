@@ -14,7 +14,14 @@ import {
   Row,
   Col,
 } from "antd";
-import { EditOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  UserOutlined,
+  BarChartOutlined,
+  OpenAIFilled,
+  LineChartOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import moment from "moment";
 import { useUserContext } from "../../context/UserContext";
 import API from "../../utils/BaseURL";
@@ -35,6 +42,9 @@ const AgentDailyIPReports = () => {
   const [data, setData] = useState([]);
 
   const { user } = useUserContext();
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
 
   const fetchData = async () => {
     try {
@@ -83,7 +93,11 @@ const AgentDailyIPReports = () => {
 
   const columns = [
     {
-      title: "👤 Profile",
+      title: (
+        <>
+          <UserOutlined /> Profile
+        </>
+      ),
       dataIndex: "username",
       key: "username",
       render: (text, record) => (
@@ -93,15 +107,39 @@ const AgentDailyIPReports = () => {
         </span>
       ),
     },
-    { title: "📈 Sessions", dataIndex: "sessions", key: "sessions" },
-    { title: "🖱 Clicks", dataIndex: "clicks", key: "clicks" },
     {
-      title: "📊 Total",
+      title: (
+        <>
+          <BarChartOutlined /> Sessions
+        </>
+      ),
+      dataIndex: "sessions",
+      key: "sessions",
+    },
+    {
+      title: (
+        <>
+          <OpenAIFilled /> Clicks
+        </>
+      ),
+      dataIndex: "clicks",
+      key: "clicks",
+    },
+    {
+      title: (
+        <>
+          <LineChartOutlined /> Total
+        </>
+      ),
       key: "total",
       render: (record) => <strong>{record.totalIPs}</strong>,
     },
     {
-      title: "⚙️ Actions",
+      title: (
+        <>
+          <SettingOutlined /> Actions
+        </>
+      ),
       key: "actions",
       render: (record) => (
         <Button
@@ -115,11 +153,12 @@ const AgentDailyIPReports = () => {
       ),
     },
   ];
-
   return (
     <div className="daily-ip-container">
       <div className="daily-ip-header">
-        <Title className="dailyiperagenside" level={3}>🗓 Agent IP Report - Daily</Title>
+        <Title className="dailyiperagenside" level={3}>
+          🗓 Agent IP Report - Daily
+        </Title>
         <input
           type="date"
           className="simple-calendar"
@@ -128,58 +167,58 @@ const AgentDailyIPReports = () => {
         />
       </div>
 
-      {/* 🔍 Filters */}
-      <div style={{ marginTop: 16, marginBottom: 24 }}>
-        <Row gutter={16}>
-          <Col>
-            <label>Shift</label>
-            <Select
-              value={filters.shift}
-              onChange={(value) => setFilters({ ...filters, shift: value })}
-              style={{ width: 160 }}
-              placeholder="All"
-              allowClear
-            >
-              <Select.Option value="morning">Morning</Select.Option>
-              <Select.Option value="evening">Evening</Select.Option>
-              <Select.Option value="night">Night</Select.Option>
-            </Select>
-          </Col>
-          <Col>
-            <label>Agent Type</label>
-            <Select
-              value={filters.agentType}
-              onChange={(value) => setFilters({ ...filters, agentType: value })}
-              style={{ width: 160 }}
-              placeholder="All"
-              allowClear
-            >
-              <Select.Option value="Office Agent">Office Agent</Select.Option>
-              <Select.Option value="WFH Agent">WFH Agent</Select.Option>
-            </Select>
-          </Col>
-          <Col>
-            <label>Branch</label>
-            <Select
-              value={filters.branch}
-              onChange={(value) => setFilters({ ...filters, branch: value })}
-              style={{ width: 160 }}
-              placeholder="All"
-              allowClear
-            >
-              <Select.Option value="Branch A">Branch A</Select.Option>
-              <Select.Option value="Branch B">Branch B</Select.Option>
-              <Select.Option value="Branch C">Branch C</Select.Option>
-            </Select>
-          </Col>
-          <Col>
-            <Button type="primary" style={{ marginTop: 1 }} onClick={fetchData}>
-              Apply Filters
-            </Button>
-          </Col>
-        </Row>
+      <div
+        style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
+      >
+        <Select
+          placeholder="Please select Shift"
+          value={filters.shift || undefined}
+          style={{ width: 180 }}
+          onChange={(value) => handleFilterChange("shift", value)}
+          allowClear
+        >
+          <Option disabled value="">
+            Please select Shift
+          </Option>
+          <Option value="morning">Morning</Option>
+          <Option value="evening">Evening</Option>
+          <Option value="night">Night</Option>
+        </Select>
+
+        <Select
+          placeholder="Please select Agent Type"
+          value={filters.agentType || undefined}
+          style={{ width: 180 }}
+          onChange={(value) => handleFilterChange("agentType", value)}
+          allowClear
+        >
+          <Option disabled value="">
+            Please select Agent Type
+          </Option>
+          <Option value="Office Agent">Office Agent</Option>
+          <Option value="WFH Agent">WFH Agent</Option>
+        </Select>
+
+        <Select
+          placeholder="Please select Branch"
+          value={filters.branch || undefined}
+          style={{ width: 180 }}
+          onChange={(value) => handleFilterChange("branch", value)}
+          allowClear
+        >
+          <Option disabled value="">
+            Please select Branch
+          </Option>
+          <Option value="Branch A">Branch A</Option>
+          <Option value="Branch B">Branch B</Option>
+        </Select>
+
+        <Button type="primary" onClick={fetchData}>
+          Apply Filters
+        </Button>
       </div>
 
+      <br />
       {/* 📋 Table */}
       <Table
         columns={columns}

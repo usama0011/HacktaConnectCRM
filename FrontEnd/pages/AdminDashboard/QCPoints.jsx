@@ -193,6 +193,9 @@ const QCPoints = () => {
       setAttendanceLoading(false);
     }
   };
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
 
   const columns = [
     {
@@ -325,64 +328,59 @@ const QCPoints = () => {
           onChange={(e) => setSelectedDate(moment(e.target.value))}
         />
       </div>
+
       <div
-        className="filter-row"
         style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
       >
-        <div>
-          <label>Shift</label>
-          <select
-            value={filters.shift}
-            onChange={(e) => setFilters({ ...filters, shift: e.target.value })}
-            style={{ width: 180, padding: 6, borderRadius: 4 }}
-          >
-            <option value="">All</option>
-            <option value="morning">Morning</option>
-            <option value="evening">Evening</option>
-            <option value="night">Night</option>
-          </select>
-        </div>
+        <Select
+          placeholder="Please select Shift"
+          value={filters.shift || undefined}
+          style={{ width: 180 }}
+          onChange={(value) => handleFilterChange("shift", value)}
+          allowClear
+        >
+          <Option disabled value="">
+            Please select Shift
+          </Option>
+          <Option value="morning">Morning</Option>
+          <Option value="evening">Evening</Option>
+          <Option value="night">Night</Option>
+        </Select>
 
-        <div>
-          <label>Agent Type</label>
-          <select
-            value={filters.agentType}
-            onChange={(e) =>
-              setFilters({ ...filters, agentType: e.target.value })
-            }
-            style={{ width: 180, padding: 6, borderRadius: 4 }}
-          >
-            <option value="">All</option>
-            <option value="Office Agent">Office Agent</option>
-            <option value="WFH Agent">WFH Agent</option>
-          </select>
-        </div>
+        <Select
+          placeholder="Please select Agent Type"
+          value={filters.agentType || undefined}
+          style={{ width: 180 }}
+          onChange={(value) => handleFilterChange("agentType", value)}
+          allowClear
+        >
+          <Option disabled value="">
+            Please select Agent Type
+          </Option>
+          <Option value="Office Agent">Office Agent</Option>
+          <Option value="WFH Agent">WFH Agent</Option>
+        </Select>
 
-        <div>
-          <label>Branch</label>
-          <select
-            value={filters.branch}
-            onChange={(e) => setFilters({ ...filters, branch: e.target.value })}
-            style={{ width: 180, padding: 6, borderRadius: 4 }}
-          >
-            <option value="">All</option>
-            <option value="Branch A">Branch A</option>
-            <option value="Branch B">Branch B</option>
-            <option value="Branch C">Branch C</option>
-            {/* Add more as needed */}
-          </select>
-        </div>
+        <Select
+          placeholder="Please select Branch"
+          value={filters.branch || undefined}
+          style={{ width: 180 }}
+          onChange={(value) => handleFilterChange("branch", value)}
+          allowClear
+        >
+          <Option disabled value="">
+            Please select Branch
+          </Option>
+          <Option value="Branch A">Branch A</Option>
+          <Option value="Branch B">Branch B</Option>
+        </Select>
 
-        <div style={{ alignSelf: "flex-end" }}>
-          <Button
-            type="primary"
-            onClick={() =>
-              fetchUsersAndPoints(selectedDate.format("YYYY-MM-DD"))
-            }
-          >
-            Apply Filters
-          </Button>
-        </div>
+        <Button
+          type="primary"
+          onClick={() => fetchUsersAndPoints(selectedDate.format("YYYY-MM-DD"))}
+        >
+          Apply Filters
+        </Button>
       </div>
 
       <br />

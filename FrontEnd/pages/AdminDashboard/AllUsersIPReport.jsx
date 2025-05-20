@@ -136,11 +136,9 @@ const AllUsersIPReport = () => {
           <Title level={3} className="ipreport-title">
             📊 Agent IP Reports
           </Title>
-          <Text type="secondary">
-            Showing reports for:{" "}
-            <strong>{selectedMonth.format("MMMM YYYY")}</strong>
-          </Text>
+          
         </div>
+        <br />
         <input
           type="month"
           className="simple-calendar"
@@ -194,7 +192,6 @@ const AllUsersIPReport = () => {
           </Option>
           <Option value="Branch A">Branch A</Option>
           <Option value="Branch B">Branch B</Option>
-          <Option value="Branch C">Branch C</Option>
         </Select>
 
         <Button type="primary" onClick={fetchUsers}>

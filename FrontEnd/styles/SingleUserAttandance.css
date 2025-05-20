@@ -102,6 +102,10 @@
 .attnedatcstatustet{
   font-size: 12px !important;
 }
+.attendance-stat-cardnewon{
+  display: flex !important;
+  align-items:center !important;
+}
 /* Small devices (phones, less than 576px) */
 @media (max-width: 575.98px) {
   .attendance-user-header {
@@ -190,8 +194,3 @@
   }
 }
 
-@media (max-width: 486px){
-.myhtitleversiguser{
-
-}
-}

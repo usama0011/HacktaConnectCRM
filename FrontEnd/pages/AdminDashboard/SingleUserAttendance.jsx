@@ -14,7 +14,7 @@ import {
 } from "antd";
 import moment from "moment";
 import API from "../../utils/BaseURL";
-import '../../styles/SingleUserAttandance.css'
+import "../../styles/SingleUserAttandance.css";
 const { Title, Text } = Typography;
 
 const SingleUserAttendance = () => {
@@ -83,15 +83,26 @@ const SingleUserAttendance = () => {
   return (
     <div className="single-user-attendance-container">
       <div className="attendance-user-header">
-        <Avatar src={userData?.avatar} size={64} />
+        <Avatar src={userData?.avatar} size={45} />
+        <span style={{ marginLeft: "10px" }}> {userData?.name}</span>
         <br />
-        <Title className="myhtitleversiguser" level={3}>{userData?.name}'s Attendance Overview</Title>
-      
+        <br />
+        <Title
+          style={{ textAlign: "center" }}
+          className="myhtitleversiguser"
+          level={3}
+        >
+          Attendance Overview
+        </Title>
+
         <input
-          type="date"
+          type="month"
           className="simple-calendar"
-          value={selectedMonth.format("YYYY-MM-DD")}
-          onChange={(e) => setSelectedMonth(moment(e.target.value))}
+          value={selectedMonth.format("YYYY-MM")}
+          onChange={(e) => {
+            const [year, month] = e.target.value.split("-");
+            setSelectedMonth(moment(`${year}-${month}`, "YYYY-MM"));
+          }}
         />
       </div>
       <br />
@@ -99,11 +110,9 @@ const SingleUserAttendance = () => {
         <Row gutter={[16, 16]}>
           {Object.keys(stats).map((key) => (
             <Col xs={12} sm={8} md={4} key={key}>
-              <Card className="attendance-stat-card">
-                <Title level={4} className="attnedatcstatustet">
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </Title>
-                <Text>{stats[key]}</Text>
+              <Card className="attendance-stat-cardnewon">
+                <h3>{key.charAt(0).toUpperCase() + key.slice(1)}</h3>
+                <p>{stats[key]}</p>
               </Card>
             </Col>
           ))}
@@ -112,7 +121,7 @@ const SingleUserAttendance = () => {
           columns={columns}
           dataSource={attendanceData}
           rowKey="date"
-          pagination={{ pageSize: 10 }}
+          pagination={{ pageSize: 32 }}
           className="user-attendance-table"
           style={{ marginTop: 20 }}
           scroll={{ x: "max-content" }} // ✅ Enable horizontal scroll

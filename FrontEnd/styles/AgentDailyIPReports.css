@@ -78,6 +78,12 @@
 .history-item:first-child {
   border-left: 4px solid #4387ff;
 }
+.user-table-singipoidsfisodf .ant-table-thead > tr > th {
+  background-color: #003c2f !important;
+  color: white !important;
+  font-weight: 600;
+  font-size: 14px;
+}
 @media (max-width: 768px) {
   .ant-row {
     flex-direction: column !important;

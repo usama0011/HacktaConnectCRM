@@ -102,17 +102,7 @@ const AdminRegisterProxyStats = () => {
         return <Tag color={color}>{shift || "Unknown"}</Tag>;
       },
     },
-    {
-      title: (
-        <>
-          <BankOutlined style={{ marginRight: 6 }} />
-          Bank
-        </>
-      ),
-      dataIndex: "bankName",
-      key: "bankName",
-      render: (bank) => bank || "N/A",
-    },
+
     {
       title: (
         <>
@@ -181,7 +171,7 @@ const AdminRegisterProxyStats = () => {
 
       <div className="CRM-orders-card">
         <h2>
-          Users List <span className="CRM-more-link">More ➔</span>
+          Management List <span className="CRM-more-link">More ➔</span>
         </h2>
         {loading ? (
           <Skeleton active paragraph={{ rows: 5 }} />
