@@ -198,18 +198,18 @@ const Login = () => {
               className="login-logo"
             />
 
-            <h1>
+            <h1 className="hacktaconnectdiigtalogo">
               <span
                 style={{
                   fontSize: "40px",
                   textTransform: "uppercase",
                   color: "white",
-                }}
+                }} className="hacktagigi"
               >
                 Hackta Connect
               </span>{" "}
               <br />{" "}
-              <span
+              <span className="smalldescipiot"
                 style={{
                   textTransform: "capitalize",
                   color: "white",

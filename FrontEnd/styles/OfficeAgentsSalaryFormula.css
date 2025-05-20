@@ -1,6 +1,3 @@
-.salaryFormula-container {
-  padding: 40px;
-}
 
 .salaryFormula-heading {
   font-size: 30px;
@@ -73,4 +70,117 @@
   font-size: 20px;
   color: #1a1a1a;
   font-weight: bold;
+}
+
+@media (max-width: 992px) {
+  .salaryFormula-formCard {
+    padding: 24px;
+  }
+
+  .salaryFormula-submitBtn {
+    width: 100%;
+  }
+
+  .salaryFormula-input {
+    height: 38px;
+  }
+
+  .salaryFormula-summaryCard {
+    padding: 16px;
+  }
+
+  .salaryFormula-summaryLabel {
+    font-size: 13px;
+  }
+
+  .salaryFormula-summaryValue {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .salaryFormula-container {
+    padding: 24px 16px;
+  }
+
+  .salaryFormula-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .salaryFormula-formCard {
+    padding: 20px;
+  }
+
+  .salaryFormula-sectionTitle {
+    font-size: 14px;
+    margin: 8px 0 16px;
+  }
+
+  .salaryFormula-input {
+    height: 36px;
+    width:  100% !important;
+  }
+
+  .salaryFormula-submitBtn {
+    width: 100%;
+    height: 38px;
+    font-size: 14px;
+  }
+
+  .salaryFormula-summaryTitle {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+
+  .salaryFormula-summaryCard {
+    padding: 14px;
+  }
+
+  .salaryFormula-summaryLabel {
+    font-size: 12px;
+  }
+
+  .salaryFormula-summaryValue {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .salaryFormula-container {
+    padding: 16px 12px;
+  }
+
+  .salaryFormula-heading {
+    font-size: 20px;
+  }
+
+  .salaryFormula-formCard {
+    padding: 16px;
+  }
+
+  .salaryFormula-sectionTitle {
+    font-size: 13px;
+  }
+
+  .salaryFormula-submitBtn {
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .salaryFormula-summaryCard {
+    padding: 12px;
+  }
+
+  .salaryFormula-summaryValue {
+    font-size: 15px;
+  }
+
+  .salaryFormula-summaryLabel {
+    font-size: 11px;
+  }
+  .ant-form-item-label > label {
+  white-space: normal !important;
+}
+
 }

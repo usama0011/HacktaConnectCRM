@@ -92,6 +92,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  color: white !important;
+
 }
 
 .google-login:hover {
@@ -325,4 +327,26 @@
   .signup-text {
     font-size: 13px;
   }
+  .hacktaconnectdiigtalogo{
+    font-size: 25px !important;
+  }
+  .hacktagigi{
+    font-size: 25px !important;
+  }
+  .smalldescipiot{
+    font-size: 16px !important;
+  }
+  .login-illustration{
+    padding: 30px;
+  }
+  .zindtope{
+    height: 220px !important;
+    object-fit: cover !important;
+  }
+  .login-form input {
+  height: 35px;
+}
+.google-login{
+  color: white !important;
+}
 }

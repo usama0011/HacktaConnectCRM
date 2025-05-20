@@ -1,6 +1,4 @@
-.salaryRecord-container {
-  padding: 40px;
-}
+
 
 .salaryRecord-heading {
   font-size: 28px;
@@ -120,4 +118,10 @@
 }
 .ageintsalaryrecordtable .ant-table-sticky-scroll {
   box-shadow: inset 5px 0 5px -5px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+.salaryRecord-heading{
+  font-size: 18px !important;
+}
 }

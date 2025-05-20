@@ -84,6 +84,8 @@ import AllAgentsRegistraction from "../pages/AdminDashboard/AllAgentsRegistracti
 import AllManagementRecord from "../pages/AdminDashboard/AllManagementRecord.jsx";
 import SingleAgentAttendance from "../pages/AdminDashboard/SingleAgentAttandance.jsx";
 import { ConfigProvider } from "antd";
+import MangoProxyB from "../pages/AdminDashboard/MangoProxyB.jsx";
+import InfaticaAPIDetails from "../pages/AdminDashboard/InfaticaAPIDetails.jsx";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -199,6 +201,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 element={<SingleUserIPReport />}
               />
               <Route path="addqcpointform" element={<QCPoints />} />
+              <Route path="infaticaldashobard" element={<InfaticaAPIDetails />} />
               <Route path="announcements" element={<Announcements />} />
               <Route path="attendance" element={<AttendanceManagement />} />
               <Route path="newtask" element={<UserTaskCreation />} />
@@ -239,6 +242,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               />
               <Route path="proxy/smart" element={<SmartProxy />} />
               <Route path="proxy/mango" element={<MangoProxy />} />
+              <Route path="proxy/mangob" element={<MangoProxyB />} />
               <Route path="proxy/geo" element={<ProxyGeo />} />
               <Route path="proxyusage" element={<ProxyUsage />} />
               <Route path="reporting" element={<Reporting />} />
@@ -251,7 +255,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Route path="salaryformula" element={<SalaryFormulaForm />} />
               <Route path="salarymanagement" element={<SalaryManagement />} />
               <Route path="settings" element={<SettingsAdmin />} />
-              <Route path="termsandpolicies" element={<TermsAndPolicies />} />
+              <Route path="termsandpolicies" element={<TermsAndPoliciesUser />} />
 
               <Route
                 path="downloadsalaryreports"

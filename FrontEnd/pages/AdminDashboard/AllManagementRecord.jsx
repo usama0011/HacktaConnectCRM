@@ -279,12 +279,14 @@ const AllManagementRecord = () => {
       {loading ? (
         <Skeleton active paragraph={{ rows: 6 }} />
       ) : (
-        <Table
-          columns={columns}
-          dataSource={users}
-          pagination={{ pageSize: 5 }}
-          className="user-table"
-        />
+        <div className="user-table-wrapperrrr">
+          <Table
+            columns={columns}
+            dataSource={users}
+            pagination={{ pageSize: 5 }}
+            className="user-table"
+          />
+        </div>
       )}
       <Modal
         title="Edit User"

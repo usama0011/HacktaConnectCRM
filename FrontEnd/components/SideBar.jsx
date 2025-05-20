@@ -17,7 +17,9 @@ import MainWebSiteLogo from "../src/assets/mainlogo.jpeg";
 
 const { Sider } = Layout;
 
-const Sidebar = () => {
+const Sidebar = ({ visible, onClose }) => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
   const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
   const [openKeys, setOpenKeys] = useState([]);
@@ -25,6 +27,14 @@ const Sidebar = () => {
   const handleOpenChange = (keys) => {
     setOpenKeys(keys);
   };
+  // ✅ Always run hooks first
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const path = location.pathname;
@@ -56,6 +66,7 @@ const Sidebar = () => {
     }
     return location.pathname;
   };
+  if (isMobile && !visible) return null;
 
   return (
     <Sider
@@ -72,7 +83,14 @@ const Sidebar = () => {
         <div className="sidebar-logo">
           <img src={MainWebSiteLogo} alt="Logo" />
         </div>
-
+        {/* Add a close button (for mobile only) */}
+        {isMobile && (
+          <div style={{ textAlign: "right", padding: 8 }}>
+            <Button size="small" onClick={onClose}>
+              Close
+            </Button>
+          </div>
+        )}
         <div className="sidebar-scrollable">
           <Menu
             mode="inline"
@@ -130,9 +148,7 @@ const Sidebar = () => {
                 </Link>
               </Menu.Item>
               <Menu.Item key="/admin/dashboard/AllQCPoints">
-                <Link to="/admin/dashboard/AllQCPoints">
-                  Agent QC Reports
-                </Link>
+                <Link to="/admin/dashboard/AllQCPoints">Agent QC Reports</Link>
               </Menu.Item>
               <Menu.Item key="/admin/dashboard/addqcpointform">
                 <Link to="/admin/dashboard/addqcpointform">Add QC Points</Link>

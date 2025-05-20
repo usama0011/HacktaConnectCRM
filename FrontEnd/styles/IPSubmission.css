@@ -1,5 +1,4 @@
 .ipreport-container {
-  padding: 40px 24px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -85,9 +84,10 @@
 }
 
 .top-performers-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Exactly 3 cards per row */
-  gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
 }
 
 .top-performer-card {
@@ -107,8 +107,8 @@
 
 .performer-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: space-between !important;
+  align-items: center !important;
   padding: 14px 18px;
 }
 
@@ -161,4 +161,50 @@
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   z-index: 1;
+}
+@media (max-width: 992px) {
+  .top-performer-card {
+    flex: 1 1 calc(50% - 12px);
+  }
+}
+@media (max-width: 768px) {
+.header-lefthy{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+  .ipreport-title{
+    white-space: nowrap;
+  }
+  
+}
+
+
+
+@media (max-width: 576px) {
+  .top-performer-card {
+    flex: 1 1 100%;
+  }
+
+  .performer-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .performer-left {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .performer-meta {
+    font-size: 12px;
+  }
+
+  .rank-circle {
+    font-size: 13px;
+  }
+  .section-heading{
+    font-size: 18px !important;
+  }
 }

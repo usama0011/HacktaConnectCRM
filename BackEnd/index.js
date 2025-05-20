@@ -10,6 +10,7 @@ import wfhSalaryFormulaRoutes from "./routes/wfhSalaryFormulaRoutes.js";
 import uploadRoutes from "./routes/uploadroute.js";
 import salaryCalculatorOfficeAgents from "./routes/salaryFormulaOfficeagentsroute.js";
 import mangoProxyRoutes from "./routes/mangoproxy.js";
+import mangoProxyRoutesb from "./routes/mangoproxyb.js";
 import DownloadSalaryReport from "./routes/downloadsalaryroute.js";
 // Import all route files
 import taskRoutes from "./routes/taskRoutes.js";
@@ -56,6 +57,7 @@ app.use("/api/wfhformula", wfhSalaryFormulaRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/smartproxy", SmartProxyRoute);
 app.use("/api/mangoproxy", mangoProxyRoutes);
+app.use("/api/mangoproxyb", mangoProxyRoutesb);
 app.use("/api/salarycalculator", calculateGeneralSalary);
 app.use("/api/downloadslarayreport", DownloadSalaryReport);
 

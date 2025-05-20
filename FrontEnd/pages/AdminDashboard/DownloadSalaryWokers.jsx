@@ -477,6 +477,7 @@ const DownloadSalaryWokers = () => {
           columns={columns}
           dataSource={filteredData}
           pagination={{ pageSize: 50 }}
+          scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
         />
       </Card>
     </div>

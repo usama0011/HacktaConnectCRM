@@ -75,7 +75,7 @@ const WFHSalaryFormula = () => {
             Basic Salary Fields
           </Divider>
           <Row gutter={24}>
-            <Col span={6}>
+            <Col  xs={24} sm={12} md={8} lg={6}>
               <Form.Item
                 label={
                   <span>
@@ -88,7 +88,7 @@ const WFHSalaryFormula = () => {
                 <InputNumber className="wfhFormula-input" min={0} />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col  xs={24} sm={12} md={8} lg={6}>
               <Form.Item
                 label={
                   <span>
@@ -110,7 +110,7 @@ const WFHSalaryFormula = () => {
             Max Salary
           </Divider>
           <Row gutter={24}>
-            <Col span={6}>
+            <Col  xs={24} sm={12} md={8} lg={6}>
               <Form.Item
                 label={
                   <span>
@@ -129,7 +129,7 @@ const WFHSalaryFormula = () => {
             Bonus Fields
           </Divider>
           <Row gutter={24}>
-            <Col span={6}>
+            <Col  xs={24} sm={12} md={8} lg={6}>
               <Form.Item
                 label={
                   <span>
@@ -148,7 +148,7 @@ const WFHSalaryFormula = () => {
             Deduction
           </Divider>
           <Row gutter={24}>
-            <Col span={6}>
+            <Col  xs={24} sm={12} md={8} lg={6}>
               <Form.Item
                 label={
                   <span>

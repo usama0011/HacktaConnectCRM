@@ -96,7 +96,11 @@ const AllUsersAttendance = () => {
         else if (status === "RotationOff") color = "blue";
         else if (status === "Leave") color = "purple";
 
-        return <Tag color={color}>{status || "Pending"}</Tag>;
+        return (
+          <div className="status-tag-wrapper">
+            <Tag color={color}>{status || "Pending"}</Tag>
+          </div>
+        );
       },
     },
     {
@@ -232,14 +236,16 @@ const AllUsersAttendance = () => {
       </div>
 
       <Spin spinning={loading}>
-        <Table
-          columns={columns}
-          dataSource={attendanceData}
-          rowKey="id"
-          pagination={{ pageSize: 50 }}
-          bordered
-          className="attendance-table"
-        />
+        <div className="attendance-table-wrapper">
+          <Table
+            columns={columns}
+            dataSource={attendanceData}
+            rowKey="id"
+            pagination={{ pageSize: 50 }}
+            bordered
+            className="attendance-table"
+          />
+        </div>
       </Spin>
     </div>
   );

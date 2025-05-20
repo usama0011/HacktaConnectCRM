@@ -249,7 +249,7 @@ export const getMonthlyIPCounts = async (req, res) => {
       ? new mongoose.Types.ObjectId(userId)
       : null;
 
-    // Step 1: Aggregate IP submissions
+    // Step 1: Aggregate existing IP data for the user
     const data = await IP.aggregate([
       {
         $match: {
@@ -283,24 +283,31 @@ export const getMonthlyIPCounts = async (req, res) => {
           totalIPs: { $add: ["$totalSessions", "$totalClicks"] },
         },
       },
-      { $sort: { date: 1 } },
     ]);
 
-    // Step 2: Fetch user info
+    // Step 2: Get user info
     const user = await User.findById(userObjectId, "username userImage");
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Step 3: Add user info to each record
-    const enrichedData = data.map((entry) => ({
-      ...entry,
-      username: user.username,
-      avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
-    }));
+    // Step 3: Build full month range with default 0s
+    const totalDays = moment(`${year}-${month}`, "YYYY-MM").daysInMonth();
+    const fullMonth = [];
 
-    return res.status(200).json(enrichedData);
+    for (let day = 1; day <= totalDays; day++) {
+      const dateStr = `${day}-${parseInt(month)}-${year}`;
+      const existing = data.find((d) => d.date === dateStr);
+
+      fullMonth.push({
+        date: dateStr,
+        totalIPs: existing ? existing.totalIPs : 0,
+        username: user.username,
+        avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
+      });
+    }
+
+    return res.status(200).json(fullMonth);
   } catch (error) {
     console.error("Monthly IPs Error:", error);
     return res.status(500).json({

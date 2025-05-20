@@ -1,5 +1,4 @@
 .attendance-container {
-  padding: 24px;
   min-height: 100vh;
 }
 
@@ -149,4 +148,108 @@
   font-size: 16px;
   font-weight: 500;
   color: #003c2f;
+}
+.attendance-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.attendance-table {
+  min-width: 1000px; /* Ensures all columns fit horizontally */
+}
+
+
+/* Responsive Fixes for Attendance Page */
+@media (max-width: 768px) {
+  .attendance-container {
+    padding: 12px;
+  }
+
+  .attendance-title {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .attendance-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .attendance-current-date {
+    font-size: 14px;
+  }
+
+  .simple-calendar {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .top-performers-title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .present-info,
+  .performer-name,
+  .badge {
+    font-size: 13px;
+  }
+
+  .view-button {
+    width: 100%;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  /* Make performer cards stack better */
+  .wave-card {
+    padding-top: 60px;
+    height: auto;
+  }
+
+  /* Responsive fixes for filters */
+  .ant-select,
+  .ant-picker,
+  .ant-btn {
+    width: 100% !important;
+  }
+
+  /* Table font size smaller on mobile */
+  .attendance-table .ant-table-tbody > tr > td {
+    font-size: 12px;
+  }
+
+  .attendance-table .ant-table-thead > tr > th {
+    font-size: 12px;
+  }
+
+  /* Wrap table container for overflow */
+  .attendance-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .month-summary {
+    gap: 4px;
+  }
+
+  .user-info {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .user-name {
+    font-size: 13px;
+  }
+  .attendance-title{
+    font-size: 21px  !important;
+  }
+  .wave-card{
+    height: 280px !important;
+  }
+  .wave-card-inner{
+    margin-top: 40px !important;
+  }
 }

@@ -46,8 +46,9 @@ const SalaryManagement = () => {
 
   return (
     <div className="salary-management-container">
+      <br />
       <h1 className="salary-management-title">Salary Management Dashboard</h1>
-      <Row gutter={[24, 24]}>
+      <Row gutter={[16, 16]}>
         {salaryCards.map((card, index) => (
           <Col key={index} xs={24} sm={12} md={8}>
             <Card className="salary-card" hoverable>

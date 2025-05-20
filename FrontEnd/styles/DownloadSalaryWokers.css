@@ -120,3 +120,56 @@
   background-color: #004d40 !important;
   color: #ffffff !important;
 }
+
+
+@media (max-width: 768px) {
+  .download-salary-container {
+    padding: 0 0px;
+  }
+
+  .download-salary-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .download-salary-card {
+    padding: 10px;
+  }
+
+  .download-salary-card label {
+    font-size: 14px;
+  }
+
+  .download-salary-card .ant-input,
+  .download-salary-card .ant-select-selector,
+  .download-salary-card .ant-picker {
+    height: 38px;
+    font-size: 14px;
+    width: 100% !important; /* Force full width */
+  }
+
+  .download-button-wrapper {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .download-button-wrapper .ant-btn {
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+    margin-bottom: 10px !important;
+    border-radius: 10px !important;
+  }
+
+  .download-salary-table .ant-table-thead > tr > th,
+  .download-salary-table .ant-table-tbody > tr > td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .custom-month-picker-dropdown .ant-picker-cell-inner {
+    font-size: 13px;
+  }
+
+
+}

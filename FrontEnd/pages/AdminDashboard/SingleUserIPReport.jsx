@@ -100,32 +100,44 @@ const SingleUserIPReport = () => {
     },
   ];
 
-const chartConfig = {
-  data: userSubmissions.map((item) => ({
-    date: moment(item.date, "D-M-YYYY").format("DD MMM"),
-    totalIPs: item.totalIPs,
-  })),
-  xField: "date",
-  yField: "totalIPs",
-  columnWidthRatio: 0.6,
+  const chartConfig = {
+    data: userSubmissions.map((item) => ({
+      date: moment(item.date, "D-M-YYYY").format("DD MMM"),
+      totalIPs: item.totalIPs,
+    })),
+    xField: "date",
+    yField: "totalIPs",
+    columnWidthRatio: 0.6,
 
-  /** ✅ Use style for static color override */
-  style: {
-    fill: "#003c2f", // ← works reliably across versions
-  },
-
-  label: {
-    position: "middle",
-    style: { fill: "#fff", fontSize: 12 },
-  },
-
-  xAxis: {
-    label: {
-      rotate: -45,
-      style: { fontSize: 10 },
+    /** Bar color */
+    style: {
+      fill: "#003c2f",
     },
-  },
-};
+
+    /** Bar labels */
+    label: {
+      position: "middle",
+      style: {
+        fill: "#ffffff",
+        fontSize: 12,
+        fontWeight: 500,
+      },
+    },
+
+   axis: {
+      x: {
+        labelFill: '#003c2f',
+        fontWeight:"bold"
+      },
+       y: {
+        labelFill: '#003c2f',
+        fontWeight:"bold"
+      }
+    },
+
+   
+  
+  };
 
   // Extract user info from first record
   const firstRecord = userSubmissions[0];
@@ -155,9 +167,11 @@ const chartConfig = {
           columns={columns}
           dataSource={userSubmissions}
           rowKey="date"
-          pagination={{ pageSize: 5 }}
+          pagination={{ pageSize: 50 }}
           bordered
           loading={loading}
+              scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
+
         />
       </Card>
 

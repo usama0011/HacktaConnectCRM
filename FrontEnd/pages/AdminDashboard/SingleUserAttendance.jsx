@@ -12,10 +12,9 @@ import {
   Spin,
   Avatar,
 } from "antd";
-import { CalendarOutlined, UserOutlined } from "@ant-design/icons";
 import moment from "moment";
 import API from "../../utils/BaseURL";
-
+import '../../styles/SingleUserAttandance.css'
 const { Title, Text } = Typography;
 
 const SingleUserAttendance = () => {
@@ -85,7 +84,9 @@ const SingleUserAttendance = () => {
     <div className="single-user-attendance-container">
       <div className="attendance-user-header">
         <Avatar src={userData?.avatar} size={64} />
-        <Title level={3}>{userData?.name}'s Attendance Overview</Title>
+        <br />
+        <Title className="myhtitleversiguser" level={3}>{userData?.name}'s Attendance Overview</Title>
+      
         <input
           type="date"
           className="simple-calendar"
@@ -99,7 +100,7 @@ const SingleUserAttendance = () => {
           {Object.keys(stats).map((key) => (
             <Col xs={12} sm={8} md={4} key={key}>
               <Card className="attendance-stat-card">
-                <Title level={4}>
+                <Title level={4} className="attnedatcstatustet">
                   {key.charAt(0).toUpperCase() + key.slice(1)}
                 </Title>
                 <Text>{stats[key]}</Text>
@@ -107,7 +108,6 @@ const SingleUserAttendance = () => {
             </Col>
           ))}
         </Row>
-
         <Table
           columns={columns}
           dataSource={attendanceData}
@@ -115,6 +115,7 @@ const SingleUserAttendance = () => {
           pagination={{ pageSize: 10 }}
           className="user-attendance-table"
           style={{ marginTop: 20 }}
+          scroll={{ x: "max-content" }} // ✅ Enable horizontal scroll
         />
       </Spin>
     </div>

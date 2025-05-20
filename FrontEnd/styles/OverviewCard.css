@@ -184,24 +184,7 @@
     grid-template-columns: repeat(2, 1fr) !important;
   }
 
-  .CRM-ribbon-center {
-    font-size: 18px;
-    padding: 10px 32px;
-  }
-
-  .CRM-ribbon-left,
-  .CRM-ribbon-right {
-    border-top: 24px solid transparent;
-    border-bottom: 24px solid transparent;
-  }
-
-  .CRM-ribbon-left {
-    border-right: 24px solid #ff3c5f;
-  }
-
-  .CRM-ribbon-right {
-    border-left: 24px solid #ff3c5f;
-  }
+ 
 }
 
 @media (max-width: 600px) {
@@ -210,24 +193,7 @@
     padding: 16px;
   }
 
-  .CRM-card-value {
-    font-size: 18px;
-  }
-
-  .CRM-card-icon {
-    width: 32px;
-    height: 32px;
-  }
-
-  .CRM-ribbon-center {
-    font-size: 16px;
-    padding: 8px 24px;
-  }
-
-  .CRM-ribbon-left,
-  .CRM-ribbon-right {
-    display: none; /* Hide folded ends on extra small screens */
-  }
+  
   .CRM-shift,
   .CRM-totalips {
     font-size: 12px;

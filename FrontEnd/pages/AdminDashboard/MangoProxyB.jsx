@@ -12,7 +12,7 @@ import API from "../../utils/BaseURL";
 import TrafficUIIcon from "../../src/assets/Insights.png";
 import ChartIcon from "../../src/assets/chartup.png";
 
-const MangoProxy = () => {
+const MangoProxyB = () => {
   const [trafficData, setTrafficData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pieData, setPieData] = useState([]);
@@ -20,7 +20,7 @@ const MangoProxy = () => {
   useEffect(() => {
     const fetchMangoData = async () => {
       try {
-        const trafficRes = await API.get("/mangoproxy/traffic");
+        const trafficRes = await API.get("/mangoproxyb/traffic");
         setTrafficData(trafficRes.data);
 
         setTimeout(() => {
@@ -67,7 +67,6 @@ const MangoProxy = () => {
     colorField: "type",
     radius: 0.8,
     height: window.innerWidth <= 480 ? 240 : 300, // 👈 responsive chart height
-
     scale: {
       color: {
         range: ["#003c2f", "#007f5c"], // Branded shades for Used / Available
@@ -162,4 +161,4 @@ const MangoProxy = () => {
   );
 };
 
-export default MangoProxy;
+export default MangoProxyB;

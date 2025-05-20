@@ -146,6 +146,8 @@ const SingleUserQCPoints = () => {
         columns={columns}
         dataSource={userData.points}
         rowKey="date"
+                scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
+
         pagination={{ pageSize: 5 }}
         bordered
         summary={() => {

@@ -84,7 +84,7 @@ const OfficeAgentsSalaryFormula = () => {
             IP Compensation
           </Divider>
           <Row gutter={24}>
-            <Col span={6}>
+            <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item
                 label={
                   <span>
@@ -97,7 +97,7 @@ const OfficeAgentsSalaryFormula = () => {
                 <InputNumber className="salaryFormula-input" min={0} />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item
                 label={
                   <span>
@@ -119,7 +119,7 @@ const OfficeAgentsSalaryFormula = () => {
             Max Salary
           </Divider>
           <Row gutter={24}>
-            <Col span={6}>
+            <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item
                 label={
                   <span>
@@ -148,7 +148,7 @@ const OfficeAgentsSalaryFormula = () => {
               "qc140_149",
               "qc150_plus",
             ].map((field, idx) => (
-              <Col span={6} key={field}>
+              <Col  xs={24} sm={12} md={8} lg={6} key={field}>
                 <Form.Item
                   label={
                     <span>
@@ -173,7 +173,7 @@ const OfficeAgentsSalaryFormula = () => {
             Bonus Reward
           </Divider>
           <Row gutter={24}>
-            <Col span={6}>
+            <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item
                 label={
                   <span>
@@ -196,7 +196,7 @@ const OfficeAgentsSalaryFormula = () => {
             Absent Fine
           </Divider>
           <Row gutter={24}>
-            <Col span={6}>
+            <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item
                 label={
                   <span>

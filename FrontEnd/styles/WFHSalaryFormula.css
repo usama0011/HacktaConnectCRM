@@ -1,6 +1,4 @@
-.wfhFormula-container {
-  padding: 40px;
-}
+
 
 .wfhFormula-heading {
   font-size: 30px;
@@ -73,4 +71,125 @@
   font-size: 20px;
   color: #1a1a1a;
   font-weight: bold;
+}
+
+/* ========== Medium Screens (Tablets) ========== */
+@media (max-width: 992px) {
+  .wfhFormula-formCard {
+    padding: 24px;
+  }
+
+  .wfhFormula-submitBtn {
+    width: 100%;
+  }
+
+  .wfhFormula-input {
+    height: 38px;
+  }
+
+  .wfhFormula-summaryCard {
+    padding: 16px;
+  }
+
+  .wfhFormula-summaryLabel {
+    font-size: 13px;
+  }
+
+  .wfhFormula-summaryValue {
+    font-size: 18px;
+  }
+}
+
+/* ========== Small Screens (Mobile landscape and below) ========== */
+@media (max-width: 768px) {
+  .wfhFormula-container {
+    padding: 24px 16px;
+  }
+
+  .wfhFormula-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .wfhFormula-formCard {
+    padding: 20px;
+  }
+
+  .wfhFormula-sectionTitle {
+    font-size: 14px;
+    margin: 8px 0 16px;
+  }
+
+  .wfhFormula-input {
+    height: 36px;
+    width: 100% !important;
+  }
+
+  .wfhFormula-submitBtn {
+    width: 100%;
+    height: 38px;
+    font-size: 14px;
+  }
+
+  .wfhFormula-summaryTitle {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+
+  .wfhFormula-summaryCard {
+    padding: 14px;
+  }
+
+  .wfhFormula-summaryLabel {
+    font-size: 12px;
+  }
+
+  .wfhFormula-summaryValue {
+    font-size: 16px;
+  }
+
+  /* Ensure vertical stacking of form rows */
+  .ant-row {
+    flex-direction: column;
+  }
+
+  .ant-col {
+    width: 100% !important;
+  }
+}
+
+/* ========== Extra Small Screens (Mobile portrait) ========== */
+@media (max-width: 480px) {
+  .wfhFormula-container {
+    padding: 16px 12px;
+  }
+
+  .wfhFormula-heading {
+    font-size: 20px;
+  }
+
+  .wfhFormula-formCard {
+    padding: 16px;
+  }
+
+  .wfhFormula-sectionTitle {
+    font-size: 13px;
+  }
+
+  .wfhFormula-submitBtn {
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .wfhFormula-summaryCard {
+    padding: 12px;
+  }
+
+  .wfhFormula-summaryValue {
+    font-size: 15px;
+  }
+
+  .wfhFormula-summaryLabel {
+    font-size: 11px;
+  }
 }

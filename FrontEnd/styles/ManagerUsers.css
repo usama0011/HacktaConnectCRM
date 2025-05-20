@@ -211,4 +211,8 @@
   .filter-section-registractions .ant-select {
     width: 100%;
   }
+/* ✅ Make table body font-size smaller on mobile */
+  .user-table-wrapperrrr .ant-table-tbody > tr > td {
+    font-size: 12px !important;
+  }
 }

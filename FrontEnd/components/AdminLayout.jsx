@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Layout, Menu, Dropdown, Tooltip, Input, Button, Avatar } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import {
   SettingOutlined,
   LogoutOutlined,
   SearchOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
 import MainWebSiteLogo from "../src/assets/mainlogo.jpeg";
 import LogoutMainCharactor from "../src/assets/logoutcharactor.png";
@@ -17,8 +18,12 @@ const { Header, Sider, Content } = Layout;
 const AdminLayout = () => {
   const { user } = useUserContext();
   const navigate = useNavigate();
+  const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-
+  // Toggle function
+  const toggleMobileSidebar = () => {
+    setIsMobileSidebarVisible(!isMobileSidebarVisible);
+  };
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
@@ -33,15 +38,34 @@ const AdminLayout = () => {
       </Menu.Item>
     </Menu>
   );
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        console.log("helo")
+        setIsMobileSidebarVisible(false); // auto-hide when becoming mobile
+      }
+    };
+      
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   return (
     <Layout className="admin-dashboard-layout">
-      <Sidebar />
+      <Sidebar
+        visible={isMobileSidebarVisible}
+        onClose={() => setIsMobileSidebarVisible(false)}
+      />
 
       {/* Header */}
 
       {/* Content */}
       <Content className="admin-dashboard-content">
         <Header className="custom-admin-header">
+          <div className="mobile-menu-icon" onClick={toggleMobileSidebar}>
+            {isMobileSidebarVisible}
+            <MenuOutlined />
+          </div>
           <div className="header-left">
             <h1>Hello,{user?.agentName}</h1>
           </div>

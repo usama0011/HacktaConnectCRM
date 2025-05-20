@@ -1,5 +1,5 @@
 .singleuserip-container {
-  padding: 24px;
+
 }
 
 .singleuserip-header-card {
@@ -29,9 +29,77 @@
 }
 
 .singleuserip-chart-card {
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+}
+
+/* Scrollable Chart Wrapper */
+.responsive-chart-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Ensure internal chart doesn't shrink */
+.responsive-chart-wrapper > div {
+  min-width: 600px; /* Adjust based on number of bars */
+  height: 300px;
+}
+.singleuserip-table-card {
   margin-bottom: 20px;
 }
 
-.singleuserip-table-card {
-  margin-bottom: 20px;
+/* ✅ Media Queries */
+@media (max-width: 768px) {
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .user-name {
+    font-size: 18px;
+  }
+
+  .month-display {
+    font-size: 14px;
+  }
+
+  .singleuserip-header-card {
+    padding: 12px;
+  }
+
+  .singleuserip-chart-card,
+  .singleuserip-table-card {
+    margin-bottom: 16px;
+  }
+  .responsive-chart-wrapper {
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-name {
+    font-size: 16px;
+  }
+
+  .month-display {
+    font-size: 13px;
+  }
+
+  .singleuserip-header-card {
+    padding: 10px;
+  }
+  .user-name{
+  font-size: 14px !important;
+  }
+  .month-display{
+  align-items: start !important;
+  padding: 0;
+  margin: 0;
+  }
 }

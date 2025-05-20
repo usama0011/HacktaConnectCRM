@@ -205,7 +205,7 @@ const AllUsersQCPoints = () => {
       <br />
       {topUsers.length > 0 && (
         <>
-          <Title style={{ color: "black" }} level={3}>
+          <Title className="allqctopfiveperformat" style={{ color: "black" }} level={3}>
             🏆 Top 5 Performers of the Month
           </Title>
           <div className="top-performer-grid">
@@ -252,6 +252,7 @@ const AllUsersQCPoints = () => {
         pagination={{ pageSize: 50 }}
         bordered
         className="qupointsAddTable"
+        scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
       />
     </div>
   );

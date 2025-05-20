@@ -1,5 +1,4 @@
 .records-dashboard-container {
-  padding: 24px;
   background-color: #f5f5f5;
   min-height: 100vh;
 }
@@ -7,6 +6,7 @@
 .records-dashboard-heading {
   text-align: center;
   color: #003c2f;
+  margin-top: 20px;
   font-size: 28px;
   margin-bottom: 40px;
   font-weight: bold;
@@ -37,6 +37,7 @@
   font-size: 22px;
   font-weight: 700;
   color: #003c2f;
+
   margin-bottom: 16px;
 }
 

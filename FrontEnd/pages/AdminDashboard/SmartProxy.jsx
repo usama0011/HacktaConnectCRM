@@ -78,9 +78,46 @@ const SmartProxy = () => {
   };
 
   const trafficData = subUsers.map((user) => ({
-    type: user.username,
+    type: user.username.charAt(0).toUpperCase() + user.username.slice(1),
     value: user.traffic,
   }));
+
+  const pieConfig = {
+    appendPadding: 10,
+    data: trafficData.filter((item) => item.value > 0),
+    angleField: "value",
+    colorField: "type",
+    radius: 0.8,
+    height: 300,
+    scale: {
+      color: {
+        range: ["#003c2f", "#005745", "#007f5c", "#009973", "#00b189"],
+      },
+    },
+    label: {
+      text: (d) => `${d.type}\n${d.value} GB`,
+      position: "spider",
+      style: {
+        fontSize: 14,
+        fontWeight: 500,
+        fill: "#333",
+      },
+    },
+    legend: {
+      color: {
+        title: false,
+        position: "right",
+        rowPadding: 5,
+      },
+    },
+    tooltip: {
+      formatter: (datum) => ({
+        name: datum?.type || "User",
+        value: `${datum?.value ?? 0} GB`,
+      }),
+    },
+    interactions: [{ type: "element-active" }],
+  };
 
   if (loading) {
     return (
@@ -201,22 +238,7 @@ const SmartProxy = () => {
         </div>
 
         {trafficData.length > 0 ? (
-          <Pie
-            data={trafficData}
-            angleField="value"
-            colorField="type"
-            radius={1}
-            innerRadius={0.6}
-            label={{
-              type: "spider",
-              content: "{type}: {value} GB",
-            }}
-            legend={{
-              position: "right",
-            }}
-            height={400}
-            interactions={[{ type: "element-active" }]}
-          />
+          <Pie {...pieConfig} />
         ) : (
           <Spin tip="Loading Chart..." />
         )}

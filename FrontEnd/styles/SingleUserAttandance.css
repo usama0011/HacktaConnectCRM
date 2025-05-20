@@ -92,3 +92,106 @@
   font-weight: bold;
   color: #003c2f;
 }
+
+/* Responsive Table Wrapper */
+.user-attendance-table {
+  overflow-x: auto;
+  display: block;
+}
+/* =================== Responsive Media Queries =================== */
+.attnedatcstatustet{
+  font-size: 12px !important;
+}
+/* Small devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .attendance-user-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .attendance-user-header h3 {
+    font-size: 20px;
+  }
+
+  .summary-card-flex {
+    min-width: 100%;
+  }
+
+  .summary-card-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+
+  .summary-label {
+    font-size: 14px;
+  }
+
+  .summary-value {
+    font-size: 18px;
+  }
+
+  .summary-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .user-attendance-table .ant-table-thead > tr > th,
+  .user-attendance-table .ant-table-tbody > tr > td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .user-attendance-table {
+    overflow-x: auto;
+    display: block;
+  }
+
+  .simple-calendar {
+    width: 100%;
+  }
+  .user-attendance-table .ant-table-thead > tr > th,
+  .user-attendance-table .ant-table-tbody > tr > td {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  
+}
+
+/* Medium devices (tablets, 576px to 768px) */
+@media (min-width: 576px) and (max-width: 768px) {
+  .summary-card-flex {
+    min-width: 48%;
+  }
+
+  .summary-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .summary-value {
+    font-size: 20px;
+  }
+}
+
+/* Large tablets and below (768px to 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .attendance-user-header {
+    flex-direction: row !important;
+    gap: 20px;
+  }
+
+  .summary-card-flex {
+    min-width: 30%;
+  }
+}
+
+@media (max-width: 486px){
+.myhtitleversiguser{
+
+}
+}

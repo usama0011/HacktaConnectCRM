@@ -132,7 +132,7 @@ const AllUsersIPReport = () => {
   return (
     <div className="ipreport-container">
       <div className="ipreport-header">
-        <div className="header-left">
+        <div className="header-lefthy">
           <Title level={3} className="ipreport-title">
             📊 Agent IP Reports
           </Title>
@@ -154,35 +154,44 @@ const AllUsersIPReport = () => {
         style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
       >
         <Select
-          placeholder="Select Shift"
-          value={filters.shift}
+          placeholder="Please select Shift"
+          value={filters.shift || undefined}
           style={{ width: 180 }}
           onChange={(value) => handleFilterChange("shift", value)}
           allowClear
         >
+          <Option disabled value="">
+            Please select Shift
+          </Option>
           <Option value="morning">Morning</Option>
           <Option value="evening">Evening</Option>
           <Option value="night">Night</Option>
         </Select>
 
         <Select
-          placeholder="Select Agent Type"
-          value={filters.agentType}
+          placeholder="Please select Agent Type"
+          value={filters.agentType || undefined}
           style={{ width: 180 }}
           onChange={(value) => handleFilterChange("agentType", value)}
           allowClear
         >
+          <Option disabled value="">
+            Please select Agent Type
+          </Option>
           <Option value="Office Agent">Office Agent</Option>
           <Option value="WFH Agent">WFH Agent</Option>
         </Select>
 
         <Select
-          placeholder="Select Branch"
-          value={filters.branch}
+          placeholder="Please select Branch"
+          value={filters.branch || undefined}
           style={{ width: 180 }}
           onChange={(value) => handleFilterChange("branch", value)}
           allowClear
         >
+          <Option disabled value="">
+            Please select Branch
+          </Option>
           <Option value="Branch A">Branch A</Option>
           <Option value="Branch B">Branch B</Option>
           <Option value="Branch C">Branch C</Option>
@@ -196,7 +205,7 @@ const AllUsersIPReport = () => {
       <br />
       <Row gutter={[24, 24]} className="top-performers-row">
         <Col span={24}>
-        <br />
+          <br />
           <Title level={4} className="section-heading">
             🏆 Top 3 Performing Agents
           </Title>
@@ -243,6 +252,7 @@ const AllUsersIPReport = () => {
         bordered
         loading={loading}
         className="user-table-ppwork"
+        scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
       />
     </div>
   );

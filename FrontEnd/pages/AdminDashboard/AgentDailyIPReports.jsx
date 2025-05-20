@@ -119,7 +119,7 @@ const AgentDailyIPReports = () => {
   return (
     <div className="daily-ip-container">
       <div className="daily-ip-header">
-        <Title level={3}>🗓 Agent IP Report - Daily</Title>
+        <Title className="dailyiperagenside" level={3}>🗓 Agent IP Report - Daily</Title>
         <input
           type="date"
           className="simple-calendar"
@@ -184,6 +184,7 @@ const AgentDailyIPReports = () => {
       <Table
         columns={columns}
         dataSource={data}
+        scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
         rowKey="_id"
         className="user-table-singipoidsfisodf"
         pagination={{ pageSize: 50 }}
