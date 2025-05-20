@@ -1,113 +1,110 @@
-import React, { useEffect, useState } from "react";
-import {
-  Typography,
-  Input,
-  Select,
-  Button,
-  Table,
-  Spin,
-  message,
-  Card,
-  Row,
-  Col,
-} from "antd";
-import { Pie } from "@ant-design/plots";
-import { CloudOutlined } from "@ant-design/icons";
 import "../../styles/InfaticaAPIDetails.css";
-import axios from "axios";
+import { Pie } from "@ant-design/plots";
+import React, { useEffect, useState } from "react";
+import { Spin, Typography, Card, Row, Col, Descriptions, message } from "antd";
+import {
+  UserOutlined,
+  CloudDownloadOutlined,
+  CloudOutlined,
+  BarChartOutlined,
+  DatabaseOutlined,
+} from "@ant-design/icons";
+import API from "../../utils/BaseURL";
 
 const { Title } = Typography;
-const { Option } = Select;
 
 const InfaticaAPIDetails = () => {
-  const [key, setKey] = useState("");
-  const [period, setPeriod] = useState("daily");
   const [loading, setLoading] = useState(false);
-  const [usageData, setUsageData] = useState([]);
-  const [chartData, setChartData] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [pieData, setPieData] = useState([]);
+  const [usedGB, setUsedGB] = useState(0);
+  const [availableGB, setAvailableGB] = useState(0);
+  const [limitGB, setLimitGB] = useState(0);
 
-  const fetchTrafficUsage = async () => {
-    if (!key || !period) {
-      message.error("Please provide both Package Key and Period.");
-      return;
-    }
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
+  const fetchStats = async () => {
     try {
       setLoading(true);
-
-      const formData = new FormData();
-      formData.append("key", key);
-      formData.append("period", period);
-
-      const response = await axios.post("https://infatica-dashboard-backend.vercel.app/api/stats/traffic-usage", formData);
-
-      const parsed = [];
-      const regionTotals = {};
-
-      Object.entries(response.data || {}).forEach(([region, usage]) => {
-        let totalRegionBytes = 0;
-
-        Object.entries(usage).forEach(([time, value]) => {
-          parsed.push({
-            key: `${region}-${time}`,
-            region,
-            time,
-            usage: value,
-          });
-          totalRegionBytes += value;
-        });
-
-        regionTotals[region] = (regionTotals[region] || 0) + totalRegionBytes;
-      });
-
-      const pieReady = Object.entries(regionTotals).map(([region, total]) => ({
-        type: region,
-        value: parseFloat((total / (1024 * 1024)).toFixed(2)), // MB
-      }));
-
-      setUsageData(parsed);
-      setChartData(pieReady);
-      message.success("Traffic usage data fetched successfully!");
+      const response = await API.get("/infatica/traffic-usage");
+      setStats(response.data);
+      message.success("Statistics loaded!");
     } catch (error) {
       console.error(error);
-      message.error("Failed to fetch traffic usage data!");
+      message.error("Failed to load statistics.");
     } finally {
       setLoading(false);
     }
   };
 
-  const columns = [
-    {
-      title: "📍 Region",
-      dataIndex: "region",
-      key: "region",
-    },
-    {
-      title: "🕒 Time",
-      dataIndex: "time",
-      key: "time",
-    },
-    {
-      title: "📶 Usage (Bytes)",
-      dataIndex: "usage",
-      key: "usage",
-    },
-  ];
+  useEffect(() => {
+    if (!stats) return;
+
+    const usage = Number(stats?.usage || 0);
+    const limit = Number(stats?.traffic_limit || 0);
+    const used = usage / (1024 * 1024 * 1024);
+    const available = (limit - usage) / (1024 * 1024 * 1024);
+    const total = limit / (1024 * 1024 * 1024);
+
+    setUsedGB(used);
+    setAvailableGB(available);
+    setLimitGB(total);
+
+    const data = [
+      {
+        type: "Usage",
+        value: parseFloat(used.toFixed(2)) || 0.01,
+      },
+      {
+        type: "Available",
+        value: parseFloat(available.toFixed(2)) || 0.01,
+      },
+      {
+        type: "Total Limit",
+        value: parseFloat(total.toFixed(2)) || 0.01,
+      },
+    ];
+
+    setPieData(data);
+  }, [stats]);
+
+  const bytesToGB = (bytes) => {
+    const number = Number(bytes);
+    if (isNaN(number)) return "-";
+    const gb = number / (1024 * 1024 * 1024);
+    return `${gb.toFixed(2)} GB`;
+  };
+
+  const getIconForKey = (key) => {
+    const lower = key.toLowerCase();
+    if (lower.includes("user"))
+      return <UserOutlined style={{ color: "#1890ff" }} />;
+    if (lower.includes("traffic") || lower.includes("download"))
+      return <CloudDownloadOutlined style={{ color: "#52c41a" }} />;
+    if (lower.includes("usage") || lower.includes("bandwidth"))
+      return <BarChartOutlined style={{ color: "#722ed1" }} />;
+    if (lower.includes("data"))
+      return <DatabaseOutlined style={{ color: "#eb2f96" }} />;
+    return <CloudOutlined style={{ color: "#aaa" }} />;
+  };
 
   const pieConfig = {
     appendPadding: 10,
-    data: chartData,
+    data: pieData.filter((item) => item.type && item.value > 0),
     angleField: "value",
     colorField: "type",
     radius: 0.8,
-    height: 300,
+    innerRadius: 0.6,
+    height: window.innerWidth <= 480 ? 240 : 300,
     scale: {
       color: {
-        range: ["#003c2f", "#007f5c", "#00a86b", "#00c18c"],
+        range: ["#003c2f", "#00c18c", "#a0d911"], // Usage, Available, Total
       },
     },
     label: {
-      text: (d) => `${d.type}: ${d.value} MB`,
+      text: (d) => `${d.type}: ${d.value} GB`,
       position: "spider",
       style: {
         fontSize: 14,
@@ -125,73 +122,87 @@ const InfaticaAPIDetails = () => {
     tooltip: {
       formatter: (datum) => ({
         name: datum?.type || "Unknown",
-        value: `${datum?.value ?? 0} MB`,
+        value: `${datum?.value ?? 0} GB`,
       }),
     },
     interactions: [{ type: "element-active" }],
   };
 
   return (
-    <div className="infatica-container">
-      <Title level={3} className="infatica-title">
-        <CloudOutlined /> Traffic Usage – Infatica
+    <div style={{ maxWidth: "1000px", margin: "0 auto", paddingTop: "30px" }}>
+      <Title level={2} style={{ textAlign: "center", color: "black" }}>
+        Account Statistics
       </Title>
 
-      <Input
-        placeholder="Enter Package Key"
-        value={key}
-        onChange={(e) => setKey(e.target.value)}
-        className="infatica-input"
-      />
+      {loading ? (
+        <div style={{ textAlign: "center", padding: "30px 0" }}>
+          <Spin size="large" />
+        </div>
+      ) : stats ? (
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <Card bordered>
+              <Descriptions title="General Stats" column={1}>
+                {Object.entries(stats).map(([key, value], index) => (
+                  <Descriptions.Item
+                    key={index}
+                    label={
+                      <span>
+                        {getIconForKey(key)}{" "}
+                        <span style={{ marginLeft: 8 }}>{key}</span>
+                      </span>
+                    }
+                  >
+                    {typeof value === "object"
+                      ? JSON.stringify(value)
+                      : key.toLowerCase().includes("usage") ||
+                        key.toLowerCase().includes("traffic") ||
+                        key.toLowerCase().includes("data")
+                      ? bytesToGB(value)
+                      : value?.toString()}
+                  </Descriptions.Item>
+                ))}
+              </Descriptions>
+            </Card>
+          </Col>
 
-      <Select
-        value={period}
-        onChange={(val) => setPeriod(val)}
-        className="infatica-select"
-        placeholder="Select Period"
-      >
-        <Option value="daily">Daily</Option>
-        <Option value="weekly">Weekly</Option>
-        <Option value="monthly">Monthly</Option>
-        <Option value="all">All</Option>
-      </Select>
+          <Col span={24} style={{ marginTop: 32 }}>
+            <Card
+              title="Traffic Distribution (Donut Chart)"
+              className="infatica-card"
+            >
+              <div style={{ marginBottom: 16 }}>
+                <Row gutter={[16, 16]}>
+                  <Col xs={24} sm={8}>
+                    <strong>Usage:</strong> {usedGB.toFixed(2)} GB
+                  </Col>
+                  <Col xs={24} sm={8}>
+                    <strong>Available:</strong> {availableGB.toFixed(2)} GB
+                  </Col>
+                  <Col xs={24} sm={8}>
+                    <strong>Total Limit:</strong> {limitGB.toFixed(2)} GB
+                  </Col>
+                </Row>
+              </div>
 
-      <Button
-        type="primary"
-        onClick={fetchTrafficUsage}
-        loading={loading}
-        className="infatica-button"
-      >
-        {loading ? <Spin /> : "Fetch Traffic Usage"}
-      </Button>
-
-      <Row gutter={[24, 24]}>
-        <Col xs={24} lg={12}>
-          <Card title="Usage Table" className="infatica-card">
-            {loading ? (
-              <Spin />
-            ) : usageData.length > 0 ? (
-              <Table
-                dataSource={usageData}
-                columns={columns}
-                pagination={{ pageSize: 6 }}
-                bordered
-              />
-            ) : (
-              <p style={{ color: "#888" }}>No traffic data fetched yet.</p>
-            )}
-          </Card>
-        </Col>
-        <Col xs={24} lg={12}>
-          <Card title="Usage by Region (MB)" className="infatica-card">
-            {chartData.length > 0 ? (
-              <Pie {...pieConfig} />
-            ) : (
-              <Spin tip="Preparing Chart..." />
-            )}
-          </Card>
-        </Col>
-      </Row>
+              <div className="donut-chart-wrapper">
+                {pieData.length === 0 ? (
+                  <p style={{ textAlign: "center", color: "#888" }}>
+                    No usage data available to render chart.
+                  </p>
+                ) : (
+                  <Pie {...pieConfig} />
+                )}
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      ) : (
+        <p style={{ textAlign: "center", color: "#888" }}>
+          No statistics available.
+        </p>
+      )}
+      <br />
     </div>
   );
 };

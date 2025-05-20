@@ -86,6 +86,7 @@ import SingleAgentAttendance from "../pages/AdminDashboard/SingleAgentAttandance
 import { ConfigProvider } from "antd";
 import MangoProxyB from "../pages/AdminDashboard/MangoProxyB.jsx";
 import InfaticaAPIDetails from "../pages/AdminDashboard/InfaticaAPIDetails.jsx";
+import AboutUs from "../pages/generalPages/AboutUs.jsx";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -141,7 +142,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/features" element={<Features />} />
-            <Route path="/company" element={<Company />} />
+            <Route path="/company" element={<TermsAndPoliciesUser />} />
+            <Route path="/aboutus" element={<AboutUs />} />
 
             {/* User Dashboard Grouped Under UserLayout */}
             <Route

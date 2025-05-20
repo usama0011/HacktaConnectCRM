@@ -28,7 +28,7 @@ a {
 .crm-announcement {
   background-color: #003c2f;
   color: #fff;
-  font-size: 12px;
+  font-size: 14px;
   padding: 10px 20px;
   text-align: center;
   position: relative;
@@ -46,6 +46,10 @@ a {
   top: 10px;
   cursor: pointer;
 }
+.hacktalogoappp{
+  width: 30px;
+  height: 30px;
+}
 
 /* =================== NAVBAR =================== */
 .crm-navbar {
@@ -56,6 +60,8 @@ a {
 }
 .crm-menu {
   display: flex;
+  align-items:center;
+  justify-content: space-between;
   gap: 30px;
   font-weight: 500;
 }
@@ -63,10 +69,10 @@ a {
   display: flex;
   gap: 10px;
 }
-.login-btn {
-  background: transparent;
+.btncmrlldfd {
+  background: #003c2f;
   border: 1px solid #003c2f;
-  color: #003c2f;
+  color: white;
   padding: 8px 16px;
   border-radius: 8px;
 }

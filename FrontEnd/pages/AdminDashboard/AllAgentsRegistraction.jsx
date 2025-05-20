@@ -513,7 +513,7 @@ const AllAgentsRegistraction = () => {
             <Col xs={24} md={8}>
               <Form.Item
                 name="bankNumber"
-                label="Bank Number"
+                label="Account No"
                 rules={[{ required: true }]}
               >
                 <Input />

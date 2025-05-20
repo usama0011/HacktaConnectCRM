@@ -8,6 +8,23 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.7;
 }
+.parentklkdjflkajdsf{
+ width: 100px !important;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center; 
+}
+.hacktalosgocinaterkadjflkasdjf{
+  width: 90px;
+  height: 90px;
+  justify-self: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
 
 .termpolicyclient-title {
   font-size: 32px;

@@ -97,7 +97,7 @@ const MangoProxy = () => {
     },
     interactions: [{ type: "element-active" }],
   };
-
+  
   return (
     <div className="mangoproxy-container">
       <h1 className="mangoproxy-heading">Mango Proxy Dashboard</h1>

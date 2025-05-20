@@ -1,12 +1,14 @@
 import React from "react";
 import "../../styles/TermsAndPoliciesNew.css";
+import HacktaMainLogSide from "../../src/assets/mainlogo.jpeg";
 
 const TermsAndPolicies = () => {
   return (
     <div className="termpolicyclient-container">
+        <img className="hacktalosgocinaterkadjflkasdjf" src={HacktaMainLogSide} alt="" />
       <h1 className="termpolicyclient-title">HACKTA CONNECT</h1>
       <h2 className="termpolicyclient-subtitle">HR Policy</h2>
-
+        
       <div className="termpolicyclient-section">
         <h3>1.1 Purpose & Scope of the Policy</h3>
         <p>

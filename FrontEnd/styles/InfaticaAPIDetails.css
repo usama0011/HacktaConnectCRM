@@ -24,13 +24,47 @@
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
+.infatica-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+}
 
+.donut-chart-wrapper {
+  overflow-x: auto;
+  padding: 12px 0;
+}
+/* Responsive Typography */
 @media (max-width: 768px) {
   .infatica-title {
     font-size: 20px;
+    margin-bottom: 20px;
   }
 
   .infatica-card {
     padding: 12px;
+  }
+
+  .donut-chart-wrapper {
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .infatica-title {
+    font-size: 18px;
+  }
+
+  .ant-descriptions-item-label {
+    font-size: 13px;
+  }
+
+  .ant-descriptions-item-content {
+    font-size: 13px;
+  }
+
+  .donut-chart-wrapper {
+    overflow-x: scroll;
   }
 }

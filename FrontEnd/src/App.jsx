@@ -25,6 +25,8 @@ import TickImage from "../src/assets/tick.png";
 import Support from "../src/assets/support.png";
 import Setup from "../src/assets/setup.png";
 import BlockQuote from "../src/assets/quote.png";
+import MainWebSiteLogoo from "../src/assets/mainlogo.jpeg";
+
 const App = () => {
   const navigate = useNavigate();
   return (
@@ -36,17 +38,20 @@ const App = () => {
 
       {/* ================= NAVBAR ================= */}
       <nav className="crm-navbar">
-        <div className="crm-logo">{/* Logo image here */}</div>
+        <div className="crm-logo">
+          <img className="hacktalogoappp" src={MainWebSiteLogoo} alt="" />
+        </div>
         <ul className="crm-menu">
-          <li>About</li>
-          
-          <li>Policies</li>
+      
           <li>
-            <Link to="company">Company</Link>{" "}
+            <Link to="company">Policies</Link>{" "}
+          </li>
+          <li>
+            <Link to="aboutus">About Us</Link>{" "}
           </li>
         </ul>
         <div className="crm-auth-buttons">
-          <button className="login-btn" onClick={() => navigate("/login")}>
+          <button className="btncmrlldfd" onClick={() => navigate("/login")}>
             Log In
           </button>
         </div>
@@ -106,8 +111,8 @@ const App = () => {
           <img src={Image6} alt="" />
         </div>
       </section>
-<br />
-<br />
+      <br />
+      <br />
       {/* ============ FEATURE CARDS ============ */}
       <section className="crm-feature-section">
         <h2>Smart Automation, Limitless Possibilities</h2>
@@ -239,7 +244,7 @@ const App = () => {
       </section>
 
       {/* ============ TESTIMONIAL SECTION ============ */}
-      <section className="crm-testimonial">
+      {/* <section className="crm-testimonial">
         <blockquote>
           <img src={BlockQuote} alt="" />
           <p>
@@ -264,7 +269,7 @@ const App = () => {
             alt=""
           />
         </div>
-      </section>
+      </section> */}
 
       {/* ============ CTA FOOTER ============ */}
       <section className="crm-cta">
@@ -282,7 +287,6 @@ const App = () => {
       </section>
 
       {/* ============ FOOTER ============ */}
-     
 
       <div className="crm-copyright">
         © 2024 Hackta Connect All Rights Reserved.

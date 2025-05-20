@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import userTrackingRoute from "./routes/userTracking.js"; // Adjust path if needed
 import chatRoutes from "./routes/chatRoutes.js";
 import qcpointsRoute from "./routes/qcPointRoutes.js";
+import infactiroutes from "./routes/infaticaroute.js";
 import wfhSalaryFormulaRoutes from "./routes/wfhSalaryFormulaRoutes.js";
 import uploadRoutes from "./routes/uploadroute.js";
 import salaryCalculatorOfficeAgents from "./routes/salaryFormulaOfficeagentsroute.js";
@@ -47,6 +48,7 @@ app.get("/", (req, res) => {
 
 // **Register API Routes**
 app.use("/api/auth", authRoutes); // Authentication (Signup, Login, Logout)
+app.use("/api/infatica", infactiroutes); // Authentication (Signup, Login, Logout)
 app.use("/api/tracking", userTrackingRoute); // Your /api/track-user route
 app.use("/api/qcpoints", qcpointsRoute); // Your /api/track-user route
 app.use("/api/upload", uploadRoutes);
