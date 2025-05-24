@@ -25,11 +25,13 @@ import axios from "axios";
 
 import "../../styles/AddNewUser.css";
 import API from "../../utils/BaseURL";
+import { useUserContext } from "../../context/UserContext";
 
 const { Option } = Select;
 const { Dragger } = Upload;
 
 const AddNewUser = () => {
+  const { user } = useUserContext();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
@@ -73,7 +75,7 @@ const AddNewUser = () => {
         joiningDate: values.joiningDate,
         cnic: values.cnic,
         userImage: imageUrl,
-        CreatedBy: "Abdul Moiz",
+        CreatedBy: user?.agentName,
         bankaccountstatus: hasBankAccount,
       };
       if (hasBankAccount) {
@@ -255,7 +257,7 @@ const AddNewUser = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col xs={24} md={12}> 
+            <Col xs={24} md={12}>
               <Form.Item
                 name="shift"
                 label="Shift"

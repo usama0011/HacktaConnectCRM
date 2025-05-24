@@ -6,6 +6,12 @@
   background: white;
   color: black;
   margin-bottom: 20px;
+  position: sticky;       /* 🧷 Makes it stick */
+  top: 80px;                 /* ⬆️ Stick to top */
+  z-index: 100;           /* 📌 Ensure it's above other content */
+  padding: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+
 }
 
 .header-top {
@@ -22,6 +28,7 @@
 
 .month-display {
   display: flex;
+  flex-direction: column;
   align-items: center;
   color: white;
   font-size: 16px;

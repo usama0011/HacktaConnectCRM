@@ -2,6 +2,7 @@ import Attendance from "../models/attendanceModel.js";
 import User from "../models/usermodel.js";
 import mongoose from "mongoose";
 import moment from "moment";
+import QCPoint from '../models/qcPointModel.js'
 
 export const markAttendanceForAgent = async (req, res) => {
   const { userId, username,shift,agentType,branch } = req.body;
@@ -67,6 +68,43 @@ export const markAttendanceForAgent = async (req, res) => {
       });
 
       await attendance.save();
+       if (status === "Late") {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const existingQC = await QCPoint.findOne({
+          userId,
+          date: { $gte: todayStart, $lte: todayEnd },
+        });
+
+        if (!existingQC) {
+          const qcPoint = new QCPoint({
+            userId,
+            date: now,
+            name: username,
+            avatar: user.userImage || "",
+            shift,
+            agentType,
+            branch,
+            time: "0", // ✅ Only this is filled
+            profilePattern: "",
+            pacePerHour: "",
+            perHourReport: "",
+            workingBehavior: "",
+            totalPoints: 0,
+            editedBy: "Auto-Late",
+            history: [
+              {
+                action: "Created (Auto Late)",
+                by: "System",
+                timestamp: new Date().toLocaleString(),
+              },
+            ],
+          });
+
+          await qcPoint.save();
+        }
+      }
       return res.status(201).json({
         message: `Attendance marked as '${status}' for today`,
         attendance,
@@ -351,7 +389,6 @@ if (username) userQuery.username = { $regex: username, $options: "i" }; // case-
 
 
 
-// ✅ Updated Controller: Get Full Month Attendance
 export const getSingleUserAttendance = async (req, res) => {
   const { userId } = req.params;
   const { date } = req.query;
@@ -359,7 +396,7 @@ export const getSingleUserAttendance = async (req, res) => {
   try {
     const selectedMonth = new Date(date);
     const year = selectedMonth.getFullYear();
-    const month = selectedMonth.getMonth(); // 0-indexed
+    const month = selectedMonth.getMonth();
 
     const startOfMonth = new Date(year, month, 1);
     const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59, 999);
@@ -367,14 +404,17 @@ export const getSingleUserAttendance = async (req, res) => {
     const user = await User.findById(userId, "username userImage shift agentType");
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Optional Team Lead restrictions
     if (req.user.role === "Team Lead") {
-      if (user.shift !== req.user.shift || (req.user.agentType && user.agentType !== req.user.agentType)) {
-        return res.status(403).json({ message: "Access denied. Team Leads can only view users of their shift and type." });
+      if (
+        user.shift !== req.user.shift ||
+        (req.user.agentType && user.agentType !== req.user.agentType)
+      ) {
+        return res.status(403).json({
+          message: "Access denied. Team Leads can only view users of their shift and type.",
+        });
       }
     }
 
-    // Fetch records for the selected month
     const records = await Attendance.find({
       userId,
       date: { $gte: startOfMonth, $lte: endOfMonth },
@@ -406,7 +446,17 @@ export const getSingleUserAttendance = async (req, res) => {
       let entry;
 
       if (record) {
-        stats[record.status.toLowerCase()]++;
+        const status = record.status.toLowerCase();
+
+        // ✅ Treat both Present and Late as Present in summary
+        if (status === "present" || status === "late") {
+          stats.present++;
+        }
+
+        if (stats[status] !== undefined) {
+          stats[status]++;
+        }
+
         entry = {
           date: day,
           status: record.status,
@@ -444,3 +494,4 @@ export const getSingleUserAttendance = async (req, res) => {
     });
   }
 };
+

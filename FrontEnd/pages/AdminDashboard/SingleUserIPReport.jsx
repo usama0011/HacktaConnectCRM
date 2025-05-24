@@ -20,11 +20,15 @@ import API from "../../utils/BaseURL";
 import { Column } from "@ant-design/plots";
 import "../../styles/SingleUserIPReport.css";
 import { Calendar } from "primereact/calendar";
+import { useUserContext } from "../../context/UserContext";
 
 const { Title, Text } = Typography;
 
 const SingleUserIPReport = () => {
   const { userId } = useParams();
+  const { user } = useUserContext(); // To track editor
+  const [historyVisible, setHistoryVisible] = useState(false);
+  const [historyData, setHistoryData] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [userSubmissions, setUserSubmissions] = useState([]);
@@ -66,16 +70,28 @@ const SingleUserIPReport = () => {
     setNewSessions(record.sessions || 0);
     setEditModalVisible(true);
   };
+  const showHistoryModal = (history) => {
+    setHistoryData(history);
+    setHistoryVisible(true);
+  };
 
-  const handleSave = () => {
-    setUserSubmissions((prev) =>
-      prev.map((entry) =>
-        entry.date === selectedRecord.date
-          ? { ...entry, totalIPs: newClicks + newSessions }
-          : entry
-      )
-    );
-    setEditModalVisible(false);
+  const handleSave = async () => {
+    console.log(selectedRecord);
+    try {
+      await API.put(`/ip/update-ip/${selectedRecord?.userId}`, {
+        sessions: newSessions,
+        clicks: newClicks,
+        date: moment(selectedRecord.date, "DD-MM-YYYY").toISOString(),
+        editor: user?.username || "Admin",
+      });
+
+      const [newYear, newMonth] = selectedMonth.split("-");
+      fetchUserMonthlyData(newYear, newMonth);
+
+      setEditModalVisible(false);
+    } catch (err) {
+      console.error("Failed to update IP record", err);
+    }
   };
 
   const columns = [
@@ -85,10 +101,33 @@ const SingleUserIPReport = () => {
       key: "date",
     },
     {
+      title: "Sessions",
+      dataIndex: "sessions",
+      key: "sessions",
+    },
+    {
+      title: "Clicks",
+      dataIndex: "clicks",
+      key: "clicks",
+    },
+    {
       title: "Total IPs",
       dataIndex: "totalIPs",
       key: "totalIPs",
     },
+    {
+      title: "History",
+      key: "history",
+      render: (_, record) =>
+        record.history?.length > 0 ? (
+          <Button type="default" onClick={() => showHistoryModal(record.history)}>
+            View
+          </Button>
+        ) : (
+          <Text type="secondary">No History</Text>
+        ),
+    },
+
     {
       title: "Actions",
       key: "actions",
@@ -168,22 +207,16 @@ const SingleUserIPReport = () => {
         <div className="header-top">
           <Avatar src={firstRecord?.avatar} icon={<UserOutlined />} size={64} />
           <div>
-            <Title level={3} className="user-name">
-              {firstRecord?.username || "Unknown User"}
-            </Title>
-            <div className="month-display">
-              <CalendarOutlined style={{ marginRight: 6 }} />
-              <Text>
-                {moment(`${year}-${month}`, "YYYY-MM").format("MMMM YYYY")}
-              </Text>
-            </div>
+            <h3>{firstRecord?.username || "Unknown User"}</h3>
+            {moment(`${year}-${month}`, "YYYY-MM").format("MMMM YYYY")}
           </div>
         </div>
       </Card>
 
       <Card className="singleuserip-table-card">
-        <Title level={4}>📅 Daily IPs Report</Title>
+        <Title level={4}>📅 Monthly IPs Report</Title>
         <Table
+          className="custom-attendance-table"
           columns={columns}
           dataSource={userSubmissions}
           rowKey="date"
@@ -230,6 +263,31 @@ const SingleUserIPReport = () => {
           onChange={(e) => setNewSessions(Number(e.target.value))}
           placeholder="Enter sessions"
         />
+      </Modal>
+      <Modal
+        title="Edit History"
+        open={historyVisible}
+        onCancel={() => setHistoryVisible(false)}
+        footer={null}
+      >
+        {historyData.length === 0 ? (
+          <Text>No edit history available.</Text>
+        ) : (
+          <Table
+            className="custom-attendance-table"
+            dataSource={historyData}
+            columns={[
+              { title: "Timestamp", dataIndex: "timestamp", key: "timestamp" },
+              { title: "Editor", dataIndex: "editor", key: "editor" },
+              { title: "Sessions", dataIndex: "sessions", key: "sessions" },
+              { title: "Clicks", dataIndex: "clicks", key: "clicks" },
+            ]}
+            rowKey={(record) => record.timestamp + record.editor}
+            pagination={false}
+            size="small"
+            scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
+          />
+        )}
       </Modal>
     </div>
   );

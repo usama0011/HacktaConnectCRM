@@ -22,6 +22,9 @@ import {
   OpenAIFilled,
   LineChartOutlined,
   SettingOutlined,
+   FileTextOutlined,
+  ClockCircleOutlined,
+  DotChartOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 import { useUserContext } from "../../context/UserContext";
@@ -87,10 +90,11 @@ const AgentDailyIPReports = () => {
   const handleSave = async () => {
     if (!editingRecord) return;
     try {
-      await API.put(`/ip/update-ip/${editingRecord._id}`, {
+      await API.put(`/ip/update-ip/${editingRecord.userId}`, {
         sessions: formData.sessions,
         clicks: formData.clicks,
-        editor: user.username,
+        editor: user.agentName, // from context
+        date: selectedDate.format("YYYY-MM-DD"), // add selected date
       });
       message.success("Record updated successfully!");
       setIsModalOpen(false);
@@ -163,6 +167,7 @@ const AgentDailyIPReports = () => {
       ),
     },
   ];
+  console.log(editingRecord);
   return (
     <div className="daily-ip-container">
       <div className="daily-ip-header">
@@ -297,12 +302,28 @@ const AgentDailyIPReports = () => {
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
                   <Text strong>
-                    {item.isOriginal ? "📝 Original Submission" : item.editor}
+                    {item.isOriginal ? (
+                      <>
+                        <FileTextOutlined style={{ marginRight: 6 }} />
+                        Original Submission
+                      </>
+                    ) : (
+                      <>
+                        <UserOutlined style={{ marginRight: 6 }} />
+                        {item.editor}
+                      </>
+                    )}
                   </Text>
-                  <Text type="secondary">{item.timestamp}</Text>
+                  <Text type="secondary">
+                    <ClockCircleOutlined style={{ marginRight: 6 }} />
+                    {item.timestamp}
+                  </Text>
                 </div>
                 <Text type="secondary">
-                  Sessions: {item.sessions}, Clicks: {item.clicks}
+                  <BarChartOutlined style={{ marginRight: 6 }} />
+                  Sessions: {item.sessions},{" "}
+                  <DotChartOutlined style={{ marginRight: 6 }} />
+                  Clicks: {item.clicks}
                 </Text>
               </Card>
             ))

@@ -31,9 +31,11 @@ import API from "../../utils/BaseURL";
 const { Title, Text } = Typography;
 import { Select } from "antd";
 import { Calendar } from "primereact/calendar";
+import { useUserContext } from "../../context/UserContext";
 
 const QCPoints = () => {
-  const editor = localStorage.getItem("editorName") || "Abdul Moiz";
+  const { user } = useUserContext();
+  const editor = user?.agentName;
   const [loading, setLoading] = useState(false);
   const [disableAttendanceStatus, setDisableAttendanceStatus] = useState(false);
   const [users, setUsers] = useState([]);
@@ -535,13 +537,15 @@ const QCPoints = () => {
                 width: "100%",
                 padding: "8px",
                 borderRadius: "4px",
-                cursor: disableAttendanceStatus ? "not-allowed" : "pointer",
-                backgroundColor: disableAttendanceStatus ? "#f5f5f5" : "white",
               }}
-              disabled={disableAttendanceStatus} // ✅ Disabled if status is "Late"
             >
               <option value="pending">Pending</option>
-              <option value="Present">Present</option>
+
+              {/* Only show Present if not currently Late */}
+              {fieldValues.attendanceStatus !== "Late" && (
+                <option value="Present">Present</option>
+              )}
+
               <option value="Absent">Absent</option>
               <option value="Late">Late</option>
               <option value="RotationOff">Rotation Off</option>

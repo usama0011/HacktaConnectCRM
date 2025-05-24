@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/usermodel.js";
 import Attendance from "../models/attendanceModel.js";
-
+import moment from 'moment'
 // controllers/authController.js
 
 // Get Single User by ID
@@ -78,35 +78,60 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// **User Login**
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Find user by username
     const user = await User.findOne({ username });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    // Generate JWT Token
-    const token = jwt.sign({ id: user._id,
-      role: user.role,
-      username: user.username,
-      shift: user.shift || null,       // Only if user has a shift
-      branch: user.branch || null,     // Only if user has a branch
-      agentType: user.agentType || null  }, "usama226390@", {
-      expiresIn: "1d",
-    });
+    if (user.role === "agent") {
+      const now = moment();
+      const today = moment().format("YYYY-MM-DD");
+
+      let shiftStart = moment(`${today} ${user.shiftStartTime}`, "YYYY-MM-DD hh:mm A");
+      let shiftEnd = moment(`${today} ${user.shiftEndTime}`, "YYYY-MM-DD hh:mm A");
+
+      // Handle overnight (e.g., 12 AM to 8 AM)
+      if (shiftEnd.isBefore(shiftStart)) {
+        shiftEnd.add(1, "day");
+      }
+
+      // ✅ Add 30-minute grace before shift and after shift
+      const allowedStart = shiftStart.clone().subtract(30, "minutes");
+      const allowedEnd = shiftEnd.clone().add(30, "minutes");
+
+      if (!now.isBetween(allowedStart, allowedEnd)) {
+        return res.status(403).json({
+          message: `Login only allowed from ${allowedStart.format("hh:mm A")} to ${allowedEnd.format("hh:mm A")}`,
+        });
+      }
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+        username: user.username,
+        shift: user.shift || null,
+        branch: user.branch || null,
+        agentType: user.agentType || null,
+      },
+      "usama226390@",
+      { expiresIn: "1d" }
+    );
 
     res.json({ message: "Login successful", token, user });
   } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // **User Logout**
 export const logoutUser = async (req, res) => {

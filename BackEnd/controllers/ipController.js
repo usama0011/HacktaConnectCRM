@@ -256,45 +256,9 @@ export const getMonthlyIPCounts = async (req, res) => {
       return res.status(400).json({ message: "Invalid User ID." });
     }
 
-    // Define range
-    const startDate = moment(`${year}-${monthInt}-01`).startOf("month").toDate();
-    const endDate = moment(`${year}-${monthInt}-01`).endOf("month").toDate();
-
-    // Aggregate clicks + sessions
-    const data = await IP.aggregate([
-      {
-        $match: {
-          userId: userObjectId,
-          date: { $gte: startDate, $lte: endDate },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            day: { $dayOfMonth: "$date" },
-            month: { $month: "$date" },
-            year: { $year: "$date" },
-          },
-          totalSessions: { $sum: "$sessions" },
-          totalClicks: { $sum: "$clicks" },
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          date: {
-            $concat: [
-              { $toString: "$_id.day" },
-              "-",
-              { $toString: "$_id.month" },
-              "-",
-              { $toString: "$_id.year" },
-            ],
-          },
-          totalIPs: { $add: ["$totalSessions", "$totalClicks"] },
-        },
-      },
-    ]);
+    const paddedMonth = String(monthInt).padStart(2, "0");
+    const startDate = moment(`${year}-${paddedMonth}-01`, "YYYY-MM-DD").startOf("month").toDate();
+    const endDate = moment(`${year}-${paddedMonth}-01`, "YYYY-MM-DD").endOf("month").toDate();
 
     // Fetch user info
     const user = await User.findById(userObjectId, "username userImage");
@@ -302,17 +266,29 @@ export const getMonthlyIPCounts = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Generate default entries for missing days
+    // Fetch all IP records for that user in the month
+    const ipRecords = await IP.find({
+      userId: userObjectId,
+      date: { $gte: startDate, $lte: endDate },
+    });
+
     const totalDays = moment(`${year}-${monthInt}`, "YYYY-M").daysInMonth();
     const fullMonth = [];
 
     for (let day = 1; day <= totalDays; day++) {
-      const dateStr = `${day}-${monthInt}-${year}`;
-      const existing = data.find((d) => d.date === dateStr);
+      const currentDate = moment(`${year}-${monthInt}-${day}`, "YYYY-M-D").toDate();
+
+      const matchingRecord = ipRecords.find((entry) =>
+        moment(entry.date).isSame(currentDate, "day")
+      );
 
       fullMonth.push({
-        date: dateStr,
-        totalIPs: existing ? existing.totalIPs : 0,
+        userId:userId,
+        date: `${day}-${monthInt}-${year}`,
+        sessions: matchingRecord ? matchingRecord.sessions : 0,
+        clicks: matchingRecord ? matchingRecord.clicks : 0,
+        totalIPs: matchingRecord ? matchingRecord.sessions + matchingRecord.clicks : 0,
+        history: matchingRecord?.history || [],
         username: user.username,
         avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
       });
@@ -387,6 +363,7 @@ if (username) {
 
       return {
         _id: agent._id,
+        userId: agent._id,          // ✅ User ID
         username: agent.username,
         avatar: agent.userImage || "https://i.pravatar.cc/50?u=default",
         shift: agent.shift,
@@ -408,15 +385,23 @@ if (username) {
 
 export const updateAgentIPWithHistory = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { sessions, clicks, editor } = req.body;
+    const { id } = req.params; // This must be userId
+    const { sessions, clicks, editor, date } = req.body;
+    console.log(id,sessions,clicks,editor,date)
+    if (!date) return res.status(400).json({ message: "Date is required" });
 
-    const ipRecord = await IP.findById(id);
+    const startOfDay = moment(date).startOf("day").toDate();
+    const endOfDay = moment(date).endOf("day").toDate();
+
+    const ipRecord = await IP.findOne({
+      userId: id,
+      date: { $gte: startOfDay, $lte: endOfDay },
+    });
+
     if (!ipRecord) {
       return res.status(404).json({ message: "Record not found" });
     }
 
-    // Save old value to history before update
     const newHistoryEntry = {
       editor: editor || "Unknown",
       timestamp: moment().format("YYYY-MM-DD hh:mm A"),
@@ -425,9 +410,7 @@ export const updateAgentIPWithHistory = async (req, res) => {
       isOriginal: false,
     };
 
-    ipRecord.history = [...(ipRecord.history || []), newHistoryEntry];
-
-    // Update main values
+    ipRecord.history.push(newHistoryEntry);
     ipRecord.sessions = sessions;
     ipRecord.clicks = clicks;
 
@@ -436,10 +419,9 @@ export const updateAgentIPWithHistory = async (req, res) => {
     res.status(200).json({ message: "Record updated successfully" });
   } catch (error) {
     console.error("Error updating agent IP:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", errmsg: error.message });
   }
 };
-
 
 // ✅ Controller to Get Agents' Monthly IPs
 export const getAgentsMonthlyIPs = async (req, res) => {

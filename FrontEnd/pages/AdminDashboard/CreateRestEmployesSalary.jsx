@@ -280,7 +280,7 @@ const AgentsSalaryRecord = () => {
           <Col style={{ marginTop: "10px" }} xs={24} sm={8}>
             <label>Start Date</label>
             <Calendar
-              style={{ border: "none" }}
+              style={{ border: "none",paddingLeft:0 }}
               value={filters.startDate ? new Date(filters.startDate) : null}
               onChange={(e) =>
                 setFilters({
@@ -294,9 +294,9 @@ const AgentsSalaryRecord = () => {
               className="salaryRecord-datePicker"
             />
           </Col>
-          <Col style={{ marginTop: "10px" }} xs={24} sm={8}>
+          <Col style={{ marginTop: "10px", }} xs={24} sm={8}>
             <label>End Date</label>
-            <Calendar style={{border:"none"}}
+            <Calendar style={{border:"none",marginLeft:0,paddingLeft:0}}
               value={filters.endDate ? new Date(filters.endDate) : null}
               onChange={(e) =>
                 setFilters({

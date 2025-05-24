@@ -71,7 +71,7 @@ const AllUsersAttendance = () => {
         },
       });
       setAttendanceData(res.data.attendanceData);
-      setTopPerformers(res.data.topPerformers);
+      setTopPerformers(res.data.topPerformers.slice(0, 3));
     } catch (error) {
       console.error("Failed to fetch attendance data:", error);
       message.error("Failed to fetch attendance data. Please try again.");
@@ -228,11 +228,11 @@ const AllUsersAttendance = () => {
       <div className="top-performers-container">
         <Title level={3} className="top-performers-title">
           <br />
-          🏆 Top 4 Attendance Performers
+          🏆 Top 3 Attendance Performers
         </Title>
         <br />
         <div className="top-performer-row-wrapper">
-          <Row gutter={[16, 16]}>
+          <Row gutter={[16, 16]} justify="center">
             {topPerformers.map((performer, index) => (
               <Col xs={24} sm={12} md={8} lg={6} key={index}>
                 <Card className="wave-card" bordered={false}>

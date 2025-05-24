@@ -62,9 +62,12 @@ const Login = () => {
       } else {
         navigate("/user/dashboard");
       }
-    } catch (error) {
-      message.error(error?.response?.data?.message || "Login failed.");
-      console.log(error);
+    } catch (err) {
+      if (err.response && err.response.data.message) {
+        message.error(err.response.data.message); // Show backend error
+      } else {
+        message.error("Login failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
