@@ -371,11 +371,12 @@ const DownloadSalaryWokers = () => {
         </Divider>
         <Row gutter={16}>
           <Col xs={24} sm={8}>
-            <label>Date</label>
+            <label>Sheet Date</label>
             <DatePicker
               value={formValues.date}
               onChange={(val) => setFormValues({ ...formValues, date: val })}
               style={{ width: "100%" }}
+              a
               inputReadOnly
             />
           </Col>
@@ -412,24 +413,29 @@ const DownloadSalaryWokers = () => {
         <Row gutter={16} style={{ marginTop: 20 }}>
           <Col xs={24} sm={8}>
             <label>Month</label>
-            <Calendar 
+            <Calendar
               view="month"
               dateFormat="yy-mm"
               showIcon
-              style={{
-                width: "100%",
-                padding: "0",
-                borderRadius: "4px",
-              }}
+              value={
+                filters.year && filters.month
+                  ? new Date(`${filters.year}-${filters.month}-01`)
+                  : null
+              }
               onChange={(e) => {
                 const date = new Date(e.value);
                 const year = date.getFullYear().toString();
-                const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
+                const month = String(date.getMonth() + 1).padStart(2, "0");
                 setFilters((prev) => ({
                   ...prev,
                   year,
                   month,
                 }));
+              }}
+              style={{
+                width: "100%",
+                padding: "0",
+                borderRadius: "4px",
               }}
               className="custom-month-filter"
             />

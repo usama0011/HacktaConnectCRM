@@ -344,7 +344,7 @@ const AddNewUser = () => {
               checked={hasBankAccount}
               onChange={(e) => setHasBankAccount(e.target.checked)}
             >
-              User has Bank Details
+              User has Bank Account
             </Checkbox>
           </Form.Item>
 
