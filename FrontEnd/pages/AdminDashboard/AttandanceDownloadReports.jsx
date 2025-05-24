@@ -13,7 +13,7 @@ import {
 import moment from "moment";
 import API from "../../utils/BaseURL";
 import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
-
+import "../../styles/DownloadAttandcetable.css";
 const { Option } = Select;
 
 const AttandanceDownloadReports = () => {
@@ -22,11 +22,13 @@ const AttandanceDownloadReports = () => {
   const [filters, setFilters] = useState({
     shift: "",
     agentType: "",
+    branch: "", // ✅ new
   });
 
   const columns = [
     { title: "Sr No", dataIndex: "srNo", key: "srNo" },
     { title: "Agent Name", dataIndex: "name", key: "name" },
+    { title: "Branch", dataIndex: "branch", key: "branch" },
     { title: "Shift", dataIndex: "shift", key: "shift" },
     { title: "Agent Type", dataIndex: "agentType", key: "agentType" },
     { title: "Present", dataIndex: "present", key: "present" },
@@ -48,7 +50,12 @@ const AttandanceDownloadReports = () => {
 
     try {
       const res = await API.get("/attendance/all", {
-        params: { date: selectedMonth.format("YYYY-MM") },
+        params: {
+          date: selectedMonth.format("YYYY-MM"),
+          shift: filters.shift || undefined,
+          agentType: filters.agentType || undefined,
+          branch: filters.branch || undefined, // ✅ added
+        },
       });
 
       const formatted = res.data.attendanceData.map((entry, idx) => {
@@ -64,6 +71,7 @@ const AttandanceDownloadReports = () => {
           srNo: idx + 1,
           name: entry.user.name,
           shift: entry.shift,
+          branch: entry.branch || "N/A", // ✅ added
           agentType: entry.agentType,
           present: summary.present,
           absent: summary.absent,
@@ -88,11 +96,15 @@ const AttandanceDownloadReports = () => {
   const downloadCSV = () => {
     if (!attendanceData.length) return message.warning("No data to export!");
 
-    // Apply frontend filters
     const filtered = attendanceData.filter((item) => {
       const shiftMatch = filters.shift ? item.shift === filters.shift : true;
-      const typeMatch = filters.agentType ? item.agentType === filters.agentType : true;
-      return shiftMatch && typeMatch;
+      const typeMatch = filters.agentType
+        ? item.agentType === filters.agentType
+        : true;
+      const branchMatch = filters.branch
+        ? item.branch === filters.branch
+        : true; // ✅ added
+      return shiftMatch && typeMatch && branchMatch;
     });
 
     if (!filtered.length) {
@@ -127,8 +139,9 @@ const AttandanceDownloadReports = () => {
       `${d.attendanceRate}%`,
     ]);
 
-    const csvContent =
-      [headers, ...rows].map((row) => row.join(",")).join("\n");
+    const csvContent = [headers, ...rows]
+      .map((row) => row.join(","))
+      .join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
@@ -143,7 +156,7 @@ const AttandanceDownloadReports = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 0 }}>
       <h2>Download Monthly Attendance Report</h2>
       <br />
       <Card style={{ marginBottom: 20 }}>
@@ -189,7 +202,26 @@ const AttandanceDownloadReports = () => {
               <Option value="WFH Agent">WFH Agent</Option>
             </Select>
           </Col>
-          <Col xs={24} sm={6} style={{ display: "flex", alignItems: "end" }}>
+          <Col xs={24} sm={6}>
+            <label>Branch</label>
+            <Select
+              placeholder="All Branches"
+              value={filters.branch}
+              onChange={(val) => setFilters({ ...filters, branch: val })}
+              allowClear
+              style={{ width: "100%" }}
+            >
+              <Option value="Branch A">Branch A</Option>
+              <Option value="Branch B">Branch B</Option>
+              {/* Add more branches here if needed */}
+            </Select>
+          </Col>
+
+          <Col
+            xs={24}
+            sm={6}
+            style={{ display: "flex", alignItems: "end", marginTop: "20px" }}
+          >
             <Button type="primary" onClick={fetchAttendance}>
               Submit
             </Button>
@@ -208,9 +240,11 @@ const AttandanceDownloadReports = () => {
 
       <Card>
         <Table
+          className="custom-attendance-table"
           dataSource={attendanceData}
           columns={columns}
           rowKey="srNo"
+          scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
           pagination={{ pageSize: 50 }}
         />
       </Card>

@@ -1,0 +1,4 @@
+.custom-attendance-table .ant-table-thead > tr > th {
+  background-color: #003c2f !important;
+  color: white !important;
+}

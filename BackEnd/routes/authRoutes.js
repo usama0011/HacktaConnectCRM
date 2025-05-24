@@ -17,7 +17,7 @@ import { adminSideAuthMiddleware } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 // Signup (Register)
-router.post("/signup", registerUser);
+router.post("/signup",adminSideAuthMiddleware, registerUser);
 router.get("/users", getAllUsers);
 router.get("/user/:id", getSingleUser); // ✅ New Route
 

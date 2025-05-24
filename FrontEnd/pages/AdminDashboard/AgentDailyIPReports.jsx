@@ -13,6 +13,7 @@ import {
   Select,
   Row,
   Col,
+  Input,
 } from "antd";
 import {
   EditOutlined,
@@ -25,6 +26,7 @@ import {
 import moment from "moment";
 import { useUserContext } from "../../context/UserContext";
 import API from "../../utils/BaseURL";
+import { Calendar } from "primereact/calendar";
 
 const { Title, Text } = Typography;
 
@@ -34,6 +36,7 @@ const AgentDailyIPReports = () => {
     shift: "",
     agentType: "",
     branch: "",
+    username: "", // ✅ new
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editHistory, setEditHistory] = useState([]);
@@ -54,12 +57,19 @@ const AgentDailyIPReports = () => {
           shift: filters.shift || undefined,
           agentType: filters.agentType || undefined,
           branch: filters.branch || undefined,
+          username: filters.username || undefined, // ✅ add this
         },
       });
       setData(res.data || []);
     } catch (error) {
       console.error("Error fetching agent IP reports:", error);
-      message.error("Failed to fetch IP reports!");
+      if (error.response && error.response.status === 404) {
+        message.error(
+          error.response.data.message || "No matching users found."
+        );
+      } else {
+        message.error("Failed to fetch IP reports!");
+      }
     }
   };
 
@@ -159,12 +169,15 @@ const AgentDailyIPReports = () => {
         <Title className="dailyiperagenside" level={3}>
           🗓 Agent IP Report - Daily
         </Title>
-        <input
-          type="date"
-          className="simple-calendar"
-          value={selectedDate.format("YYYY-MM-DD")}
-          onChange={(e) => setSelectedDate(moment(e.target.value))}
-        />
+        <div className="attendance-header">
+          <Calendar
+            value={selectedDate.toDate()}
+            onChange={(e) => setSelectedDate(moment(e.value))}
+            dateFormat="yy-mm-dd"
+            showIcon
+            className="custom-date-picker"
+          />
+        </div>
       </div>
 
       <div
@@ -212,6 +225,13 @@ const AgentDailyIPReports = () => {
           <Option value="Branch A">Branch A</Option>
           <Option value="Branch B">Branch B</Option>
         </Select>
+        <Input
+          placeholder="Search by Username"
+          value={filters.username}
+          onChange={(e) => handleFilterChange("username", e.target.value)}
+          style={{ width: 200 }}
+          allowClear
+        />
 
         <Button type="primary" onClick={fetchData}>
           Apply Filters

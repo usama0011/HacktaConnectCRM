@@ -57,29 +57,30 @@ const Sidebar = ({ visible, onClose }) => {
     if (path.includes("/manageusers") || path.includes("/addnewuser")) {
       return "/admin/dashboard/manageusers";
     }
-    if (path.includes("/proxyusage") ||
-     path.includes("/proxy/smart")  ||
-     path.includes("/proxy/mango")  ||
-     path.includes("/proxy/mangob")  ||
-     path.includes("/infaticaldashobard")  
-    
+    if (
+      path.includes("/proxyusage") ||
+      path.includes("/proxy/smart") ||
+      path.includes("/proxy/mango") ||
+      path.includes("/proxy/mangob") ||
+      path.includes("/infaticaldashobard")
     ) {
       return "/admin/dashboard/proxyusage";
     }
-     if (path.includes("/allusersattandance") || path.includes("/attendance/user/")) {
+    if (
+      path.includes("/allusersattandance") ||
+      path.includes("/attendance/user/")
+    ) {
       return "/admin/dashboard/allusersattandance";
     }
-    if (path.includes("/salarymanagement") || 
-    path.includes("/downloadsalaryworker") ||
-     path.includes("/restemploysalary")  ||
-     path.includes("/salaryformula")    ||
-     path.includes("/officeagentsalaryformula")    ||
-     path.includes("/wfhsalaryformula")    ||
-     path.includes("/generalsalarycalculator")    
-  
-  ) 
-    
-    {
+    if (
+      path.includes("/salarymanagement") ||
+      path.includes("/downloadsalaryworker") ||
+      path.includes("/restemploysalary") ||
+      path.includes("/salaryformula") ||
+      path.includes("/officeagentsalaryformula") ||
+      path.includes("/wfhsalaryformula") ||
+      path.includes("/generalsalarycalculator")
+    ) {
       return "/admin/dashboard/salarymanagement";
     }
     if (
@@ -88,8 +89,7 @@ const Sidebar = ({ visible, onClose }) => {
       path.includes("/addqcpointform") ||
       path.includes("/dailyipreport") ||
       path.includes("/ipreport/user/") ||
-      path.includes("/qcpoints/user/") 
-      
+      path.includes("/qcpoints/user/")
     ) {
       return "/admin/dashboard/ipreportsusers";
     }

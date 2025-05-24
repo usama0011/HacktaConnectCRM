@@ -5,7 +5,7 @@ import IP from "../models/ipmodel.js"; // ✅ Import IP model
 
 export const getQCPointsByDate = async (req, res) => {
   try {
-    const { date, shift, agentType, branch } = req.query;
+    const { date, shift, agentType, branch,username } = req.query;
     console.log(date,shift,agentType,branch)
     if (!date) {
       return res.status(400).json({ message: "Date is required" });
@@ -21,6 +21,9 @@ export const getQCPointsByDate = async (req, res) => {
     if (shift) agentQuery.shift = shift;
     if (agentType) agentQuery.agentType = agentType;
     if (branch) agentQuery.branch = branch;
+if (username) {
+  agentQuery.username = { $regex: req.query.username, $options: "i" };
+}
 
     // Restrict Team Lead to view only their shift and agent type agents
     if (req.user.role === "Team Lead") {
@@ -146,7 +149,7 @@ export const upsertQCPoint = async (req, res) => {
 
 export const getMonthlyQCPointsSummary = async (req, res) => {
   try {
-    const { year, month, shift, agentType, branch } = req.query;
+    const { year, month, shift, agentType, branch,username } = req.query;
 
     if (!year || !month) {
       return res.status(400).json({ message: "Year and Month are required" });
@@ -160,7 +163,9 @@ export const getMonthlyQCPointsSummary = async (req, res) => {
     if (shift) userQuery.shift = shift;
     if (agentType) userQuery.agentType = agentType;
     if (branch) userQuery.branch = branch;
-
+    if (username) {
+  userQuery.username = { $regex: username, $options: "i" };
+}
     if (req.user.role === "Team Lead") {
       userQuery.shift = req.user.shift;
       if (req.user.agentType) {

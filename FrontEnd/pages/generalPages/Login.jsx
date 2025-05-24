@@ -144,53 +144,6 @@ const Login = () => {
       {/* Right Section - Illustration with SVG Shapes */}
       <div className="login-illustration">
         <div className="svg-container">
-          <svg className="svg-shape top-left" viewBox="0 0 100 100" fill="none">
-            <circle
-              cx="50"
-              cy="50"
-              r="20"
-              stroke="white"
-              strokeWidth="2"
-              fill="none"
-            />
-          </svg>
-
-          <svg
-            className="svg-shape bottom-right"
-            viewBox="0 0 100 100"
-            fill="none"
-          >
-            <rect
-              x="20"
-              y="20"
-              width="60"
-              height="60"
-              stroke="white"
-              strokeWidth="2"
-              fill="none"
-            />
-          </svg>
-          <svg
-            className="svg-shape zigzag-wave"
-            viewBox="0 0 100 100"
-            fill="none"
-          >
-            <path
-              d="M10 50 L30 30 L50 50 L70 30 L90 50"
-              stroke="white"
-              strokeWidth="2"
-              fill="none"
-            />
-          </svg>
-          <svg className="svg-shape hexagon" viewBox="0 0 100 100" fill="none">
-            <polygon
-              points="50,10 90,30 90,70 50,90 10,70 10,30"
-              stroke="white"
-              strokeWidth="2"
-              fill="none"
-            />
-          </svg>
-
           <div>
             <img
               src={MainWebSiteLogoo}
@@ -204,12 +157,14 @@ const Login = () => {
                   fontSize: "40px",
                   textTransform: "uppercase",
                   color: "white",
-                }} className="hacktagigi"
+                }}
+                className="hacktagigi"
               >
                 Hackta Connect
               </span>{" "}
               <br />{" "}
-              <span className="smalldescipiot"
+              <span
+                className="smalldescipiot"
                 style={{
                   textTransform: "capitalize",
                   color: "white",

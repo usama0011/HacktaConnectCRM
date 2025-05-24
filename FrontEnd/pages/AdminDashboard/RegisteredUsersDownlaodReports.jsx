@@ -258,6 +258,8 @@ const RegisteredUsersDownloadReports = () => {
       <br />
       <Card className="registered-users-table">
         <Table
+          className="custom-attendance-table"
+          scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
           dataSource={agents}
           columns={columns}
           rowKey="username"

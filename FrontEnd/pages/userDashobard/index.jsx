@@ -31,6 +31,7 @@ import axios from "axios";
 
 import { useUserContext } from "../../context/UserContext";
 import API from "../../utils/BaseURL";
+import { Calendar } from "primereact/calendar";
 const UserDashboard = () => {
   const [selectedRange, setSelectedRange] = React.useState([]);
   const [recentTasks, setRecentTasks] = useState([]);
@@ -189,47 +190,40 @@ const UserDashboard = () => {
       <DateTimeDisplay />
       <br />
       <div style={{ marginTop: 10, marginBottom: 20 }}>
-        <RangePicker
-          onChange={(dates) => setSelectedRange(dates)}
-          format="MMM DD, YYYY"
-          style={{ width: "100%", maxWidth: 500 }}
-          separator="→"
-          presets={[
-            {
-              label: "This Week",
-              value: [dayjs().startOf("week"), dayjs().endOf("week")],
-            },
-            {
-              label: "Last Week",
-              value: [
-                dayjs().subtract(1, "week").startOf("week"),
-                dayjs().subtract(1, "week").endOf("week"),
-              ],
-            },
-            {
-              label: "This Month",
-              value: [dayjs().startOf("month"), dayjs().endOf("month")],
-            },
-            {
-              label: "Last Month",
-              value: [
-                dayjs().subtract(1, "month").startOf("month"),
-                dayjs().subtract(1, "month").endOf("month"),
-              ],
-            },
-          ]}
-          allowClear
-          showTime={false}
-          defaultPickerValue={[dayjs().subtract(1, "month"), dayjs()]}
-          picker="date"
-          placement="bottomLeft"
-          disabledDate={(current) => current && current > dayjs().endOf("day")}
-          getPopupContainer={(trigger) => trigger.parentNode}
-          // 👇 Display 2 months side-by-side
-          panelRender={(panelNode) => (
-            <div style={{ display: "flex", gap: 20 }}>{panelNode}</div>
-          )}
-        />
+        <div
+          style={{
+            display: "flex",
+            alignItems:'center',
+            gap: "12px",
+            flexWrap: "wrap",
+            maxWidth: 500,
+          }}
+        >
+          <Calendar
+            value={selectedRange[0]?.toDate?.() || null}
+            onChange={(e) =>
+              setSelectedRange([dayjs(e.value), selectedRange?.[1] || null])
+            }
+            maxDate={new Date()}
+            dateFormat="M dd, yy"
+            placeholder="Start Date"
+            showIcon
+            className="range-calendar"
+          />
+          <span style={{ alignSelf: "center" }}>→</span>
+          <Calendar
+            value={selectedRange[1]?.toDate?.() || null}
+            onChange={(e) =>
+              setSelectedRange([selectedRange?.[0] || null, dayjs(e.value)])
+            }
+            minDate={selectedRange?.[0]?.toDate?.() || null}
+            maxDate={new Date()}
+            dateFormat="M dd, yy"
+            placeholder="End Date"
+            showIcon
+            className="range-calendar"
+          />
+        </div>
       </div>
       <Row gutter={[24, 24]}>
         <Col xs={24} sm={12} md={8}>

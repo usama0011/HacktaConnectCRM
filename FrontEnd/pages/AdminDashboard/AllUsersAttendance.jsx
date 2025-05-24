@@ -12,6 +12,7 @@ import {
   Card,
   Row,
   Col,
+  Input,
 } from "antd";
 import {
   EnvironmentOutlined,
@@ -20,6 +21,10 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs"; // or use moment if preferred
+import { Calendar } from "primereact/calendar";
+import "primereact/resources/themes/lara-light-indigo/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 
 import moment from "moment";
 import "../../styles/Attendance.css";
@@ -42,6 +47,7 @@ const AllUsersAttendance = () => {
     shift: "",
     agentType: "",
     branch: "",
+    username: "", // <-- new field
   });
   const navigate = useNavigate();
   const handleFilterChange = (key, value) => {
@@ -56,12 +62,13 @@ const AllUsersAttendance = () => {
     try {
       setLoading(true);
       const res = await API.get("/attendance/all", {
-       params: {
-      date: month.toISOString(),
-      shift: filters.shift || undefined,
-      agentType: filters.agentType || undefined,
-      branch: filters.branch || undefined,
-    },
+        params: {
+          date: month.toISOString(),
+          shift: filters.shift || undefined,
+          agentType: filters.agentType || undefined,
+          branch: filters.branch || undefined,
+          username: filters.username || undefined, // <-- added
+        },
       });
       setAttendanceData(res.data.attendanceData);
       setTopPerformers(res.data.topPerformers);
@@ -137,12 +144,18 @@ const AllUsersAttendance = () => {
         📅 All Users Attendance
       </Title>
       <div className="attendance-header">
-        <input
-          type="date"
-          className="simple-calendar"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
+        <Calendar
+          value={new Date(selectedDate)}
+          onChange={(e) => {
+            const selected = e.value;
+            const formatted = dayjs(selected).format("YYYY-MM-DD");
+            setSelectedDate(formatted);
+          }}
+          dateFormat="yy-mm-dd"
+          showIcon
+          className="p-calendar-custom"
         />
+
         <div className="attendance-current-date">
           📅 {dayjs().format("dddd D MMMM YYYY")}
         </div>
@@ -194,7 +207,13 @@ const AllUsersAttendance = () => {
           <Option value="Branch A">Branch A</Option>
           <Option value="Branch B">Branch B</Option>
         </Select>
-
+        <Input
+          placeholder="Search by Username"
+          value={filters.username}
+          onChange={(e) => handleFilterChange("username", e.target.value)}
+          style={{ width: 200, borderRadius: "10px" }}
+          allowClear
+        />
         <Button
           type="primary"
           onClick={() =>
@@ -209,7 +228,7 @@ const AllUsersAttendance = () => {
       <div className="top-performers-container">
         <Title level={3} className="top-performers-title">
           <br />
-          🏆 Top 5 Attendance Performers
+          🏆 Top 4 Attendance Performers
         </Title>
         <br />
         <div className="top-performer-row-wrapper">

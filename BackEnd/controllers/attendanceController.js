@@ -237,7 +237,7 @@ export const updateAttendanceStatus = async (req, res) => {
 
 
 export const getAllUsersAttendance = async (req, res) => {
-  const { date, shift, agentType, branch } = req.query;
+  const { date, shift, agentType, branch,username } = req.query;
 
   try {
     const selectedMonth = new Date(date);
@@ -248,15 +248,16 @@ export const getAllUsersAttendance = async (req, res) => {
     if (shift) userQuery.shift = shift;
     if (agentType) userQuery.agentType = agentType;
     if (branch) userQuery.branch = branch;
+if (username) userQuery.username = { $regex: username, $options: "i" }; // case-insensitive partial match
 
     if (req.user.role === "Team Lead") {
       userQuery.shift = req.user.shift;
       if (req.user.agentType) {
         userQuery.agentType = req.user.agentType;
       }
-    }
+  }
 
-    const users = await User.find(userQuery, "_id username userImage shift agentType");
+    const users = await User.find(userQuery, "_id username userImage shift agentType branch");
 
     const attendanceRecords = await Attendance.aggregate([
       {
@@ -318,6 +319,7 @@ export const getAllUsersAttendance = async (req, res) => {
           avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
         },
         shift: user.shift,
+        branch:user.branch,
         agentType: user.agentType || "N/A",
         todayStatus,
         monthSummary,

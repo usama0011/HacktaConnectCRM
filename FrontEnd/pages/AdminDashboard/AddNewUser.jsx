@@ -255,7 +255,7 @@ const AddNewUser = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col xs={24} md={12}>
+            <Col xs={24} md={12}> 
               <Form.Item
                 name="shift"
                 label="Shift"

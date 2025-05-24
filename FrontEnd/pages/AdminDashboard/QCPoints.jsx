@@ -30,6 +30,7 @@ import API from "../../utils/BaseURL";
 
 const { Title, Text } = Typography;
 import { Select } from "antd";
+import { Calendar } from "primereact/calendar";
 
 const QCPoints = () => {
   const editor = localStorage.getItem("editorName") || "Abdul Moiz";
@@ -48,6 +49,7 @@ const QCPoints = () => {
     shift: "",
     agentType: "",
     branch: "",
+    username: "", // ✅ new
   });
 
   const [form] = Form.useForm();
@@ -147,12 +149,21 @@ const QCPoints = () => {
         shift: filters.shift || undefined,
         agentType: filters.agentType || undefined,
         branch: filters.branch || undefined,
+        username: filters.username || undefined, // ✅ added
       };
 
       const res = await API.get("/qcpoints", { params });
       setUsers(res.data);
     } catch (error) {
-      message.error("Failed to fetch QC points");
+      console.error("Failed to fetch QC points", error);
+      if (error.response && error.response.status === 404) {
+        message.error(
+          error.response.data.message ||
+            "No users found for the selected criteria."
+        );
+      } else {
+        message.error("Failed to fetch QC points");
+      }
     } finally {
       setLoading(false);
     }
@@ -321,12 +332,15 @@ const QCPoints = () => {
         <Text style={{ color: "black", marginRight: "10px" }}>
           Select Date:
         </Text>
-        <input
-          type="date"
-          className="simple-calendar"
-          value={selectedDate.format("YYYY-MM-DD")}
-          onChange={(e) => setSelectedDate(moment(e.target.value))}
-        />
+        <div className="attendance-header">
+          <Calendar
+            value={selectedDate.toDate()}
+            onChange={(e) => setSelectedDate(moment(e.value))}
+            dateFormat="yy-mm-dd"
+            showIcon
+            className="custom-date-picker"
+          />
+        </div>
       </div>
 
       <div
@@ -374,7 +388,13 @@ const QCPoints = () => {
           <Option value="Branch A">Branch A</Option>
           <Option value="Branch B">Branch B</Option>
         </Select>
-
+        <Input
+          placeholder="Search by Username"
+          value={filters.username}
+          onChange={(e) => handleFilterChange("username", e.target.value)}
+          style={{ width: 200, borderRadius: "10px" }}
+          allowClear
+        />
         <Button
           type="primary"
           onClick={() => fetchUsersAndPoints(selectedDate.format("YYYY-MM-DD"))}
@@ -447,13 +467,19 @@ const QCPoints = () => {
               <div className="step-content">
                 <Text className="step-label">{item.label}</Text>
                 <div className="option-group">
-                  <Button
-                    style={
-                      fieldValues[item.key] === "1"
-                        ? { backgroundColor: "#003c2f" }
-                        : { backgroundColor: "transparent" }
-                    }
-                    type={fieldValues[item.key] === "1" ? "primary" : "default"}
+                  <button
+                    style={{
+                      backgroundColor:
+                        fieldValues[item.key] === "1"
+                          ? "#003c2f"
+                          : "transparent",
+                      color: fieldValues[item.key] === "1" ? "#fff" : "#000",
+                      border: "1px solid #ccc",
+                      padding: "6px 12px",
+                      marginRight: "8px",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
                     onClick={() => {
                       const updated = { ...fieldValues, [item.key]: "1" };
                       setFieldValues(updated);
@@ -461,11 +487,20 @@ const QCPoints = () => {
                     }}
                   >
                     1
-                  </Button>
+                  </button>
 
-                  <Button
-                    type={fieldValues[item.key] === "0" ? "primary" : "default"}
-                    danger
+                  <button
+                    style={{
+                      backgroundColor:
+                        fieldValues[item.key] === "0"
+                          ? "#ff4d4f"
+                          : "transparent",
+                      color: fieldValues[item.key] === "0" ? "#fff" : "#000",
+                      border: "1px solid #ccc",
+                      padding: "6px 12px",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
                     onClick={() => {
                       const updated = { ...fieldValues, [item.key]: "0" };
                       setFieldValues(updated);
@@ -473,7 +508,7 @@ const QCPoints = () => {
                     }}
                   >
                     0
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>

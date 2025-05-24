@@ -16,6 +16,7 @@ import {
 import moment from "moment";
 import "../../styles/AgentsSalaryRecord.css";
 import API from "../../utils/BaseURL";
+import { Calendar } from "primereact/calendar";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -278,25 +279,34 @@ const AgentsSalaryRecord = () => {
 
           <Col style={{ marginTop: "10px" }} xs={24} sm={8}>
             <label>Start Date</label>
-            <input
-              type="date"
-              value={filters.startDate}
-              max={moment().format("YYYY-MM-DD")}
+            <Calendar
+              style={{ border: "none" }}
+              value={filters.startDate ? new Date(filters.startDate) : null}
               onChange={(e) =>
-                setFilters({ ...filters, startDate: e.target.value })
+                setFilters({
+                  ...filters,
+                  startDate: moment(e.value).format("YYYY-MM-DD"),
+                })
               }
+              maxDate={new Date()}
+              dateFormat="yy-mm-dd"
+              showIcon
               className="salaryRecord-datePicker"
             />
           </Col>
           <Col style={{ marginTop: "10px" }} xs={24} sm={8}>
             <label>End Date</label>
-            <input
-              type="date"
-              value={filters.endDate}
-              max={moment().format("YYYY-MM-DD")}
+            <Calendar style={{border:"none"}}
+              value={filters.endDate ? new Date(filters.endDate) : null}
               onChange={(e) =>
-                setFilters({ ...filters, endDate: e.target.value })
+                setFilters({
+                  ...filters,
+                  endDate: moment(e.value).format("YYYY-MM-DD"),
+                })
               }
+              maxDate={new Date()}
+              dateFormat="yy-mm-dd"
+              showIcon
               className="salaryRecord-datePicker"
             />
           </Col>

@@ -85,20 +85,20 @@ const UserLayout = () => {
           <div className="sidebar-logo">
             <img src={MainWebSiteLogo} alt="Logo" />
           </div>
-            {isMobile && (
-              <Button
-                type="text"
-                icon={
-                  isSidebarVisible ? (
-                    <XOutlined style={{ color: "black" }} />
-                  ) : (
-                    <XOutlined style={{ color: "black" }} />
-                  )
-                }
-                onClick={toggleSidebar}
-                className="toggle-sidebar-btn"
-              />
-            )}
+          {isMobile && (
+            <Button
+              type="text"
+              icon={
+                isSidebarVisible ? (
+                  <XOutlined style={{ color: "black" }} />
+                ) : (
+                  <XOutlined style={{ color: "black" }} />
+                )
+              }
+              onClick={toggleSidebar}
+              className="toggle-sidebar-btn"
+            />
+          )}
           <Menu
             className="bitrix-menu"
             theme="dark"

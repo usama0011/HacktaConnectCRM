@@ -330,7 +330,7 @@ export const getMonthlyIPCounts = async (req, res) => {
 // ✅ Controller to Get Daily Agent IPs with History
 export const getDailyAgentIPsWithHistory = async (req, res) => {
   try {
-    const { date, shift, agentType, branch } = req.query;
+    const { date, shift, agentType, branch,username } = req.query;
     console.log(date)
     if (!date) return res.status(400).json({ message: "Date is required" });
 
@@ -352,6 +352,9 @@ export const getDailyAgentIPsWithHistory = async (req, res) => {
     if (shift) agentQuery.shift = shift;
     if (agentType) agentQuery.agentType = agentType;
     if (branch) agentQuery.branch = branch;
+if (username) {
+  agentQuery.username = { $regex: req.query.username, $options: "i" };
+}
 
     // Fetch Agents
     const agents = await User.find(
@@ -441,7 +444,7 @@ export const updateAgentIPWithHistory = async (req, res) => {
 // ✅ Controller to Get Agents' Monthly IPs
 export const getAgentsMonthlyIPs = async (req, res) => {
   try {
-const { year, month, shift, agentType, branch } = req.query;
+const { year, month, shift, agentType, branch,username } = req.query;
     if (!year || !month) {
       return res
         .status(400)
@@ -455,6 +458,9 @@ const { year, month, shift, agentType, branch } = req.query;
 if (shift) agentQuery.shift = shift;
 if (agentType) agentQuery.agentType = agentType;
 if (branch) agentQuery.branch = branch;
+if (username) {
+  agentQuery.username = { $regex: username, $options: "i" };
+}
     // Restrict Team Lead to view only their shift and agent type agents
     if (req.user.role === "Team Lead") {
       agentQuery.shift = req.user.shift;
@@ -464,7 +470,7 @@ if (branch) agentQuery.branch = branch;
     }
 
     // Fetch Agents based on query
-    const agents = await User.find(agentQuery, "username userImage shift agentType");
+    const agents = await User.find(agentQuery, "username userImage shift agentType branch");
     if (!agents.length) {
       return res
         .status(404)

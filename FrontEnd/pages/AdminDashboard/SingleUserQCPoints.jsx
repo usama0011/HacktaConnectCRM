@@ -15,6 +15,7 @@ import { useParams, useLocation } from "react-router-dom";
 import moment from "moment";
 import axios from "axios";
 import "../../styles/QCPoints.css";
+import { Calendar } from "primereact/calendar";
 
 const { Title, Text } = Typography;
 
@@ -133,12 +134,16 @@ const SingleUserQCPoints = () => {
       </div>
 
       <br />
-     <input
-  type="month"
-  className="simple-calendar"
-  value={selectedDate.format("YYYY-MM")}
-  onChange={(e) => setSelectedDate(moment(e.target.value, "YYYY-MM"))}
-/>
+      <div className="attendance-header">
+        <Calendar
+          value={selectedDate.toDate()}
+          onChange={(e) => setSelectedDate(moment(e.value))}
+          view="month"
+          dateFormat="yy-mm"
+          showIcon
+          className="custom-month-picker"
+        />
+      </div>
 
       <br />
       <br />
@@ -147,8 +152,7 @@ const SingleUserQCPoints = () => {
         columns={columns}
         dataSource={userData.points}
         rowKey="date"
-                scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
-
+        scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
         pagination={{ pageSize: 5 }}
         bordered
         summary={() => {

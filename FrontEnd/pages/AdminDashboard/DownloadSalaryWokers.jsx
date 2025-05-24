@@ -27,6 +27,7 @@ import MainLogo from "../../src/assets/mainlogo.png";
 import HeaderImage from "../../src/assets/headerImage.png";
 import FooterImage from "../../src/assets/footerImage.png";
 import "../../styles/DownloadSalaryWokers.css";
+import { Calendar } from "primereact/calendar";
 const { Option } = Select;
 const { MonthPicker } = DatePicker;
 
@@ -411,22 +412,26 @@ const DownloadSalaryWokers = () => {
         <Row gutter={16} style={{ marginTop: 20 }}>
           <Col xs={24} sm={8}>
             <label>Month</label>
-            <input
-              type="month"
+            <Calendar 
+              view="month"
+              dateFormat="yy-mm"
+              showIcon
               style={{
                 width: "100%",
-                padding: "8px",
+                padding: "0",
                 borderRadius: "4px",
-                border: "1px solid #d9d9d9",
               }}
               onChange={(e) => {
-                const [year, month] = e.target.value.split("-");
+                const date = new Date(e.value);
+                const year = date.getFullYear().toString();
+                const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
                 setFilters((prev) => ({
                   ...prev,
                   year,
                   month,
                 }));
               }}
+              className="custom-month-filter"
             />
           </Col>
           <Col xs={24} sm={8}>

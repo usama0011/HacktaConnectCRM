@@ -15,6 +15,7 @@ import {
 import moment from "moment";
 import API from "../../utils/BaseURL";
 import "../../styles/SingleUserAttandance.css";
+import { Calendar } from "primereact/calendar";
 const { Title, Text } = Typography;
 
 const SingleUserAttendance = () => {
@@ -94,16 +95,19 @@ const SingleUserAttendance = () => {
         >
           Attendance Overview
         </Title>
-
-        <input
-          type="month"
-          className="simple-calendar"
-          value={selectedMonth.format("YYYY-MM")}
-          onChange={(e) => {
-            const [year, month] = e.target.value.split("-");
-            setSelectedMonth(moment(`${year}-${month}`, "YYYY-MM"));
-          }}
-        />
+        <div className="attendance-header">
+          <Calendar
+            value={selectedMonth.toDate()}
+            onChange={(e) => {
+              const selected = moment(e.value);
+              setSelectedMonth(selected);
+            }}
+            view="month"
+            dateFormat="yy-mm"
+            showIcon
+            className="custom-month-picker"
+          />
+        </div>
       </div>
       <br />
       <Spin spinning={loading}>

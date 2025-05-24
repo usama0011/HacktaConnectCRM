@@ -80,7 +80,7 @@ const QCPointsDownloadReports = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ }}>
       <h2>Download Monthly QC Points Summary</h2>
       <br />
       <Card style={{ marginBottom: 20 }}>
@@ -164,10 +164,12 @@ const QCPointsDownloadReports = () => {
 
       <Card>
         <Table
+          className="custom-attendance-table"
           columns={columns}
           dataSource={qcData}
           rowKey="name"
           pagination={{ pageSize: 50 }}
+          scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
         />
       </Card>
     </div>

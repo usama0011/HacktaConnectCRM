@@ -22,15 +22,21 @@ const AgentsIPsReportsDownload = () => {
   const [filters, setFilters] = useState({
     shift: "",
     agentType: "",
+    branch: "", // ✅ added
   });
 
   const columns = [
     { title: "Sr No", dataIndex: "srNo", key: "srNo" },
     { title: "Username", dataIndex: "username", key: "username" },
     { title: "Shift", dataIndex: "shift", key: "shift" },
+    { title: "Branch", dataIndex: "branch", key: "branch" }, // ✅ Add this
     { title: "Agent Type", dataIndex: "agentType", key: "agentType" },
     { title: "Total Clicks", dataIndex: "totalClicks", key: "totalClicks" },
-    { title: "Total Sessions", dataIndex: "totalSessions", key: "totalSessions" },
+    {
+      title: "Total Sessions",
+      dataIndex: "totalSessions",
+      key: "totalSessions",
+    },
     { title: "Total IPs", dataIndex: "totalIPs", key: "totalIPs" },
   ];
 
@@ -66,14 +72,21 @@ const AgentsIPsReportsDownload = () => {
 
     const filtered = ipData.filter((agent) => {
       const shiftMatch = filters.shift ? agent.shift === filters.shift : true;
-      const typeMatch = filters.agentType ? agent.agentType === filters.agentType : true;
-      return shiftMatch && typeMatch;
+      const typeMatch = filters.agentType
+        ? agent.agentType === filters.agentType
+        : true;
+      const branchMatch = filters.branch
+        ? agent.branch === filters.branch
+        : true; // ✅ added
+      return shiftMatch && typeMatch && branchMatch;
     });
 
     const headers = [
       "Sr No",
       "Username",
       "Shift",
+        "Branch", // ✅ added
+
       "Agent Type",
       "Total Clicks",
       "Total Sessions",
@@ -85,6 +98,7 @@ const AgentsIPsReportsDownload = () => {
       agent.username,
       agent.shift,
       agent.agentType,
+        agent.branch || "N/A", // ✅ added
       agent.totalClicks,
       agent.totalSessions,
       agent.totalIPs,
@@ -156,6 +170,21 @@ const AgentsIPsReportsDownload = () => {
               <Option value="WFH Agent">WFH Agent</Option>
             </Select>
           </Col>
+          <Col xs={24} sm={6}>
+            <label>Branch (for download only)</label>
+            <Select
+              placeholder="Select Branch"
+              style={{ width: "100%" }}
+              allowClear
+              value={filters.branch}
+              onChange={(val) => setFilters({ ...filters, branch: val })}
+            >
+              <Option value="Branch A">Branch A</Option>
+              <Option value="Branch B">Branch B</Option>
+              {/* Add more branches as needed */}
+            </Select>
+          </Col>
+
           <Col xs={24} sm={6} style={{ display: "flex", alignItems: "end" }}>
             <Button type="primary" onClick={fetchData}>
               Submit
@@ -178,6 +207,8 @@ const AgentsIPsReportsDownload = () => {
           columns={columns}
           dataSource={ipData}
           rowKey="id"
+          className="custom-attendance-table"
+          scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
           pagination={{ pageSize: 50 }}
         />
       </Card>

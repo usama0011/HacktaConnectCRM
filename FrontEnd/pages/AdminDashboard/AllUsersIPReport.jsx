@@ -10,6 +10,7 @@ import {
   Card,
   message,
   Select,
+  Input,
 } from "antd";
 import {
   UserOutlined,
@@ -23,6 +24,7 @@ import moment from "moment";
 import API from "../../utils/BaseURL";
 import "../../styles/IPSubmission.css";
 import TrophyIcon from "../../src/assets/tt.png";
+import { Calendar } from "primereact/calendar";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -36,6 +38,7 @@ const AllUsersIPReport = () => {
     shift: "",
     agentType: "",
     branch: "",
+    username: "", // ✅ Add this
   });
 
   const fetchUsers = async () => {
@@ -51,6 +54,7 @@ const AllUsersIPReport = () => {
           shift: filters.shift || undefined,
           agentType: filters.agentType || undefined,
           branch: filters.branch || undefined,
+          username: filters.username || undefined, // ✅ Include username
         },
       });
 
@@ -61,7 +65,15 @@ const AllUsersIPReport = () => {
       }
     } catch (error) {
       console.error(error);
-      message.error("Error fetching agents data");
+
+      if (error.response && error.response.status === 404) {
+        message.error(
+          error.response.data.message ||
+            "No data found for the selected filters."
+        );
+      } else {
+        message.error("Error fetching agents data");
+      }
     } finally {
       setLoading(false);
     }
@@ -136,15 +148,18 @@ const AllUsersIPReport = () => {
           <Title level={3} className="ipreport-title">
             📊 Agent IP Reports
           </Title>
-          
         </div>
         <br />
-        <input
-          type="month"
-          className="simple-calendar"
-          value={selectedMonth.format("YYYY-MM")}
-          onChange={(e) => setSelectedMonth(moment(e.target.value))}
-        />
+        <div className="attendance-header">
+          <Calendar
+            value={selectedMonth.toDate()}
+            onChange={(e) => setSelectedMonth(moment(e.value))}
+            view="month"
+            dateFormat="yy-mm"
+            showIcon
+            className="custom-month-picker"
+          />
+        </div>
       </div>
 
       {/* 🔍 Filters */}
@@ -193,7 +208,13 @@ const AllUsersIPReport = () => {
           <Option value="Branch A">Branch A</Option>
           <Option value="Branch B">Branch B</Option>
         </Select>
-
+        <Input
+          placeholder="Search by Username"
+          value={filters.username}
+          onChange={(e) => handleFilterChange("username", e.target.value)}
+          style={{ width: 200, borderRadius: "10px" }}
+          allowClear
+        />
         <Button type="primary" onClick={fetchUsers}>
           Apply Filters
         </Button>

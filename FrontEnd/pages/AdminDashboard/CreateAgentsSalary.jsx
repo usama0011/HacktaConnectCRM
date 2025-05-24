@@ -39,12 +39,12 @@ const reportCards = [
     icon: <img src={InsigntsIcon} alt="icon" />,
     link: "/admin/dashboard/agentreportsipsdownlaod",
   },
-  {
-    title: "Proxy Reports",
-    subtitle: "Download Proxy Usage Log",
-    icon: <img src={ProxyIcon} alt="icon" />,
-    link: "/admin/dashboard/downlaodproxyreports",
-  },
+  // {
+  //   title: "Proxy Reports",
+  //   subtitle: "Download Proxy Usage Log",
+  //   icon: <img src={ProxyIcon} alt="icon" />,
+  //   link: "/admin/dashboard/downlaodproxyreports",
+  // },
 ];
 
 const AgentSalaryAggrigation = () => {

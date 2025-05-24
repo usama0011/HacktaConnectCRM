@@ -28,6 +28,7 @@ const OverviewCard = () => {
 
     fetchLeaderboard();
   }, []);
+  console.log("carddata", cardData);
 
   return (
     <>
@@ -44,8 +45,17 @@ const OverviewCard = () => {
       <div className="CRM-overview-container">
         {loading
           ? Array.from({ length: 4 }).map((_, index) => (
-              <Card style={{padding:"20px"}} className="CRM-overview-carddd" key={index}>
-                <Skeleton style={{padding:'20px'}} active avatar paragraph={{ rows: 3 }} />
+              <Card
+                style={{ padding: "20px" }}
+                className="CRM-overview-carddd"
+                key={index}
+              >
+                <Skeleton
+                  style={{ padding: "20px" }}
+                  active
+                  avatar
+                  paragraph={{ rows: 3 }}
+                />
               </Card>
             ))
           : cardData.map((card, index) => (
@@ -83,8 +93,18 @@ const OverviewCard = () => {
 
                     <div className="CRM-extra-info">
                       <p className="CRM-shift">
-                        Shift: <strong style={{textTransform:"capitalize"}}>{card.shift}</strong>
+                        username:{" "}
+                        <strong style={{ textTransform: "capitalize" }}>
+                          {card.username}
+                        </strong>
                       </p>
+                      <p className="CRM-shift">
+                        Shift:{" "}
+                        <strong style={{ textTransform: "capitalize" }}>
+                          {card.shift}
+                        </strong>
+                      </p>
+
                       <p className="CRM-totalips">
                         Total IPs: <strong>{card.totalIPs}</strong>
                       </p>
@@ -99,7 +119,6 @@ const OverviewCard = () => {
                 </div>
 
                 {/* Bottom Banner */}
-               
               </Card>
             ))}
       </div>

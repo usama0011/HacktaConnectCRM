@@ -10,6 +10,7 @@ import {
   Row,
   Col,
   Card,
+  Input,
 } from "antd";
 import {
   UserOutlined,
@@ -20,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import API from "../../utils/BaseURL";
 import "../../styles/QCPoints.css";
+import { Calendar } from "primereact/calendar";
 const { Option } = Select;
 
 const { Title, Text } = Typography;
@@ -34,6 +36,7 @@ const AllUsersQCPoints = () => {
     shift: "",
     agentType: "",
     branch: "",
+    username: "", // ✅ Add this
   });
 
   // Handle Date Change (Year & Month)
@@ -53,6 +56,7 @@ const AllUsersQCPoints = () => {
           shift: filters.shift || undefined,
           agentType: filters.agentType || undefined,
           branch: filters.branch || undefined,
+          username: filters.username || undefined, // ✅ Add this
         },
       });
 
@@ -60,7 +64,13 @@ const AllUsersQCPoints = () => {
       setTopUsers(res.data.top5);
     } catch (err) {
       console.error("Failed to fetch monthly QC data", err);
-      message.error("Failed to load QC Points");
+      if (err.response && err.response.status === 404) {
+        message.error(
+          err.response.data.message || "No data found for the selected filters."
+        );
+      } else {
+        message.error("Failed to load QC Points");
+      }
     } finally {
       setLoading(false);
     }
@@ -135,12 +145,16 @@ const AllUsersQCPoints = () => {
         <Text style={{ marginRight: "10px", color: "black" }}>
           Select Year & Month:
         </Text>
-        <input
-          type="month"
-          className="simple-calendar"
-          value={selectedDate.format("YYYY-MM")}
-          onChange={(e) => handleDateChange(moment(e.target.value))}
-        />
+        <div className="attendance-header">
+          <Calendar
+            value={selectedDate.toDate()}
+            onChange={(e) => handleDateChange(moment(e.value))}
+            view="month"
+            dateFormat="yy-mm"
+            showIcon
+            className="custom-month-picker"
+          />
+        </div>
       </div>
       <br />
       <div
@@ -188,7 +202,13 @@ const AllUsersQCPoints = () => {
           <Option value="Branch A">Branch A</Option>
           <Option value="Branch B">Branch B</Option>
         </Select>
-
+        <Input
+          placeholder="Search by Username"
+          value={filters.username}
+          onChange={(e) => handleFilterChange("username", e.target.value)}
+          style={{ width: 200, borderRadius: "10px" }}
+          allowClear
+        />
         <Button type="primary" onClick={() => fetchMonthlyQC(selectedDate)}>
           Apply Filters
         </Button>
@@ -218,17 +238,18 @@ const AllUsersQCPoints = () => {
 
                   <div className="performer-card-inner">
                     <Avatar
-                      
                       src={user.avatar}
                       icon={<UserOutlined />}
                       className="performer-avatar"
                     />
-                   <div className="maindivparentsideperfom">
-                     <Title level={5} className="performer-name">
-                      {user.name}
-                    </Title>
-                    <p className="qcpintnumber">QC Points: {user.totalPoints}</p>
-                   </div>
+                    <div className="maindivparentsideperfom">
+                      <Title level={5} className="performer-name">
+                        {user.name}
+                      </Title>
+                      <p className="qcpintnumber">
+                        QC Points: {user.totalPoints}
+                      </p>
+                    </div>
                   </div>
 
                   {/* Bottom Decoration */}

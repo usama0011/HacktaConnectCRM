@@ -19,6 +19,7 @@ import moment from "moment";
 import API from "../../utils/BaseURL";
 import { Column } from "@ant-design/plots";
 import "../../styles/SingleUserIPReport.css";
+import { Calendar } from "primereact/calendar";
 
 const { Title, Text } = Typography;
 
@@ -148,12 +149,19 @@ const SingleUserIPReport = () => {
         <label>
           <Text strong>Select Month: </Text>
         </label>
-        <input
-          type="month"
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          className="simple-calendar"
-        />
+        <div className="attendance-header">
+          <Calendar
+            value={moment(selectedMonth, "YYYY-MM").toDate()}
+            onChange={(e) => {
+              const selected = moment(e.value).format("YYYY-MM");
+              setSelectedMonth(selected);
+            }}
+            view="month"
+            dateFormat="yy-mm"
+            showIcon
+            className="custom-month-picker"
+          />
+        </div>
       </div>
 
       <Card className="singleuserip-header-card">

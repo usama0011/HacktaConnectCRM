@@ -8,22 +8,32 @@ const AboutUs = () => {
     <div className="aboutus-wrapper">
       <div className="aboutus-left">
         <div className="aboutus-gallery">
-          <div className="aboutus-image square">
+          <div className="aboutus-image portrait">
             <img
-              src="https://images.unsplash.com/photo-1606857521015-7f9fcf423740?w=600"
-              alt="Office 1"
+              src="https://images.pexels.com/photos/2528118/pexels-photo-2528118.jpeg?auto=compress&cs=tinysrgb&w=600"
+              alt="Left Portrait"
             />
           </div>
-          <div className="aboutus-image square">
-            <img
-              src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600"
-              alt="Office 2"
-            />
+
+          <div className="aboutus-center-column">
+            <div className="aboutus-image square">
+              <img
+                src="https://images.pexels.com/photos/1181622/pexels-photo-1181622.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Top Center"
+              />
+            </div>
+            <div className="aboutus-image square">
+              <img
+                src="https://images.pexels.com/photos/4240586/pexels-photo-4240586.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Bottom Center"
+              />
+            </div>
           </div>
-          <div className="aboutus-image tall">
+
+          <div className="aboutus-image portrait">
             <img
-              src="https://images.unsplash.com/photo-1577412647305-991150c7d163"
-              alt="Office 3"
+              src="https://images.pexels.com/photos/3183172/pexels-photo-3183172.jpeg?auto=compress&cs=tinysrgb&w=600"
+              alt="Right Portrait"
             />
           </div>
         </div>
@@ -33,10 +43,13 @@ const AboutUs = () => {
         <p className="aboutus-sub">A BIT</p>
         <h1 className="aboutus-heading">ABOUT US</h1>
         <p className="aboutus-desc">
-          From they fine john he give of rich he. They age and draw ms like.
-          Improving end distruts may instantly was household applauded
-          incommode. Why kept very ever home mrs. Considered sympathize ten
-          uncommonly occasional assistance sufficient not.
+          Hackta Connect is a digital company committed to empowering fresh
+          graduates with real opportunities to learn, grow, and thrive. Our
+          friendly, pressure-free environment encourages continuous learning and
+          professional development. With both in-office and Work From Home
+          roles, we offer flexibility and a culture where every day brings
+          something new. At Hackta, growth isn’t just possible it’s part of the
+          job. Start your journey where learning leads to success.
         </p>
         <div className="aboutus-buttons">
           <Button
