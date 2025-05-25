@@ -207,11 +207,60 @@ export const getMonthlyQCPointsSummary = async (req, res) => {
       },
     ]);
 
-    const top5 = summary.slice(0, 5);
+    // Join aggregated summary with agent details to apply all filters strictly
+const summaryWithDetails = summary.map((item) => {
+  const agent = agents.find((a) => a.username === item.name);
+  return {
+    ...item,
+    userImage: agent?.userImage || null,
+    shift: agent?.shift || null,
+    agentType: agent?.agentType || null,
+  };
+});
+
+
+const rawTop3 = await QCPoint.aggregate([
+  {
+    $match: {
+      date: { $gte: start, $lte: end },
+    },
+  },
+  {
+    $group: {
+      _id: "$name",
+      totalPoints: { $sum: "$totalPoints" },
+      avatar: { $first: "$avatar" },
+    },
+  },
+  {
+    $project: {
+      name: "$_id",
+      avatar: 1,
+      totalPoints: 1,
+      _id: 0,
+    },
+  },
+  { $sort: { totalPoints: -1 } },
+  { $limit: 3 },
+]);
+
+// Enrich global top 3 with user details
+const top3 = await Promise.all(
+  rawTop3.map(async (item) => {
+    const agent = await User.findOne({ username: item.name }, "userImage shift agentType");
+    return {
+      ...item,
+      userImage: agent?.userImage || null,
+      shift: agent?.shift || null,
+      agentType: agent?.agentType || null,
+    };
+  })
+);
+
 
     res.status(200).json({
-      summary,
-      top5,
+       summary: summaryWithDetails,
+  top3, // ✅ Now includes enriched global top performers   // ✅ global top 3 performers
     });
   } catch (error) {
     console.error("Error fetching monthly QC points:", error);

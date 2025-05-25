@@ -71,7 +71,7 @@ const AllUsersAttendance = () => {
         },
       });
       setAttendanceData(res.data.attendanceData);
-      setTopPerformers(res.data.topPerformers.slice(0, 3));
+setTopPerformers(res.data.topPerformers);
     } catch (error) {
       console.error("Failed to fetch attendance data:", error);
       message.error("Failed to fetch attendance data. Please try again.");

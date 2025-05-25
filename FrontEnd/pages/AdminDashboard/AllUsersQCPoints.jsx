@@ -61,7 +61,7 @@ const AllUsersQCPoints = () => {
       });
 
       setUsers(res.data.summary);
-      setTopUsers(res.data.top5);
+      setTopUsers(res.data.top3); // ✅ changed from res.data.top5
     } catch (err) {
       console.error("Failed to fetch monthly QC data", err);
       if (err.response && err.response.status === 404) {
@@ -137,7 +137,7 @@ const AllUsersQCPoints = () => {
   ];
   useEffect(() => {
     fetchMonthlyQC(selectedDate);
-  }, []);
+  }, [filters]);
 
   return (
     <div className="qcpoints-container">
@@ -145,8 +145,8 @@ const AllUsersQCPoints = () => {
         <Text style={{ marginRight: "10px", color: "black" }}>
           Select Year & Month:
         </Text>
-        <div className="attendance-header">
-          <Calendar
+        <div  style={{margin:0,padding:0}} className="attendance-header">
+          <Calendar  style={{margin:0,padding:0}}
             value={selectedDate.toDate()}
             onChange={(e) => handleDateChange(moment(e.value))}
             view="month"
@@ -223,7 +223,7 @@ const AllUsersQCPoints = () => {
             style={{ color: "black" }}
             level={3}
           >
-            🏆 Top 5 Performers of the Month
+            🏆 Top 3 Performers of the Month
           </Title>
           <div className="top-performer-grid">
             {topUsers.map((user, index) => (
@@ -268,7 +268,7 @@ const AllUsersQCPoints = () => {
         columns={columns}
         dataSource={users}
         loading={loading}
-        rowKey="_id"
+        rowKey={(record) => record.name}
         pagination={{ pageSize: 50 }}
         bordered
         className="qupointsAddTable"

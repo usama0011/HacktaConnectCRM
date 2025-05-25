@@ -23,7 +23,14 @@ const attendanceSchema = new mongoose.Schema(
     agentType: { type: String, default: null },
     branch: { type: String, default: null },
     updatedBy: { type: String, default: null }, // ✅ NEW: who updated the attendance status
-    
+    // ✅ New field
+    editHistory: [
+      {
+        updatedBy: String,
+        updatedAt: Date,
+        previousStatus: String,
+      },
+    ],
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields

@@ -33,6 +33,7 @@ const AllUsersIPReport = () => {
   const navigate = useNavigate();
   const [selectedMonth, setSelectedMonth] = useState(moment());
   const [users, setUsers] = useState([]);
+  const [topUsers, setTopUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     shift: "",
@@ -59,7 +60,8 @@ const AllUsersIPReport = () => {
       });
 
       if (res.data.success) {
-        setUsers(res.data.agents);
+        setUsers(res.data.agents); // ✅ Filtered list
+        setTopUsers(res.data.top3); // ✅ Global top 3
       } else {
         message.error("Failed to fetch agents data");
       }
@@ -221,37 +223,37 @@ const AllUsersIPReport = () => {
       </div>
 
       <br />
-        <Title style={{textAlign:"center"}} level={4} className="section-heading">
-          🏆 Top 3 Performing Agents
-        </Title>
+      <Title
+        style={{ textAlign: "center" }}
+        level={4}
+        className="section-heading"
+      >
+        🏆 Top 3 Performing Agents
+      </Title>
       <Row gutter={[24, 24]} className="top-performers-row" justify="center">
         <br />
         <br />
         <div className="top-performers-list">
-          {users
-            .sort((a, b) => b.totalIPs - a.totalIPs)
-            .slice(0, 3)
-            .map((user, index) => (
-              <Card key={user.id} className="top-performer-card">
-                <div className="performer-content">
-                  <div className="performer-left">
-                    <div className="rank-circle">#{index + 1}</div>
-                    <Avatar size={48} src={user.avatar} />
-                    <div className="performer-details">
-                      <Text className="performer-name">{user.username}</Text>
-                      <Text type="secondary" className="performer-meta">
-                        Clicks: {user.totalClicks} | Sessions:{" "}
-                        {user.totalSessions}
-                      </Text>
-                    </div>
+          {topUsers.map((user, index) => (
+            <Card key={user.id} className="top-performer-card">
+              <div className="performer-content">
+                <div className="performer-left">
+                  <div className="rank-circle">#{index + 1}</div>
+                  <Avatar size={48} src={user.avatar} />
+                  <div className="performer-details">
+                    <Text className="performer-name">{user.username}</Text>
+                    <Text type="secondary" className="performer-meta">
+                      Clicks: {user.totalClicks} | Sessions:{" "}
+                      {user.totalSessions}
+                    </Text>
                   </div>
-                  <img className="performer-icon" src={TrophyIcon} alt="rank" />
                 </div>
+                <img className="performer-icon" src={TrophyIcon} alt="rank" />
+              </div>
 
-                {/* ✅ Bottom wave */}
-                <div className="performer-wave-footer" />
-              </Card>
-            ))}
+              <div className="performer-wave-footer" />
+            </Card>
+          ))}
         </div>
       </Row>
       <br />

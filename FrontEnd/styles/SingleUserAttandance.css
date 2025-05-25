@@ -106,6 +106,8 @@
   display: flex !important;
   align-items:center !important;
 }
+
+
 /* Small devices (phones, less than 576px) */
 @media (max-width: 575.98px) {
   .attendance-user-header {

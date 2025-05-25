@@ -5,7 +5,8 @@ import {
   markAttendanceForAgent,
   agentCheckout,
   updateAttendanceStatus,
-  getSingleUserAttendance
+  getSingleUserAttendance,
+  adminCreateAttendance
 } from "../controllers/attendanceController.js";
 import { adminSideAuthMiddleware } from "../middleware/authMiddleware.js";
 
@@ -13,6 +14,7 @@ const router = express.Router();
 
 // **Mark Attendance (Check-in & Check-out)**
 router.get("/today/:userId", getTodayAttendance);
+router.post("/admin-create", adminCreateAttendance);
 router.get("/all", adminSideAuthMiddleware, getAllUsersAttendance);
 router.post("/mark", markAttendanceForAgent); // ✅ New route for marking attendance
 router.put("/checkout", agentCheckout); // ✅ New route for agent checkout

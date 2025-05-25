@@ -82,7 +82,7 @@ const SingleUserIPReport = () => {
         sessions: newSessions,
         clicks: newClicks,
         date: moment(selectedRecord.date, "DD-MM-YYYY").toISOString(),
-        editor: user?.username || "Admin",
+        editor: user?.agentName || "Admin",
       });
 
       const [newYear, newMonth] = selectedMonth.split("-");

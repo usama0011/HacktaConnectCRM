@@ -217,12 +217,10 @@ export const agentCheckout = async (req, res) => {
     });
   }
 };
-// ✅ Controller to Update Attendance Status
 export const updateAttendanceStatus = async (req, res) => {
   const { userId, date, newStatus, updatedBy } = req.body;
 
   try {
-    // ✅ Validate new status
     const validStatuses = ["Present", "Absent", "Late", "Leave", "RotationOff", "Pending"];
     if (!validStatuses.includes(newStatus)) {
       return res.status(400).json({
@@ -230,21 +228,16 @@ export const updateAttendanceStatus = async (req, res) => {
         message: "Invalid attendance status provided.",
       });
     }
+const parsedDate = new Date(date);
+const startOfDay = new Date(parsedDate);
+startOfDay.setUTCHours(0, 0, 0, 0);
 
-    // ✅ Define the date range for the specified day
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
+const endOfDay = new Date(parsedDate);
+endOfDay.setUTCHours(23, 59, 59, 999);
 
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    // ✅ Find the attendance record for the user on the specified date
     const attendance = await Attendance.findOne({
       userId,
-      date: {
-        $gte: startOfDay,
-        $lte: endOfDay,
-      },
+      date: { $gte: startOfDay, $lte: endOfDay },
     });
 
     if (!attendance) {
@@ -254,9 +247,16 @@ export const updateAttendanceStatus = async (req, res) => {
       });
     }
 
-    // ✅ Update the status
+    const previousStatus = attendance.status;
+
     attendance.status = newStatus;
     attendance.updatedBy = updatedBy;
+    attendance.editHistory.push({
+      updatedBy,
+      updatedAt: new Date(),
+      previousStatus,
+    });
+
     await attendance.save();
 
     res.status(200).json({
@@ -265,7 +265,6 @@ export const updateAttendanceStatus = async (req, res) => {
       attendance,
     });
   } catch (error) {
-    console.error("Error updating attendance status:", error);
     res.status(500).json({
       message: "Error updating attendance status.",
       error: error.message,
@@ -275,28 +274,31 @@ export const updateAttendanceStatus = async (req, res) => {
 
 
 export const getAllUsersAttendance = async (req, res) => {
-  const { date, shift, agentType, branch,username } = req.query;
+  const { date, shift, agentType, branch, username } = req.query;
 
   try {
     const selectedMonth = new Date(date);
     const startOfMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), 1);
     const endOfMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 0, 23, 59, 59, 999);
 
+    // Filters for table data (filtered)
     const userQuery = { role: "agent" };
     if (shift) userQuery.shift = shift;
     if (agentType) userQuery.agentType = agentType;
     if (branch) userQuery.branch = branch;
-if (username) userQuery.username = { $regex: username, $options: "i" }; // case-insensitive partial match
+    if (username) userQuery.username = { $regex: username, $options: "i" };
 
     if (req.user.role === "Team Lead") {
       userQuery.shift = req.user.shift;
       if (req.user.agentType) {
         userQuery.agentType = req.user.agentType;
       }
-  }
+    }
 
+    // 1. Filtered Users
     const users = await User.find(userQuery, "_id username userImage shift agentType branch");
 
+    // 2. Attendance records for filtered users
     const attendanceRecords = await Attendance.aggregate([
       {
         $match: {
@@ -319,6 +321,7 @@ if (username) userQuery.username = { $regex: username, $options: "i" }; // case-
       },
     ]);
 
+    // 3. Prepare attendanceData for filtered table
     const attendanceData = users.map((user) => {
       const userAttendance = attendanceRecords.find(
         (record) => record._id.toString() === user._id.toString()
@@ -357,38 +360,82 @@ if (username) userQuery.username = { $regex: username, $options: "i" }; // case-
           avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
         },
         shift: user.shift,
-        branch:user.branch,
+        branch: user.branch,
         agentType: user.agentType || "N/A",
         todayStatus,
         monthSummary,
       };
     });
 
-    const topPerformers = [...attendanceData]
-      .sort((a, b) => b.monthSummary.present - a.monthSummary.present)
-      .slice(0, 4)
-      .map((performer) => ({
-        id: performer.id,
-        name: performer.user.name,
-        avatar: performer.user.avatar,
-        presentDays: performer.monthSummary.present,
-        totalDays:
-          performer.monthSummary.present +
-          performer.monthSummary.absent +
-          performer.monthSummary.late +
-          performer.monthSummary.leave +
-          performer.monthSummary.rotationOff,
-      }));
+    // 4. GLOBAL Top Performers (unfiltered)
+    const allAgents = await User.find({ role: "agent" }, "_id username userImage");
 
+    const allAttendance = await Attendance.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: new Date(moment(startOfMonth).startOf("day").toISOString()),
+            $lte: new Date(moment(endOfMonth).endOf("day").toISOString()),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$userId",
+          records: {
+            $push: { status: "$status" },
+          },
+        },
+      },
+    ]);
+
+    const globalTopPerformers = allAgents.map((agent) => {
+      const record = allAttendance.find(
+        (r) => r._id.toString() === agent._id.toString()
+      );
+
+      let present = 0,
+        absent = 0,
+        late = 0,
+        leave = 0,
+        rotationOff = 0;
+
+      if (record) {
+        record.records.forEach((r) => {
+          if (r.status === "Present") present++;
+          else if (r.status === "Absent") absent++;
+          else if (r.status === "Late") late++;
+          else if (r.status === "Leave") leave++;
+          else if (r.status === "RotationOff") rotationOff++;
+        });
+      }
+
+      return {
+        id: agent._id,
+        name: agent.username,
+        avatar: agent.userImage || "https://i.pravatar.cc/50?u=default",
+        presentDays: present,
+        totalDays: present + absent + late + leave + rotationOff,
+      };
+    });
+
+    const topPerformers = globalTopPerformers
+      .sort((a, b) => b.presentDays - a.presentDays)
+      .slice(0, 3);
+
+    // ✅ Final Response
     res.status(200).json({ attendanceData, topPerformers });
   } catch (error) {
     console.error("Error fetching attendance data:", error);
-    res.status(500).json({ message: "Failed to fetch attendance data", error: error.message });
+    res.status(500).json({
+      message: "Failed to fetch attendance data",
+      error: error.message,
+    });
   }
 };
 
 
-
+// ✅ Updated Controller: Get Full Month Attendance
 export const getSingleUserAttendance = async (req, res) => {
   const { userId } = req.params;
   const { date } = req.query;
@@ -396,7 +443,7 @@ export const getSingleUserAttendance = async (req, res) => {
   try {
     const selectedMonth = new Date(date);
     const year = selectedMonth.getFullYear();
-    const month = selectedMonth.getMonth();
+    const month = selectedMonth.getMonth(); // 0-indexed
 
     const startOfMonth = new Date(year, month, 1);
     const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59, 999);
@@ -404,17 +451,14 @@ export const getSingleUserAttendance = async (req, res) => {
     const user = await User.findById(userId, "username userImage shift agentType");
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    // Optional Team Lead restrictions
     if (req.user.role === "Team Lead") {
-      if (
-        user.shift !== req.user.shift ||
-        (req.user.agentType && user.agentType !== req.user.agentType)
-      ) {
-        return res.status(403).json({
-          message: "Access denied. Team Leads can only view users of their shift and type.",
-        });
+      if (user.shift !== req.user.shift || (req.user.agentType && user.agentType !== req.user.agentType)) {
+        return res.status(403).json({ message: "Access denied. Team Leads can only view users of their shift and type." });
       }
     }
 
+    // Fetch records for the selected month
     const records = await Attendance.find({
       userId,
       date: { $gte: startOfMonth, $lte: endOfMonth },
@@ -446,24 +490,30 @@ export const getSingleUserAttendance = async (req, res) => {
       let entry;
 
       if (record) {
-        const status = record.status.toLowerCase();
+  const status = record.status.toLowerCase();
 
-        // ✅ Treat both Present and Late as Present in summary
-        if (status === "present" || status === "late") {
-          stats.present++;
-        }
+  // Count both "Present" and "Late" as "Present" in summary stats
+  if (status === "present" || status === "late") {
+    stats.present++;
+  }
 
-        if (stats[status] !== undefined) {
-          stats[status]++;
-        }
+  // Still track each status individually
+  if (stats[status] !== undefined) {
+    stats[status]++;
+  }
 
-        entry = {
-          date: day,
-          status: record.status,
-          checkInTime: record.checkInTime?.toLocaleTimeString() || "-",
-          checkOutTime: record.checkOutTime?.toLocaleTimeString() || "-",
-        };
-      } else {
+  entry = {
+      userId: record.userId, // ✅ Add this
+    date: day,
+    status: record.status,
+    checkInTime: record.checkInTime?.toLocaleTimeString() || "-",
+    checkOutTime: record.checkOutTime?.toLocaleTimeString() || "-",
+      editHistory: record.editHistory || []
+
+    
+  };
+}
+ else {
         stats.absent++;
         entry = {
           date: day,
@@ -478,9 +528,11 @@ export const getSingleUserAttendance = async (req, res) => {
 
     return res.status(200).json({
       user: {
-        name: user.username,
+          _id:  user._id, // ✅ Include this to use for PUT
+        name:   user.username,
         avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
-        shift: user.shift,
+        shift:  user.shift,
+        branch: user.branch,
         agentType: user.agentType || "N/A",
       },
       stats,
@@ -495,3 +547,53 @@ export const getSingleUserAttendance = async (req, res) => {
   }
 };
 
+export const adminCreateAttendance = async (req, res) => {
+  const { userId, username, shift, agentType, branch, date, status, checkInTime, checkOutTime, updatedBy } = req.body;
+
+  try {
+    const existing = await Attendance.findOne({
+      userId,
+      date: {
+        $gte: new Date(date).setHours(0, 0, 0, 0),
+        $lte: new Date(date).setHours(23, 59, 59, 999),
+      },
+    });
+
+    if (existing) {
+      return res.status(400).json({ message: "Attendance already exists for this date." });
+    }
+
+    const attendance = new Attendance({
+      userId,
+      username,
+      shift,
+      agentType,
+      branch,
+      date: new Date(date),
+      status,
+      checkInTime: checkInTime ? new Date(checkInTime) : null,
+      checkOutTime: checkOutTime ? new Date(checkOutTime) : null,
+      updatedBy,
+      editHistory: [
+        {
+          updatedBy,
+          updatedAt: new Date(),
+          previousStatus: `Created as ${status}`,
+        },
+      ],
+    });
+
+    await attendance.save();
+
+    return res.status(201).json({
+      message: "Attendance successfully created by Admin.",
+      attendance,
+    });
+  } catch (error) {
+    console.error("Admin create attendance error:", error);
+    res.status(500).json({
+      message: "Failed to create attendance.",
+      error: error.message,
+    });
+  }
+};

@@ -497,9 +497,55 @@ if (username) {
         totalSessions: ipData.totalSessions,
         totalIPs: ipData.totalClicks + ipData.totalSessions,
       };
-    });
+    }); 
+    // Step: Global Top 3 Based on Total IPs (clicks + sessions)
+const globalTop3Raw = await IP.aggregate([
+  {
+    $match: {
+      date: { $gte: startOfMonth, $lte: endOfMonth },
+    },
+  },
+  {
+    $group: {
+      _id: "$userId",
+      totalClicks: { $sum: "$clicks" },
+      totalSessions: { $sum: "$sessions" },
+    },
+  },
+  {
+    $project: {
+      userId: "$_id",
+      totalClicks: 1,
+      totalSessions: 1,
+      totalIPs: { $add: ["$totalClicks", "$totalSessions"] },
+    },
+  },
+  { $sort: { totalIPs: -1 } },
+  { $limit: 3 },
+]);
 
-    res.status(200).json({ success: true, agents: finalData });
+// Enrich with user info
+const top3 = await Promise.all(
+  globalTop3Raw.map(async (record) => {
+    const user = await User.findById(record.userId, "username userImage shift agentType");
+    return {
+      id: user._id,
+      username: user.username,
+      avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
+      shift: user.shift,
+      agentType: user.agentType || "N/A",
+      totalClicks: record.totalClicks,
+      totalSessions: record.totalSessions,
+      totalIPs: record.totalIPs,
+    };
+  })
+);
+
+res.status(200).json({
+  success: true,
+  agents: finalData,  // Filtered table data
+  top3,               // Global top 3 agents
+});
   } catch (error) {
     console.error("Get Agents Monthly IPs Error:", error);
     res
