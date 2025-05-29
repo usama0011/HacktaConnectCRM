@@ -7,7 +7,7 @@
 .CRM-card-wave-header {
   height: 70px;
   width: 100% !important;
-  background: linear-gradient(135deg, #154238, #003c2f);
+  background: linear-gradient(135deg, #3a4cb0, #1e2d7d);
   clip-path: path("M0,0 C50,80 150,80 200,0 L200,0 L0,0 Z"); /* Fallback in Safari */
   clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%);
   border-top-left-radius: 18px;
@@ -61,7 +61,7 @@
 }
 
 .CRM-positive {
-  color: #2e7d32;
+  color: #1e2d7d;
 }
 
 .CRM-negative {
@@ -73,7 +73,7 @@
   height: 50px;
   object-fit: cover;
   border-radius: 10px;
-  border: 2px solid #009737;
+  border: 2px solid #1e2d7d;
   padding: 2px;
 }
 
@@ -137,7 +137,7 @@
 }
 
 .CRM-ribbon-center {
-  background: linear-gradient(to bottom, #003c2f, #02543d);
+  background: linear-gradient(to bottom, #1e2d7d,#2e3c9c );
   color: white;
   padding: 12px 50px;
   border-radius: 8px;
@@ -161,12 +161,12 @@
 }
 
 .CRM-ribbon-left {
-  border-right: 20px solid #003c2f;
+  border-right: 20px solid #1e2d7d;
   margin-right: -10px;
 }
 
 .CRM-ribbon-right {
-  border-left: 20px solid #003c2f;
+  border-left: 20px solid #1e2d7d;
   margin-left: -10px;
 }
 

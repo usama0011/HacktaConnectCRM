@@ -1,0 +1,101 @@
+.csv-upload-container {
+  padding: 40px;
+  background-color: #f4f6f8;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.csv-upload-title {
+  margin-bottom: 8px;
+  color: #003c2f;
+}
+
+.csv-upload-description {
+  margin-bottom: 32px;
+  color: #666;
+  font-size: 16px;
+}
+
+.csv-upload-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  transition: all 0.3s ease-in-out;
+}
+
+.csv-upload-card:hover {
+  transform: translateY(-4px);
+}
+
+.csv-dragger {
+  border: 2px dashed #1890ff;
+  border-radius: 8px;
+  background-color: #fafafa;
+  padding: 20px 10px;
+}
+
+.upload-loading-wave {
+  margin-top: 16px;
+}
+
+/* === Guide Card Lists === */
+.csv-guide-list {
+  list-style-type: disc;
+  padding-left: 24px;
+  text-align: left !important;
+  font-size: 14px;
+  color: #333;
+  min-height: 300px;
+  line-height: 1.8;
+}
+
+.csv-guide-list li {
+  margin-bottom: 8px;
+}
+
+.csv-guide-list code {
+  background-color: #f0f2f5;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #1e2d7d;
+}
+
+/* === Section Headings in Cards === */
+.ant-card-head-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1e2d7d;
+  text-align: center;
+}
+
+/* === Paragraph Notes and Ensure Section === */
+.csv-note-text,
+.csv-ensure-text {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.csv-note-text strong,
+.csv-ensure-text strong {
+  color: #000;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+.csv-guide-list > li  > strong{
+  text-transform: capitalize;
+}
+
+.csv-note-text svg,
+.csv-ensure-text svg {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* === Divider Margin Adjustments === */
+.ant-divider-horizontal {
+  margin-top: 50px;
+  margin-bottom: 30px;
+}

@@ -78,7 +78,7 @@ const OverviewCard = () => {
                     >
                       {card.changeType === "up" ? (
                         <RiseOutlined
-                          style={{ color: "green", marginRight: 4 }}
+                          style={{ color: "#1e2d7d", marginRight: 4 }}
                         />
                       ) : (
                         <FallOutlined
@@ -93,7 +93,7 @@ const OverviewCard = () => {
 
                     <div className="CRM-extra-info">
                       <p className="CRM-shift">
-                        username:{" "}
+                        Username:{" "}
                         <strong style={{ textTransform: "capitalize" }}>
                           {card.username}
                         </strong>

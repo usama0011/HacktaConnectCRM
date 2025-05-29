@@ -17,7 +17,7 @@
   font-size: 26px;
   font-weight: bold;
   margin-bottom: 20px;
-  color: #003c2f;
+  color: #1e2d7d;
 }
 
 /* Inputs */
@@ -30,7 +30,7 @@
 .calculatorPage-calcBtn {
   margin-top: 30px;
   width: 100%;
-  background: #003c2f;
+  background: #1e2d7d;
   color: white;
   font-weight: bold;
   height: 45px;
@@ -45,7 +45,7 @@
 
 /* Right Result Card */
 .calculatorPage-resultCard {
-  background: #003c2f;
+  background: #1e2d7d;
   padding: 50px 30px;
   border-radius: 20px;
   height: 100%;

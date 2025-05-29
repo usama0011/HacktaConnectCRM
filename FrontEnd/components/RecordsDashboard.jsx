@@ -3,6 +3,8 @@ import { Card, Row, Col, Button } from "antd";
 import "../styles/RecordsDashboard.css";
 import { useNavigate } from "react-router-dom";
 import AllAgentImage from "../src/assets/team.png";
+import FileUPloadAgent from "../src/assets/fileupload.png";
+import ManagementAlso from "../src/assets/mana.png";
 
 const RecordsDashboard = () => {
   const navigate = useNavigate();
@@ -11,7 +13,7 @@ const RecordsDashboard = () => {
       title: "Agents Record",
       description:
         "View and manage all agent activity, attendance, salary, and reports in one place.",
-      image: <img src={AllAgentImage} />, // Icon URL leave blank for now
+      image: <img src={AllAgentImage} />, // Placeholder image
       buttonText: "View Agents",
       route: "/admin/dashboard/allagentrecord",
     },
@@ -19,9 +21,17 @@ const RecordsDashboard = () => {
       title: "Management Record",
       description:
         "Access management reports, system logs, and administrative operations efficiently.",
-      image: <img src={AllAgentImage} />, // Icon URL leave blank
+      image: <img src={ManagementAlso} />, // Placeholder image
       buttonText: "View Management",
       route: "/admin/dashboard/allmangemenrerecord",
+    },
+    {
+      title: "Upload CSV Record",
+      description:
+        "Upload agent data in CSV format to manage bulk attendance, performance, or salary info.",
+      image: <img src={FileUPloadAgent} />, // Same placeholder, change if needed
+      buttonText: "Upload CSV",
+      route: "/admin/dashboard/agentcsv",
     },
   ];
 

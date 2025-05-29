@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Menu, Dropdown, Tooltip, Input, Button, Avatar } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import {
@@ -7,19 +7,22 @@ import {
   SearchOutlined,
   MenuOutlined,
 } from "@ant-design/icons";
-import MainWebSiteLogo from "../src/assets/mainlogo.jpeg";
-import LogoutMainCharactor from "../src/assets/logoutcharactor.png";
 import "../styles/AdminDashboard.css";
 import Sidebar from "./SideBar";
 import { useUserContext } from "../context/UserContext";
+import QuickAccessModal from "./QuickAccessModal";
 
 const { Header, Sider, Content } = Layout;
 
 const AdminLayout = () => {
   const { user } = useUserContext();
+  const inputRef = React.useRef(null);
   const navigate = useNavigate();
   const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
   // Toggle function
   const toggleMobileSidebar = () => {
     setIsMobileSidebarVisible(!isMobileSidebarVisible);
@@ -41,11 +44,11 @@ const AdminLayout = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
-        console.log("helo")
+        console.log("helo");
         setIsMobileSidebarVisible(false); // auto-hide when becoming mobile
       }
     };
-      
+
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
@@ -72,11 +75,23 @@ const AdminLayout = () => {
 
           <div className="header-center">
             <Input
+              ref={inputRef}
               className="header-search"
               placeholder="Search here..."
+              onFocus={() => setIsModalVisible(true)}
               prefix={<SearchOutlined />}
             />
           </div>
+          <QuickAccessModal
+            visible={isModalVisible}
+            onClose={() => {
+              setIsModalVisible(false);
+              setSearchValue("");
+              inputRef.current?.blur(); // ✅ Remove focus
+            }}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+          />
 
           <div className="header-right">
             <Dropdown overlay={menu} trigger={["click"]}>

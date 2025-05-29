@@ -18,10 +18,13 @@ import {
   PhoneOutlined,
   BankOutlined,
   IdcardOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
 import "../../styles/MyProfile.css";
-import axios from "axios";
 import { useUserContext } from "../../context/UserContext";
+import API from "../../utils/BaseURL";
+import axios from "axios";
+const { Dragger } = Upload;
 
 const { Title, Text } = Typography;
 
@@ -30,18 +33,16 @@ const MyProfile = () => {
   const { user, token } = useUserContext();
   const [profileImage, setProfileImage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:5000/api/auth/user/${user._id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await API.get(`/auth/user/${user._id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const userData = res.data;
         setProfileImage(userData.userImage);
@@ -64,13 +65,6 @@ const MyProfile = () => {
     }
   }, [user]);
 
-  const handleUpload = (info) => {
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} uploaded successfully.`);
-      setProfileImage(URL.createObjectURL(info.file.originFileObj));
-    }
-  };
-
   return (
     <div className="myprofile-container">
       <Title level={2} className="myprofile-title">
@@ -92,19 +86,113 @@ const MyProfile = () => {
               />
               <Upload
                 showUploadList={false}
-                beforeUpload={() => false}
-                onChange={handleUpload}
+                accept="image/*"
+                beforeUpload={(file) => {
+                  const isImage = file.type.startsWith("image/");
+                  if (!isImage) {
+                    message.error("Only image files are allowed!");
+                    return Upload.LIST_IGNORE;
+                  }
+
+                  const previewUrl = URL.createObjectURL(file);
+                  setProfileImage(previewUrl); // Show preview
+                  setSelectedFile(file); // Store for upload
+                  return false;
+                }}
               >
-                <Button
-                  icon={<UploadOutlined />}
-                  className="myprofile-upload-button"
+                <Dragger
+                  name="file"
+                  multiple={false}
+                  showUploadList={false}
+                  accept="image/*"
+                  beforeUpload={(file) => {
+                    const isImage = file.type.startsWith("image/");
+                    if (!isImage) {
+                      message.error("Only image files are allowed!");
+                      return Upload.LIST_IGNORE;
+                    }
+
+                    const previewUrl = URL.createObjectURL(file);
+                    setProfileImage(previewUrl); // Show preview
+                    setSelectedFile(file); // Store for backend upload
+                    return false;
+                  }}
+                  style={{
+                    textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 20,
+                  }}
                 >
-                  Change Profile Picture
-                </Button>
+                  <p className="ant-upload-drag-icon">
+                    <InboxOutlined />
+                  </p>
+                  <p className="ant-upload-text">
+                    Click or drag file to this area
+                  </p>
+                </Dragger>
               </Upload>
             </div>
 
-            <Form layout="vertical" form={form} className="myprofile-form">
+            <Form
+              layout="vertical"
+              form={form}
+              className="myprofile-form"
+              onFinish={async (values) => {
+                setLoading(true);
+
+                try {
+                  let uploadedUrl = profileImage;
+
+                  if (selectedFile) {
+                    const formData = new FormData();
+                    formData.append("image", selectedFile);
+                    const uploadRes = await axios.post(
+                      "https://hackta-connect-crm-client.vercel.app/api/upload",
+                      formData
+                    );
+
+                    console.log("Upload Response:", uploadRes.data); // Debug line
+
+                    uploadedUrl = uploadRes.data.url;
+
+                    if (!uploadedUrl) {
+                      message.error("Image upload failed.");
+                      setLoading(false);
+                      return;
+                    }
+                  }
+
+                  // 2. Send updated info to backend
+                  const updateRes = await API.put(
+                    `/auth/edit/${user._id}`,
+                    {
+                      bankName: values.bankName,
+                      bankNumber: values.bankNumber,
+                      userImage: uploadedUrl,
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                      },
+                    }
+                  );
+
+                  if (updateRes.status === 200) {
+                    message.success("Profile updated successfully!");
+                  } else {
+                    message.error("Failed to update profile.");
+                  }
+                } catch (error) {
+                  console.error(error);
+                  message.error("An error occurred while updating profile.");
+                } finally {
+                  setLoading(false);
+                }
+              }}
+            >
               <div className="form-grid">
                 <Form.Item label="Username" name="username">
                   <Input prefix={<UserOutlined />} disabled />
@@ -134,11 +222,7 @@ const MyProfile = () => {
               </div>
 
               <Form.Item className="submit-btn-container">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="myprofile-save-button"
-                >
+                <Button type="primary" htmlType="submit" loading={loading}>
                   Save Changes
                 </Button>
               </Form.Item>

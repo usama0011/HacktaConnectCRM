@@ -10,7 +10,7 @@
   padding: 60px 20px;
 }
 .crm-subtitle {
-  color: #003c2f;
+  color: #1e2d7d;
   font-weight: 600;
   margin-bottom: 8px;
 }
@@ -20,7 +20,7 @@
 }
 .crm-company-hero .highlight {
   background: #d3ff37;
-  color: #003c2f;
+  color: #1e2d7d;
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -46,7 +46,7 @@
   padding: 16px;
 }
 .card-meta .category {
-  color: #003c2f;
+  color: #1e2d7d;
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 6px;
@@ -62,7 +62,7 @@
   margin-bottom: 14px;
 }
 .read-btn {
-  background: #003c2f;
+  background: #1e2d7d;
   border: none;
   color: #fff;
   font-weight: 600;
@@ -70,7 +70,7 @@
 
 /* ========== CTA GREEN SECTION ========== */
 .crm-cta-green {
-  background: #003c2f;
+  background: #1e2d7d;
   padding: 50px 20px;
   text-align: center;
 }
@@ -81,7 +81,7 @@
 }
 .crm-cta-green .highlight {
   background: white;
-  color: #003c2f;
+  color: #1e2d7d;
   padding: 0 6px;
   border-radius: 4px;
 }
@@ -107,7 +107,7 @@
   align-items: center;
   gap: 6px;
   font-weight: 600;
-  color: #003c2f;
+  color: #1e2d7d;
 }
 
 /* ========== FAQ SECTION ========== */
@@ -124,7 +124,7 @@
 }
 .counter-box h1 {
   font-size: 48px;
-  color: #003c2f;
+  color: #1e2d7d;
   margin: 0;
 }
 .counter-box p {

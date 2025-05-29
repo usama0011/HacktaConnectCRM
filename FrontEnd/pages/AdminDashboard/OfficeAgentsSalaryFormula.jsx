@@ -66,7 +66,7 @@ const OfficeAgentsSalaryFormula = () => {
   return (
     <div className="salaryFormula-container">
       <h1 className="salaryFormula-heading">
-        Hackta Connect - Office Agent Salary Setup
+        Office Agent Salary Pattern
       </h1>
 
       <Card className="salaryFormula-formCard">
@@ -217,36 +217,13 @@ const OfficeAgentsSalaryFormula = () => {
               htmlType="submit"
               className="salaryFormula-submitBtn"
             >
-              {isEditing ? "Update Formula" : "Save Formula"}
+              {isEditing ? "Update Pattern" : "Save Formula"}
             </Button>
           </Form.Item>
         </Form>
       </Card>
 
-      {salaryDetails && (
-        <div className="salaryFormula-summary">
-          <h2 className="salaryFormula-summaryTitle">
-            💼 Salary Formula Summary
-          </h2>
-          <Row gutter={[24, 24]}>
-            {Object.entries(salaryDetails)
-              .filter(
-                ([key]) =>
-                  !["id", "_id", "createdAt", "updatedAt"].includes(key)
-              )
-              .map(([key, value]) => (
-                <Col key={key} xs={24} sm={12} md={8} lg={4}>
-                  <Card className="salaryFormula-summaryCard">
-                    <p className="salaryFormula-summaryLabel">
-                      {key.replace(/_/g, " ").toUpperCase()}
-                    </p>
-                    <p className="salaryFormula-summaryValue">Rs {value}</p>
-                  </Card>
-                </Col>
-              ))}
-          </Row>
-        </div>
-      )}
+      
     </div>
   );
 };

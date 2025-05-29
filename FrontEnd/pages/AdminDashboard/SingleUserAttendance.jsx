@@ -32,6 +32,7 @@ const { Option } = Select;
 
 const SingleUserAttendance = () => {
   const { username } = useParams();
+
   const [checkInTime, setCheckInTime] = useState(null);
   const [checkOutTime, setCheckOutTime] = useState(null);
   const { user } = useUserContext();
@@ -78,12 +79,31 @@ const SingleUserAttendance = () => {
       title: "🕒 Check-in Time",
       dataIndex: "checkInTime",
       key: "checkInTime",
+      render: (text, record) => {
+        const checkIn = record.checkInTime;
+        const checkOut = record.checkOutTime;
+        const isSame = checkIn && checkOut && checkIn === checkOut;
+
+        return (
+          <Text type={isSame ? "danger" : undefined}>{checkIn || "-"}</Text>
+        );
+      },
     },
     {
       title: "🕒 Check-out Time",
       dataIndex: "checkOutTime",
       key: "checkOutTime",
+      render: (text, record) => {
+        const checkIn = record.checkInTime;
+        const checkOut = record.checkOutTime;
+        const isSame = checkIn && checkOut && checkIn === checkOut;
+
+        return (
+          <Text type={isSame ? "danger" : undefined}>{checkOut || "-"}</Text>
+        );
+      },
     },
+
     {
       title: "✅ Status",
       dataIndex: "status",
@@ -143,7 +163,7 @@ const SingleUserAttendance = () => {
     scale: {
       color: {
         range: [
-          "#003c2f", // Dark Green (Present)
+          "#1e2d7d", // Dark Green (Present)
           "#005c47", // Medium-dark Green (Absent)
           "#007f5c", // Medium Green (Late)
           "#00a375", // Lighter Green (Leave)
@@ -185,14 +205,23 @@ const SingleUserAttendance = () => {
 
     setCreateModalVisible(true);
   };
-
+  console.log(userData);
   return (
     <div className="single-user-attendance-container">
-      <div className="attendance-user-header">
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Avatar src={userData?.avatar} size={45} />
-          <h4 style={{ marginLeft: "10px" }}>{userData?.name}</h4>
+      <div className="headtopsidbarskjs">
+        <Avatar src={userData?.avatar} size={64} />
+        <div>
+          <div style={{marginLeft:"10px"}}>
+            <h3 style={{ marginBottom: 0 }}>
+              {userData?.name || "Unknown User"}
+            </h3>
+            <Text type="secondary">
+              {moment(selectedMonth, "YYYY-MM").format("MMMM YYYY")}
+            </Text>
+          </div>
         </div>
+      </div>
+      <div className="attendance-user-header">
         <br />
         <br />
         <Title style={{ textAlign: "center" }} level={3}>

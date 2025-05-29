@@ -9,7 +9,7 @@
 .myprofile-title {
   text-align: center;
   font-weight: 600;
-  color: #003c2f;
+  color: #1e2d7d;
 }
 
 .myprofile-subtext {
@@ -28,13 +28,13 @@
   gap: 16px;
 }
 .usersideavatarsir {
-  border: 3px solid #003c2f;
+  border: 3px solid #1e2d7d;
   object-fit: cover;
   background-size: cover;
   background-position: center center;
 }
 .myprofile-upload-button {
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   color: white;
   height: 40px;
   border-radius: 6px;
@@ -48,7 +48,7 @@
 }
 
 .myprofile-form .ant-form-item-label > label {
-  color: #003c2f;
+  color: #1e2d7d;
   font-weight: 500;
 }
 
@@ -59,7 +59,7 @@
 }
 
 .myprofile-save-button {
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   height: 40px !important;
   color: white;
   font-weight: 600;
@@ -69,7 +69,7 @@
 }
 
 .myprofile-save-button:hover {
-  background-color: #02543d;
+  background-color: #1b2f61;
 }
 
 .submit-btn-container {

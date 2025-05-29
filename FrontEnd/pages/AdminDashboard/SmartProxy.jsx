@@ -91,7 +91,7 @@ const SmartProxy = () => {
     height: 300,
     scale: {
       color: {
-        range: ["#003c2f", "#005745", "#007f5c", "#009973", "#00b189"],
+        range: ["#1e2d7d","#10274a", "#009973", "#00b189"],
       },
     },
     label: {

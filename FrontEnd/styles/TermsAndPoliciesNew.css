@@ -30,7 +30,7 @@
   font-size: 32px;
   font-weight: bold;
   text-align: center;
-  color: #003c2f;
+  color: #1e2d7d;
   margin-bottom: 10px;
 }
 
@@ -40,7 +40,7 @@
   text-align: center;
   color: #333;
   margin-bottom: 30px;
-  border-bottom: 2px solid #003c2f;
+  border-bottom: 2px solid #1e2d7d;
   padding-bottom: 8px;
 }
 
@@ -50,7 +50,7 @@
 
 .termpolicyclient-section h3 {
   font-size: 20px;
-  color: #003c2f;
+  color: #1e2d7d;
   font-weight: 600;
   margin-bottom: 12px;
 }

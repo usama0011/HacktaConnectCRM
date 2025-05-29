@@ -35,7 +35,7 @@
   margin: 0;
   font-size: 15px; /* ↓ smaller text */
   font-weight: 600;
-  color: #003c2f;
+  color: #1e2d7d;
 }
 
 /* Data */
@@ -43,7 +43,7 @@
   margin: 4px 0 0 0;
   font-size: 13px; /* ↓ reduced font */
   font-weight: 600;
-  color: #003c2f;
+  color: #1e2d7d;
 }
 
 /* Avatar */
@@ -58,7 +58,7 @@
 /* Button */
 .proxy-view-btn {
   margin: 30px 14px 14px 14px;
-  background: #003c2f;
+  background: #1e2d7d;
   height: 32px; /* ↓ shorter button */
   border: none;
   width: 100%;
@@ -68,7 +68,7 @@
 }
 
 .proxy-view-btn:hover {
-  background: #02543d;
+  background: #1b2f61;
   color: #ffffff;
 }
 

@@ -35,7 +35,7 @@
 }
 
 .header-left > h1 {
-  color: #003c2f;
+  color: #1e2d7d;
   font-size: 20px;
   font-weight: 600;
   margin: 0;
@@ -51,7 +51,7 @@
 }
 
 .header-avatar:hover {
-  border-color: #003c2f;
+  border-color: #1e2d7d;
 }
 
 .header-center {
@@ -118,7 +118,7 @@
   cursor: pointer;
 }
 .aboutus-btn {
-  background-color: #003c2f; /* or your desired base color */
+  background-color: #1e2d7d; /* or your desired base color */
   color: #ffffff;
   border: none;
   transition: background-color 0.3s, color 0.3s;
@@ -128,6 +128,14 @@
   background-color: #002a22; /* darker shade for hover effect if needed */
   color: #ffffff !important; /* ensure white text on hover */
 }
+.quick-access-modal .ant-modal-content {
+  border-radius: 12px;
+}
+.quick-access-modal .ant-list-item-meta-title a {
+  font-weight: 500;
+  color: #007c89;
+}
+
 @media (max-width: 768px) {
   .custom-admin-header {
     padding: 12px 16px;

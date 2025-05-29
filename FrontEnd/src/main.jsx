@@ -90,6 +90,7 @@ import { ConfigProvider } from "antd";
 import MangoProxyB from "../pages/AdminDashboard/MangoProxyB.jsx";
 import InfaticaAPIDetails from "../pages/AdminDashboard/InfaticaAPIDetails.jsx";
 import AboutUs from "../pages/generalPages/AboutUs.jsx";
+import AgentsCSVUPload from "../pages/AdminDashboard/AgentsCSVUPload.jsx";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -106,7 +107,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 // Custom theme colors
-const primaryColor = "#003c2f"; // Base green
+const primaryColor = "#1e2d7d"; // Base green
 const hoverColor = "#00291f"; // Slightly darker for hover
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -115,17 +116,17 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       theme={{
         token: {
           fontFamily: "Inter, sans-serif",
-          colorPrimary: "#003c2f",
+          colorPrimary: "#1e2d7d",
           colorPrimaryHover: "#00291f",
           colorPrimaryActive: "#00291f",
           colorTextLightSolid: "#fff",
         },
         components: {
           Button: {
-            colorPrimary: "#003c2f",
+            colorPrimary: "#1e2d7d",
             colorPrimaryHover: "#00291f",
             colorPrimaryActive: "#00291f",
-            defaultBg: "#003c2f",
+            defaultBg: "#1e2d7d",
             defaultHoverBg: "#00291f",
             defaultActiveBg: "#00291f",
             defaultColor: "#fff",
@@ -215,6 +216,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 element={<ViewUserTaskCreations />}
               />
               <Route path="addnewuser" element={<AddNewUser />} />
+              <Route path="agentcsv" element={<AgentsCSVUPload />} />
               <Route path="agentsalary" element={<AgentSalaryAggrigation />} />
               <Route
                 path="downloadsalaryworker"

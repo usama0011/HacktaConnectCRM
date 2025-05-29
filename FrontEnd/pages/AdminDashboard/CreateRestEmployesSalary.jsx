@@ -192,7 +192,7 @@ const AgentsSalaryRecord = () => {
       dataIndex: "netSalary",
       key: "netSalary",
       render: (value) => (
-        <span style={{ fontWeight: "bold", color: "#003c2f" }}>Rs {value}</span>
+        <span style={{ fontWeight: "bold", color: "#1e2d7d" }}>Rs {value}</span>
       ),
     },
   ];
@@ -322,7 +322,7 @@ const AgentsSalaryRecord = () => {
       </Card>
       <br />
 
-      <div className="top-agents-wrapper">
+      {/* <div className="top-agents-wrapper">
         <h2 className="top-agents-title">🏆 Top 5 Agents</h2>
         <Row gutter={[24, 24]}>
           {visibleData
@@ -346,7 +346,7 @@ const AgentsSalaryRecord = () => {
               </Col>
             ))}
         </Row>
-      </div>
+      </div> */}
 
       <br />
 

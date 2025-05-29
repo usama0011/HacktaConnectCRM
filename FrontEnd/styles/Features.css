@@ -6,7 +6,7 @@
 
 /* ============ HERO SECTION ============ */
 .crm-features-hero {
-  background: linear-gradient(90deg, #003c2f, #9139d1);
+  background: linear-gradient(90deg, #1e2d7d, #9139d1);
   color: white;
   padding: 80px 40px;
   display: flex;
@@ -44,7 +44,7 @@
 }
 .hero-btn.primary {
   background: #fff;
-  color: #003c2f;
+  color: #1e2d7d;
 }
 .hero-btn.secondary {
   background: transparent;
@@ -85,7 +85,7 @@
   display: inline-block;
   margin-top: 10px;
   font-size: 13px;
-  color: #003c2f;
+  color: #1e2d7d;
   font-weight: 600;
 }
 

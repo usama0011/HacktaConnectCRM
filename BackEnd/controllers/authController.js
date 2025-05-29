@@ -3,6 +3,9 @@ import jwt from "jsonwebtoken";
 import User from "../models/usermodel.js";
 import Attendance from "../models/attendanceModel.js";
 import moment from 'moment'
+import { Readable } from "stream";
+import csv from "csv-parser";
+
 // controllers/authController.js
 
 // Get Single User by ID
@@ -80,9 +83,10 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
-
+  console.log(username,password)
   try {
     const user = await User.findOne({ username });
+    console.log(user)
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -365,5 +369,106 @@ export const getAgentCountByShift = async (req, res) => {
       message: "Failed to fetch agent shift count",
       error: error.message,
     });
+  }
+};
+
+// Helper: parse CSV stream to JSON
+const parseCSV = (buffer) => {
+  return new Promise((resolve, reject) => {
+    const results = [];
+    const stream = Readable.from(buffer.toString());
+
+    stream
+      .pipe(csv())
+      .on("data", (data) => results.push(data))
+      .on("end", () => resolve(results))
+      .on("error", (error) => reject(error));
+  });
+};
+
+export const uploadCSVWithBank = async (req, res) => {
+  try {
+    const assignShiftTimes = (shift) => {
+  switch (shift?.toLowerCase()) {
+    case "morning":
+      return { shiftStartTime: "08:00 AM", shiftEndTime: "04:00 PM" };
+    case "evening":
+      return { shiftStartTime: "04:00 PM", shiftEndTime: "12:00 AM" };
+    case "night":
+      return { shiftStartTime: "12:00 AM", shiftEndTime: "08:00 AM" };
+    default:
+      return { shiftStartTime: null, shiftEndTime: null };
+  }
+};
+
+    const defaultImageURL =
+      "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg";
+    const records = await parseCSV(req.file.buffer);
+
+    const enriched = await Promise.all(
+      records.map(async (r) => {
+        const hashedPassword = await bcrypt.hash(r.password, 10);
+        const shiftTimes = assignShiftTimes(r.shift);
+
+        return {
+          ...r,
+          password: hashedPassword,
+          userImage: defaultImageURL,
+          bankaccountstatus: true,
+          CreatedBy: req.body.CreatedBy,
+          ...shiftTimes, // 👈 Add shiftStartTime & shiftEndTime here
+
+        };
+      })
+    );
+
+    await User.insertMany(enriched);
+    res.status(200).json({ message: "CSV with bank uploaded", count: enriched.length });
+  } catch (err) {
+    res.status(500).json({ message: "Error uploading CSV with bank", error: err });
+  }
+};
+
+
+export const uploadCSVWithoutBank = async (req, res) => {
+  try {
+    const assignShiftTimes = (shift) => {
+  switch (shift?.toLowerCase()) {
+    case "morning":
+      return { shiftStartTime: "08:00 AM", shiftEndTime: "04:00 PM" };
+    case "evening":
+      return { shiftStartTime: "04:00 PM", shiftEndTime: "12:00 AM" };
+    case "night":
+      return { shiftStartTime: "12:00 AM", shiftEndTime: "08:00 AM" };
+    default:
+      return { shiftStartTime: null, shiftEndTime: null };
+  }
+};
+
+    const defaultImageURL =
+      "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg";
+    const records = await parseCSV(req.file.buffer);
+
+    const enriched = await Promise.all(
+      records.map(async (r) => {
+        const hashedPassword = await bcrypt.hash(r.password, 10);
+        const shiftTimes = assignShiftTimes(r.shift);
+
+        return {
+          ...r,
+          password: hashedPassword,
+          userImage: defaultImageURL,
+          bankaccountstatus: false,
+          CreatedBy: req.body.CreatedBy,
+          ...shiftTimes, // 👈 Add shiftStartTime & shiftEndTime here
+
+        };
+      })
+    );
+
+    await User.insertMany(enriched);
+    res.status(200).json({ message: "CSV without bank uploaded", count: enriched.length });
+  } catch (err) {
+    res.status(500).json({ message: "Error uploading CSV without bank", error: err });
   }
 };

@@ -286,8 +286,12 @@ export const getUserQCByMonth = async (req, res) => {
 
     const formatted = {
       name: username,
+            userId: records[0]?.userId || null,
       avatar: records[0]?.avatar || "",
-      points: records.map((r) => ({
+       points: records.map((r) => ({
+        _id: r._id, // Include QC document ID for editing
+        userId: r.userId,
+        name: r.name,
         date: moment(r.date).format("YYYY-MM-DD"),
         time: r.time,
         profilePattern: r.profilePattern,
@@ -295,6 +299,7 @@ export const getUserQCByMonth = async (req, res) => {
         perHourReport: r.perHourReport,
         workingBehavior: r.workingBehavior,
         totalPoints: r.totalPoints,
+        history: r.history || [],
       })),
     };
 
@@ -405,5 +410,41 @@ export const getTopAgentsLeaderboard = async (req, res) => {
       message: "Failed to fetch leaderboard",
       error: error.message,
     });
+  }
+};
+
+export const updateQCPointByUsernameAndId = async (req, res) => {
+  try {
+    const { username, qcId } = req.params;
+    const { values, editor } = req.body;
+
+    const qcPoint = await QCPoint.findOne({
+      _id: qcId,
+      name: username,
+    });
+
+    if (!qcPoint) {
+      return res.status(404).json({ message: "QC record not found" });
+    }
+
+    const totalPoints = Object.values(values).filter((v) => v === "1").length;
+
+    const historyEntry = {
+      action: "Edited",
+      by: editor,
+      timestamp: moment().format("DD MMM YYYY, HH:mm"),
+    };
+
+    Object.assign(qcPoint, values, {
+      totalPoints,
+      editedBy: editor,
+      history: [...qcPoint.history, historyEntry],
+    });
+
+    await qcPoint.save();
+    res.status(200).json(qcPoint);
+  } catch (error) {
+    console.error("Failed to update QC Point:", error);
+    res.status(500).json({ message: "Error updating QC point", error: error.message });
   }
 };

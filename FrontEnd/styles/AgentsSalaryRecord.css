@@ -3,7 +3,7 @@
 .salaryRecord-heading {
   font-size: 28px;
   font-weight: 700;
-  color: #003c2f;
+  color: #1e2d7d;
   text-align: center;
   margin-bottom: 30px;
 }
@@ -61,7 +61,7 @@
 }
 
 .ageintsalaryrecordtable .ant-table-thead > tr > th {
-  background-color: #003c2f; /* deep green */
+  background-color: #1e2d7d; /* deep green */
   color: #ffffff; /* white text */
   font-weight: 600;
   font-size: 13px;
@@ -94,7 +94,7 @@
 
 .salary-card-title {
   margin: 0;
-  color: #003c2f;
+  color: #1e2d7d;
   font-weight: 600;
 }
 
@@ -112,7 +112,7 @@
 .top-agents-title {
   font-size: 20px;
   font-weight: 600;
-  color: #003c2f;
+  color: #1e2d7d;
   margin-bottom: 20px;
 }
 
@@ -126,7 +126,7 @@
 
 .top-agent-name {
   font-weight: 600;
-  color: #003c2f;
+  color: #1e2d7d;
   margin-bottom: 4px;
 }
 
@@ -140,7 +140,7 @@
 }
 .salaryRecord-submitButton {
   padding: 8px 16px;
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   color: #fff;
   border: none;
   border-radius: 4px;

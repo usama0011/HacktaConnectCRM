@@ -174,18 +174,18 @@ const Sidebar = ({ visible, onClose }) => {
             >
               <Menu.Item key="/admin/dashboard/ipreportsusers">
                 <Link to="/admin/dashboard/ipreportsusers">
-                  Agents IP Reports
+                  Monthly IP Report
                 </Link>
               </Menu.Item>
               <Menu.Item key="/admin/dashboard/AllQCPoints">
-                <Link to="/admin/dashboard/AllQCPoints">Agent QC Reports</Link>
+                <Link to="/admin/dashboard/AllQCPoints">Monthly QC Report</Link>
               </Menu.Item>
               <Menu.Item key="/admin/dashboard/addqcpointform">
                 <Link to="/admin/dashboard/addqcpointform">Add QC Points</Link>
               </Menu.Item>
               <Menu.Item key="/admin/dashboard/dailyipreport">
                 <Link to="/admin/dashboard/dailyipreport">
-                  Agents Daily IPs
+                  Daily IP Report
                 </Link>
               </Menu.Item>
             </Menu.SubMenu>
@@ -199,13 +199,7 @@ const Sidebar = ({ visible, onClose }) => {
               </Link>
             </Menu.Item>
 
-            <Menu.Item
-              key="/admin/dashboard/settings"
-              icon={<SettingOutlined className="sidebariconspecial" />}
-            >
-              <Link to="/admin/dashboard/settings">Settings</Link>
-            </Menu.Item>
-
+           
             <Menu.Item
               key="/admin/dashboard/termsandpolicies"
               icon={<FileProtectOutlined className="sidebariconspecial" />}

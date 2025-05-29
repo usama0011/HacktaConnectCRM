@@ -8,7 +8,7 @@
 .download-salary-title {
   font-size: 26px;
   font-weight: 700;
-  color: #003c2f;
+  color: #1e2d7d;
   text-align: center;
   margin-bottom: 32px;
 }
@@ -24,7 +24,7 @@
 
 .download-salary-card label {
   font-weight: 600;
-  color: #003c2f;
+  color: #1e2d7d;
   display: block;
   margin-bottom: 6px;
 }
@@ -44,7 +44,7 @@
 
 /* Table Header Styling */
 .download-salary-table .ant-table-thead > tr > th {
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   color: #ffffff;
   font-weight: 600;
   font-size: 14px;
@@ -74,8 +74,8 @@
 
 /* Button */
 .download-button-wrapper .ant-btn {
-  background-color: #003c2f;
-  border-color: #003c2f;
+  background-color: #1e2d7d;
+  border-color: #1e2d7d;
   font-weight: 600;
 }
 
@@ -99,7 +99,7 @@
 
 .custom-month-picker-dropdown .ant-picker-cell-inner {
   font-size: 14px;
-  color: #003c2f;
+  color: #1e2d7d;
   font-weight: 500;
   padding: 8px;
   border-radius: 4px;
@@ -108,11 +108,11 @@
 
 .custom-month-picker-dropdown .ant-picker-cell-inner:hover {
   background-color: #e6f7ff;
-  color: #003c2f;
+  color: #1e2d7d;
 }
 
 .custom-month-picker-dropdown .ant-picker-cell-selected .ant-picker-cell-inner {
-  background-color: #003c2f !important;
+  background-color: #1e2d7d !important;
   color: #ffffff !important;
 }
 

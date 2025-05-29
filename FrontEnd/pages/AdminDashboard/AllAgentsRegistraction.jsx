@@ -568,7 +568,7 @@ const AllAgentsRegistraction = () => {
 
           <Form.Item>
             <Button
-              style={{ backgroundColor: "#003c2f" }}
+              style={{ backgroundColor: "#1e2d7d" }}
               type="primary"
               htmlType="submit"
               block

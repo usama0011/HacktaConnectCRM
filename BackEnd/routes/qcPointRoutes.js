@@ -4,6 +4,7 @@ import {
   getQCPointsByDate,
   getTopAgentsLeaderboard,
   getUserQCByMonth,
+  updateQCPointByUsernameAndId,
   upsertQCPoint,
 } from "../controllers/qcPointController.js";
 import { adminSideAuthMiddleware } from "../middleware/authMiddleware.js";
@@ -15,5 +16,6 @@ router.post("/", upsertQCPoint); // POST /api/qcpoints
 router.get("/monthly-summary", adminSideAuthMiddleware, getMonthlyQCPointsSummary); // ✅ new route
 router.get("/user/:username", getUserQCByMonth);
 router.get("/topagents", adminSideAuthMiddleware, getTopAgentsLeaderboard);
+router.put("/update/:username/:qcId", adminSideAuthMiddleware, updateQCPointByUsernameAndId);
 
 export default router;

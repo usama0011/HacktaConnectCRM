@@ -69,7 +69,7 @@ const MangoProxyB = () => {
     height: window.innerWidth <= 480 ? 240 : 300, // 👈 responsive chart height
     scale: {
       color: {
-        range: ["#003c2f", "#007f5c"], // Branded shades for Used / Available
+        range: ["#1e2d7d", "#10274a"], // Branded shades for Used / Available
       },
     },
     label: {

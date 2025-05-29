@@ -12,7 +12,7 @@
 
 /* Header Styling */
 .user-table-ppwork .ant-table-thead > tr > th {
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   color: white !important;
   font-weight: 600;
   text-align: left; /* Align text left in header */
@@ -39,19 +39,19 @@
 .user-name {
   font-weight: 500;
   font-size: 15px;
-  color: #003c2f;
+  color: #1e2d7d;
 }
 
 /* Button Styling */
 .user-table-ppwork .ant-btn-primary {
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   border: none;
   font-weight: 500;
   border-radius: 6px;
 }
 
 .user-table-ppwork .ant-btn-primary:hover {
-  background-color: #003c2f;
+  background-color: #1e2d7d;
 }
 
 /* Pagination */
@@ -70,7 +70,7 @@
   width: 100%;
 
   border-radius: 6px;
-  color: #003c2f;
+  color: #1e2d7d;
   font-size: 15px;
 }
 
@@ -80,7 +80,7 @@
 .section-heading {
   font-weight: 600;
   margin-bottom: 16px;
-  color: #003c2f;
+  color: #1e2d7d;
 }
 
 .top-performers-list {
@@ -122,7 +122,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   color: white;
   font-weight: bold;
   font-size: 14px;
@@ -156,7 +156,7 @@
 .performer-wave-footer {
   height: 32px;
   width: 100%;
-  background: linear-gradient(135deg, #003c2f, #02543d);
+  background: linear-gradient(135deg, #1e2d7d, #1b2f61);
   clip-path: polygon(0 40%, 100% 100%, 0% 100%);
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;

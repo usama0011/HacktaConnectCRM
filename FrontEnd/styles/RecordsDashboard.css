@@ -5,7 +5,7 @@
 
 .records-dashboard-heading {
   text-align: center;
-  color: #003c2f;
+  color: #1e2d7d;
   margin-top: 20px;
   font-size: 28px;
   margin-bottom: 40px;
@@ -36,7 +36,7 @@
 .record-card-title {
   font-size: 22px;
   font-weight: 700;
-  color: #003c2f;
+  color: #1e2d7d;
 
   margin-bottom: 16px;
 }
@@ -48,7 +48,7 @@
 }
 
 .record-card-btn {
-  background: #003c2f;
+  background: #1e2d7d;
   border: none;
   height: 45px;
   width: 100%;
@@ -57,7 +57,7 @@
 }
 
 .record-card-btn:hover {
-  background: #02543d;
+  background: #1b2f61;
 }
 
 /* Responsive Tweaks */

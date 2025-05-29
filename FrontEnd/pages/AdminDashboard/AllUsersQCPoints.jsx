@@ -120,7 +120,7 @@ const AllUsersQCPoints = () => {
         return (
           <Button
             type="primary"
-            style={{ color: "white", backgroundColor: "#003c2f" }}
+            style={{ color: "white", backgroundColor: "#1e2d7d" }}
             onClick={() =>
               navigate(
                 `/admin/dashboard/qcpoints/user/${

@@ -126,7 +126,7 @@ const AdminRegisterProxyStats = () => {
     // ✅ Custom color scale
     scale: {
       color: {
-        range: ["#003c2f", "#005745", "#007f5c", "#009973"], // your desired shades
+        range: ["#1e2d7d", "#274e7b", "#1e2d4d", "#3b9f7e"],
       },
     },
     label: {

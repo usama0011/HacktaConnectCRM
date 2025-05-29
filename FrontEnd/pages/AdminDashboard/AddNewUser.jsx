@@ -12,6 +12,7 @@ import {
   DatePicker,
   Upload,
   Checkbox,
+  
 } from "antd";
 import {
   UserOutlined,
@@ -392,7 +393,7 @@ const AddNewUser = () => {
               style={{
                 width: "100%",
                 height: "50px",
-                backgroundColor: "#003c2f",
+                backgroundColor: "#1e2d7d",
               }}
               type="primary"
               htmlType="submit"

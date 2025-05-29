@@ -4,7 +4,7 @@
   font-size: 30px;
   font-weight: 700;
   text-align: center;
-  color: #003c2f;
+  color: #1e2d7d;
   margin-bottom: 30px;
 }
 
@@ -19,7 +19,7 @@
 .wfhFormula-sectionTitle {
   font-size: 16px;
   font-weight: 600;
-  color: #003c2f;
+  color: #1e2d7d;
   margin: 10px 0 20px;
 }
 
@@ -28,8 +28,8 @@
 }
 
 .wfhFormula-submitBtn {
-  background-color: #003c2f;
-  border-color: #003c2f;
+  background-color: #1e2d7d;
+  border-color: #1e2d7d;
   width: 160px;
   height: 40px;
   font-weight: 600;
@@ -43,7 +43,7 @@
 .wfhFormula-summaryTitle {
   font-size: 24px;
   font-weight: 600;
-  color: #003c2f;
+  color: #1e2d7d;
   text-align: center;
   margin-bottom: 30px;
 }
@@ -63,7 +63,7 @@
 
 .wfhFormula-summaryLabel {
   font-size: 14px;
-  color: #003c2f;
+  color: #1e2d7d;
   font-weight: 600;
 }
 

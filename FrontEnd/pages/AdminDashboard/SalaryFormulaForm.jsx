@@ -4,24 +4,26 @@ import { Link } from "react-router-dom";
 import "../../styles/SalaryFormulaForm.css";
 import ComputerIcon from "../../src/assets/computer.png";
 import HomeIcon from "../../src/assets/home.png";
+import Calculator from "../../src/assets/calculator.png";
 const salaryFormulas = [
   {
-    title: "Office Agents Salary Formula",
-    description: "Manage salary structure for in-office agents.",
+    title: "Office Agents Salary Pattern",
+    description: "Setup Pattern for Office  agents.",
     link: "/admin/dashboard/officeagentsalaryformula",
     icon: <img src={ComputerIcon} alt="icon" className="formula-icon" />,
   },
   {
-    title: "WFH Agents Salary Formula",
-    description: "Setup formula for remote/work-from-home agents.",
+    title: "WFH Agents Salary Pattern",
+    description: "Setup Pattern for remote/work-from-home agents.",
     link: "/admin/dashboard/wfhsalaryformula",
     icon: <img src={HomeIcon} alt="icon" className="formula-icon" />,
   },
   {
     title: "Salary Calculator",
-    description: "Setup formula for remote/work-from-home agents.",
+    description:
+      "View estimated salary projection based on current performance.",
     link: "/admin/dashboard/generalsalarycalculator",
-    icon: <img src={HomeIcon} alt="icon" className="formula-icon" />,
+    icon: <img src={Calculator} alt="icon" className="formula-icon" />,
   },
 ];
 
@@ -36,11 +38,17 @@ const SalaryFormulaForm = () => {
               <div className="formula-icon-wrapper">{item.icon}</div>
               <h3 className="formula-card-title">{item.title}</h3>
               <p className="formula-card-description">{item.description}</p>
-              <Link to={item.link}>
-                <Button className="agentslaafurbuttons" type="primary">
-                  Open Formula
-                </Button>
-              </Link>
+
+              <Button className="agentslaafurbuttons" type="primary">
+                <Link
+                  to={item.link}
+                  style={{ width: "100%" }}
+                >
+                  {item.title === "Salary Calculator"
+                    ? "Open Calculator"
+                    : " Open Pattern"}
+                </Link>
+              </Button>
             </Card>
           </Col>
         ))}

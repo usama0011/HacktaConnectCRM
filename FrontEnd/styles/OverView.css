@@ -40,7 +40,7 @@
 .dash-list-btn,
 .dash-link-btn,
 .dash-add-btn {
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   color: white;
   border-radius: 8px;
   border: none;
@@ -105,7 +105,7 @@
 }
 
 .dash-add-btn {
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   margin-top: 12px;
   width: 100%;
   padding: 8px;

@@ -50,7 +50,7 @@ const UserDashboard = () => {
     yField: "totalIPs",
     columnWidthRatio: 0.5,
     style: {
-      fill: () => "#003c2f",
+      fill: () => "#1e2d7d",
     },
     label: {
       position: "middle",

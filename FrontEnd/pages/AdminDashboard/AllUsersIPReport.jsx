@@ -223,6 +223,7 @@ const AllUsersIPReport = () => {
       </div>
 
       <br />
+      <br />
       <Title
         style={{ textAlign: "center" }}
         level={4}
@@ -230,6 +231,7 @@ const AllUsersIPReport = () => {
       >
         🏆 Top 3 Performing Agents
       </Title>
+      <br />
       <Row gutter={[24, 24]} className="top-performers-row" justify="center">
         <br />
         <br />

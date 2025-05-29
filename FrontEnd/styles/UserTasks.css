@@ -5,7 +5,7 @@
 }
 
 .user-tasks-title {
-  color: #003c2f;
+  color: #1e2d7d;
   font-weight: 700;
   text-align: center;
   margin-bottom: 8px;
@@ -34,7 +34,7 @@
 }
 
 .user-tasks-table .ant-table-thead > tr > th {
-  background-color: #003c2f !important;
+  background-color: #1e2d7d !important;
   color: #ffffff !important;
   font-weight: 600;
   font-size: 14px;
@@ -58,7 +58,7 @@
 
 .task-link-btn {
   font-weight: 600;
-  color: #003c2f !important;
+  color: #1e2d7d !important;
   padding: 0;
 }
 

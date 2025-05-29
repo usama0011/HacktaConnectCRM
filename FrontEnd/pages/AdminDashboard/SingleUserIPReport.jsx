@@ -154,7 +154,7 @@ const SingleUserIPReport = () => {
 
     /** Bar color */
     style: {
-      fill: "#003c2f",
+      fill: "#1e2d7d",
     },
 
     /** Bar labels */
@@ -169,11 +169,11 @@ const SingleUserIPReport = () => {
 
     axis: {
       x: {
-        labelFill: "#003c2f",
+        labelFill: "#1e2d7d",
         fontWeight: "bold",
       },
       y: {
-        labelFill: "#003c2f",
+        labelFill: "#1e2d7d",
         fontWeight: "bold",
       },
     },

@@ -70,7 +70,7 @@ const MangoProxy = () => {
 
     scale: {
       color: {
-        range: ["#003c2f", "#007f5c"], // Branded shades for Used / Available
+        range: ["#1e2d7d", "#007f5c"], // Branded shades for Used / Available
       },
     },
     label: {

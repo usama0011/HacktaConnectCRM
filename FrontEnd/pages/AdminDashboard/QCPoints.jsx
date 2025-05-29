@@ -289,7 +289,7 @@ const QCPoints = () => {
           <Button
             style={{
               fontWeight: "normal",
-              color: "#003c2f",
+              color: "#1e2d7d",
               textDecoration: "underline",
             }}
             type="link"
@@ -309,7 +309,7 @@ const QCPoints = () => {
       render: (_, record) => (
         <Button
           className="button-68"
-          style={{ backgroundColor: "#003c2f" }}
+          style={{ backgroundColor: "#1e2d7d" }}
           type="primary"
           icon={<EditOutlined />}
           onClick={() => openEditModal(record)}
@@ -473,7 +473,7 @@ const QCPoints = () => {
                     style={{
                       backgroundColor:
                         fieldValues[item.key] === "1"
-                          ? "#003c2f"
+                          ? "#1e2d7d"
                           : "transparent",
                       color: fieldValues[item.key] === "1" ? "#fff" : "#000",
                       border: "1px solid #ccc",

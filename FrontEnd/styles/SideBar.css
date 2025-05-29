@@ -69,7 +69,7 @@
 /* Active/Selected Menu Item */
 .bitrix-menu .ant-menu-item-selected {
   color: white !important;
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   font-weight: 600;
 }
 .bitrix-menu .ant-menu-item-selected .sidebariconspecial {
@@ -84,7 +84,7 @@
   top: 0px;
   bottom: 10px;
   width: 5px;
-  background-color: #003c2f; /* Blue border color */
+  background-color: #1e2d7d; /* Blue border color */
   height: 100%;
 }
 /* Hovered Menu Item */
@@ -155,7 +155,7 @@
 /* Logout button */
 .admin-logout-btn {
   width: 100%;
-  background-color: #003c2f;
+  background-color: #1e2d7d;
   color: white;
   font-weight: 500;
   border: none;
@@ -167,7 +167,7 @@
   transition: all 0.3s ease;
 }
 .admin-logout-btn:hover {
-  background-color: #02543d;
+  background-color: #1b2f61;
 }
 .sidebar-scrollable {
   flex: 1;
@@ -179,7 +179,7 @@
 }
 
 .bitrix-menu .ant-menu-submenu-selected > .ant-menu-submenu-title {
-  background-color: #003c2f !important;
+  background-color: #1e2d7d !important;
   color: white !important;
   font-weight: 600;
 }

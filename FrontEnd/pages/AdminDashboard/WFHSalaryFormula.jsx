@@ -61,7 +61,7 @@ const WFHSalaryFormula = () => {
   return (
     <div className="wfhFormula-container">
       <h1 className="wfhFormula-heading">
-        Hackta Connect - WFH Agent Salary Setup
+        WFH Agent Salary Pattern
       </h1>
 
       <Card className="wfhFormula-formCard">
@@ -169,13 +169,13 @@ const WFHSalaryFormula = () => {
               htmlType="submit"
               className="wfhFormula-submitBtn"
             >
-              {isUpdate ? "Update Formula" : "Save Formula"}
+              {isUpdate ? "Update Pattern" : "Save Pattern"}
             </Button>
           </Form.Item>
         </Form>
       </Card>
 
-      {formulaDetails && (
+      {/* {formulaDetails && (
         <div className="wfhFormula-summary">
           <h2 className="wfhFormula-summaryTitle">
             🖥️ WFH Salary Formula Summary
@@ -198,7 +198,7 @@ const WFHSalaryFormula = () => {
               ))}
           </Row>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

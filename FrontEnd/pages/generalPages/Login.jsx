@@ -3,8 +3,7 @@ import { Card, Form, Input, Button, Typography, Checkbox, message } from "antd";
 import { LockOutlined, UserOutlined, GoogleOutlined } from "@ant-design/icons";
 import "../../styles/Login.css";
 import MainWebSiteLogoo from "../../src/assets/mainlogo.jpeg";
-import MainWebSiteLogooo from "../../src/assets/mainlogo.png";
-import LoginBanner from "../../src/assets/10315339.jpg";
+import LoginBanner from "../../src/assets/officespace.png";
 import LoginBannerrrrr from "../../src/assets/thistime.png";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/UserContext";
@@ -148,11 +147,7 @@ const Login = () => {
       <div className="login-illustration">
         <div className="svg-container">
           <div>
-            <img
-              src={MainWebSiteLogoo}
-              alt="Brand Logo"
-              className="login-logo"
-            />
+            
 
             <h1 className="hacktaconnectdiigtalogo">
               <span
@@ -171,7 +166,7 @@ const Login = () => {
                 style={{
                   textTransform: "capitalize",
                   color: "white",
-                  fontSize: "20px",
+                  fontSize: "18px",
                 }}
               >
                 Digital World of tech
@@ -183,7 +178,7 @@ const Login = () => {
               className="zindtope"
               style={{
                 width: "100%",
-                height: "350px",
+                height: "420px",
                 borderRadius: "10px",
                 zIndex: 999,
               }}

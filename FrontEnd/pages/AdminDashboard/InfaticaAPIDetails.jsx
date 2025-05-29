@@ -100,7 +100,7 @@ const InfaticaAPIDetails = () => {
     height: window.innerWidth <= 480 ? 240 : 300,
     scale: {
       color: {
-        range: ["#003c2f", "#00c18c", "#a0d911"], // Usage, Available, Total
+        range: ["#1e2d7d", "#00c18c", "#a0d911"], // Usage, Available, Total
       },
     },
     label: {

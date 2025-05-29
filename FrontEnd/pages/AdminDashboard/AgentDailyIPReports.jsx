@@ -160,7 +160,7 @@ const AgentDailyIPReports = () => {
           icon={<EditOutlined />}
           type="primary"
           onClick={() => handleEdit(record)}
-          style={{ marginRight: 8, backgroundColor: "#003c2f" }}
+          style={{ marginRight: 8, backgroundColor: "#1e2d7d" }}
         >
           Edit & History
         </Button>
