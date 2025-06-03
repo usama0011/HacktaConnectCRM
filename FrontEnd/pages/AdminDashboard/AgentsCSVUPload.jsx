@@ -65,6 +65,8 @@ const UploadCard = ({ title, file, setFile, uploading, handleUpload }) => {
 };
 
 const AgentsCSVUpload = () => {
+  const defaultImageURL = "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg";
+
   const { user } = useUserContext();
 
   // With bank states
@@ -215,7 +217,7 @@ const AgentsCSVUpload = () => {
                 <strong>bankName</strong>: Name of the bank (e.g., HBL)
               </li>
               <li>
-                <strong>bankNumber</strong>: Valid account number
+                <strong>Account No</strong>: Valid account number
               </li>
             </ul>
           </Card>

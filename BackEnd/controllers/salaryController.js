@@ -142,7 +142,6 @@ if (branch) userQuery.branch = branch; // ✅ Add branch filter
 export const getMonthlyBranchSalarySummary = async (req, res) => {
   try {
     const { month, year } = req.query;
-
     const start = moment(`${year}-${month}-01`).startOf("month").toDate();
     const end = moment(`${year}-${month}-01`).endOf("month").toDate();
 

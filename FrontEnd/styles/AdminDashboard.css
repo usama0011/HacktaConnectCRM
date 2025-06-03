@@ -125,7 +125,7 @@
 }
 
 .aboutus-btn:hover {
-  background-color: #002a22; /* darker shade for hover effect if needed */
+  background-color: #1e2d7d; /* darker shade for hover effect if needed */
   color: #ffffff !important; /* ensure white text on hover */
 }
 .quick-access-modal .ant-modal-content {

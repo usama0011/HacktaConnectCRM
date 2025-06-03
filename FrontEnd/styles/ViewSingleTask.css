@@ -42,12 +42,12 @@
 }
 
 .finish-task-btn {
-  background: #032212;
+  background: #1e2d7d;
   color: white;
 }
 
 .finish-task-btn:hover {
-  background: #032212;
+  background: #1e2d7d;
 }
 
 .comments-card {
@@ -104,7 +104,7 @@
 }
 
 .add-comment-btn {
-  background: #032212;
+  background: #1e2d7d;
   color: white;
 }
 
@@ -148,12 +148,12 @@
 }
 
 .add-reply-btn {
-  background: #032212;
+  background: #1e2d7d;
   color: white;
 }
 
 .add-reply-btn:hover {
-  background: #032212;
+  background: #1e2d7d;
 }
 
 /* Nested Comment Styling */

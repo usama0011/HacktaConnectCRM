@@ -40,8 +40,9 @@
 }
 
 .calculatorPage-calcBtn:hover {
-  background: #005c46;
+  background: #1e2d7d;
 }
+  
 
 /* Right Result Card */
 .calculatorPage-resultCard {

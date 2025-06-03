@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 const salarySchema = new mongoose.Schema(
   {
 
+    // ✅ New Fieds Based on Your List
     accountTitle: { type: String, required: true }, // Name of salary receiver
     bank: { type: String, required: true },         // Bank name (e.g., HBL)
     accountNumber: { type: String, required: true },// Valid account number

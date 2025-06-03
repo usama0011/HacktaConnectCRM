@@ -64,7 +64,7 @@
 }
 
 .forgot-password:hover {
-  color: #054d34;
+  color: #1e2d7d;
 }
 
 /* Login Button */
@@ -78,7 +78,7 @@
 }
 
 .login-button:hover {
-  background: #054d34;
+  background: #1e2d7d;
 }
 
 /* Google Login */

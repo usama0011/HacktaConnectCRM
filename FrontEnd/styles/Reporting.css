@@ -9,7 +9,7 @@
 .reporting-title {
   font-size: 24px;
   font-weight: bold;
-  color: #032212;
+  color: #1e2d7d;
   margin-bottom: 20px;
 }
 
@@ -26,14 +26,14 @@
 }
 
 .reporting-generate-button {
-  background: #032212;
+  background: #1e2d7d;
   color: white;
   border-radius: 6px;
   border: none;
 }
 
 .reporting-generate-button:hover {
-  background: #054d34;
+  background: #1e2d7d;
 }
 
 /* Card Styling */
@@ -46,7 +46,7 @@
 
 /* Table Styling */
 .reporting-card .ant-table-thead > tr > th {
-  background: #032212 !important;
+  background: #1e2d7d !important;
   color: white !important;
 }
 
@@ -56,5 +56,5 @@
   align-items: center;
   gap: 8px;
   font-size: 18px;
-  color: #032212;
+  color: #1e2d7d;
 }
