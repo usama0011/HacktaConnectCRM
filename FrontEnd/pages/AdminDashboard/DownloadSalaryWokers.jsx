@@ -10,19 +10,24 @@ import {
   DatePicker,
   message,
   Divider,
+  Popover,
+  Space,
 } from "antd";
 import moment from "moment";
+
 import {
   BankOutlined,
   CalendarOutlined,
   DownloadOutlined,
   FireOutlined,
   SearchOutlined,
+  FilePdfOutlined,
+  FileExcelOutlined,
 } from "@ant-design/icons";
 import API from "../../utils/BaseURL";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { EnvironmentOutlined } from "@ant-design/icons";
+
 import MainLogo from "../../src/assets/mainlogo.png";
 import HeaderImage from "../../src/assets/headerImage.png";
 import FooterImage from "../../src/assets/footerImage.png";
@@ -305,6 +310,64 @@ const DownloadSalaryWokers = () => {
       : "SalarySheet.pdf";
     doc.save(fileName);
   };
+  const handleCSVDownload = () => {
+    if (filteredData.length === 0) {
+      message.warning("No data to export.");
+      return;
+    }
+
+    const csvRows = [];
+    const headers = [
+      "Sr No",
+      "Bank",
+      "Account Title",
+      "Account Number",
+      "Salary",
+    ];
+    csvRows.push(headers.join(","));
+
+    filteredData.forEach((item, index) => {
+      const row = [
+        index + 1,
+        item.bank,
+        item.accountTitle,
+        item.accountNumber,
+        item.salary,
+      ];
+      csvRows.push(row.join(","));
+    });
+
+    const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = formValues.sheetName
+      ? `${formValues.sheetName}.csv`
+      : "SalarySheet.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  const downloadPopoverContent = (
+    <Space direction="vertical">
+      <Button
+        icon={<FilePdfOutlined />}
+        type="default"
+        onClick={handleDownload}
+        block
+      >
+        Download as PDF
+      </Button>
+      <Button
+        icon={<FileExcelOutlined />}
+        type="default"
+        onClick={handleCSVDownload}
+        block
+      >
+        Download as CSV
+      </Button>
+    </Space>
+  );
 
   return (
     <div className="download-salary-container">
@@ -473,16 +536,21 @@ const DownloadSalaryWokers = () => {
           >
             Submit
           </Button>
-          <Button
-            type="primary"
-            shape="round"
-            style={{ color: "white" }}
-            icon={<DownloadOutlined />}
-            onClick={handleDownload}
-            disabled={filteredData.length === 0}
+          <Popover
+            content={downloadPopoverContent}
+            title="Choose Download Format"
+            trigger="click"
+            placement="top"
           >
-            Download Report
-          </Button>
+            <Button style={{color:'white'}}
+              type="primary"
+              shape="round"
+              icon={<DownloadOutlined />}
+              disabled={filteredData.length === 0}
+            >
+              Download Report
+            </Button>
+          </Popover>
         </div>
       </Card>
       <Card className="download-salary-table">

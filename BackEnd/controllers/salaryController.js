@@ -138,3 +138,88 @@ if (branch) userQuery.branch = branch; // ✅ Add branch filter
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+export const getMonthlyBranchSalarySummary = async (req, res) => {
+  try {
+    const { month, year } = req.query;
+
+    const start = moment(`${year}-${month}-01`).startOf("month").toDate();
+    const end = moment(`${year}-${month}-01`).endOf("month").toDate();
+
+    const shifts = ["morning", "evening", "night"];
+    const branches = ["Branch A", "Branch B", "Main Branch"];
+    const agentTypes = ["Office Agent", "WFH Agent"];
+
+    // Fetch latest formulas
+    const officeFormula = await SalaryFormulaOfficeAgents.findOne().sort({ createdAt: -1 });
+    const wfhFormula = await WFHSalaryFormula.findOne().sort({ createdAt: -1 });
+
+    const summary = [];
+
+    for (const branch of branches) {
+      for (const agentType of agentTypes) {
+        for (const shift of shifts) {
+          const users = await User.find({
+            branch,
+            agentType,
+            shift: new RegExp(`^${shift}$`, "i"), // case-insensitive shift match
+            role: "agent",
+          });
+
+          let totalSessions = 0;
+          let totalClicks = 0;
+
+          for (const user of users) {
+            const ipData = await IP.aggregate([
+              {
+                $match: {
+                  userId: user._id,
+                  date: { $gte: start, $lte: end },
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  totalClicks: { $sum: "$clicks" },
+                  totalSessions: { $sum: "$sessions" },
+                },
+              },
+            ]);
+
+       
+            totalSessions += ipData[0]?.totalSessions || 0;
+            totalClicks += ipData[0]?.totalClicks || 0;
+          }
+
+          let sessionCost = 0;
+          let clickCost = 0;
+
+          if (agentType === "Office Agent" && officeFormula) {
+            sessionCost = officeFormula.sessionCost || 0;
+            clickCost = officeFormula.clickCost || 0;
+          } else if (agentType === "WFH Agent" && wfhFormula) {
+            sessionCost = wfhFormula.sessionCost || 0;
+            clickCost = wfhFormula.clickCost || 0;
+          }
+
+          const cost = (totalSessions * sessionCost + totalClicks * clickCost).toFixed(2);
+
+          summary.push({
+            branch,
+            agentType,
+            shift: shift.charAt(0).toUpperCase() + shift.slice(1), // Capitalized for UI
+            totalSessions,
+            totalClicks,
+            totalIPs: totalSessions + totalClicks,
+            cost,
+          });
+        }
+      }
+    }
+
+    res.status(200).json({ month, year, report: summary });
+  } catch (error) {
+    console.error("❌ Error generating salary summary report:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

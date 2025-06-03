@@ -4,6 +4,7 @@ import {
   DollarCircleOutlined,
   SettingOutlined,
   CalculatorOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import "../../styles/SalaryManagement.css";
@@ -12,7 +13,7 @@ const salaryCards = [
   {
     title: "Salary Sheet",
     subtitle: "Track and manage all salary reports",
-    icon: "", // add custom icon URL if needed
+    icon: "",
     iconComponent: <DollarCircleOutlined />,
     image:
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8cmVwb3J0fGVufDB8fDB8fHww",
@@ -22,7 +23,7 @@ const salaryCards = [
   {
     title: "View Agents Salary Record",
     subtitle: "Manage salary structures and payment plans",
-    icon: "", // optional image icon URL
+    icon: "",
     iconComponent: <SettingOutlined />,
     image:
       "https://images.unsplash.com/photo-1575016244395-9270b671d66c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nzh8fHNhbGFyeSUyMHJlY29yZHxlbnwwfHwwfHx8MA%3D%3D",
@@ -38,6 +39,16 @@ const salaryCards = [
       "https://img.freepik.com/free-photo/cropped-view-professional-serious-finance-manager-holding-calculator-hands-checking-company-month-s-profits_176420-7931.jpg?ga=GA1.1.1696791716.1743911361&semt=ais_country_boost&w=740",
     link: "/admin/dashboard/salaryformula",
     buttonText: "Manage Calculator",
+  },
+  {
+    title: "Upload Salary Record",
+    subtitle: "Add or upload new salary data",
+    icon: "",
+    iconComponent: <UploadOutlined />,
+    image:
+      "https://images.pexels.com/photos/8353796/pexels-photo-8353796.jpeg?auto=compress&cs=tinysrgb&w=600",
+    link: "/admin/dashboard/uploadSalaryRecord",
+    buttonText: "Upload",
   },
 ];
 

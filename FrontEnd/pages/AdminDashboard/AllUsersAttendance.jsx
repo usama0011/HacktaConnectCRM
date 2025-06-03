@@ -33,8 +33,14 @@ import API from "../../utils/BaseURL"; // Make sure this is correctly set
 
 const { Title, Text } = Typography;
 import { Select } from "antd";
+import { useUserContext } from "../../context/UserContext";
 
 const AllUsersAttendance = () => {
+  const { user } = useUserContext(); // ✅ Get current user
+  const isRestrictedRole = ["Team Lead", "Team Lead WFH", "QC"].includes(
+    user?.role
+  );
+
   const [selectedMonth, setSelectedMonth] = useState(moment());
   const [selectedDate, setSelectedDate] = useState(
     dayjs().format("YYYY-MM-DD")
@@ -71,7 +77,7 @@ const AllUsersAttendance = () => {
         },
       });
       setAttendanceData(res.data.attendanceData);
-setTopPerformers(res.data.topPerformers);
+      setTopPerformers(res.data.topPerformers);
     } catch (error) {
       console.error("Failed to fetch attendance data:", error);
       message.error("Failed to fetch attendance data. Please try again.");
@@ -161,24 +167,41 @@ setTopPerformers(res.data.topPerformers);
         </div>
       </div>
 
-      {/* 🔍 Filters */}
       <div
         style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
       >
-        <Select
-          placeholder="Please select Shift"
-          value={filters.shift || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("shift", value)}
-          allowClear
-        >
-          <Option disabled value="">
-            Please select Shift
-          </Option>
-          <Option value="morning">Morning</Option>
-          <Option value="evening">Evening</Option>
-          <Option value="night">Night</Option>
-        </Select>
+        {!isRestrictedRole && (
+          <>
+            <Select
+              placeholder="Please select Shift"
+              value={filters.shift || undefined}
+              style={{ width: 180 }}
+              onChange={(value) => handleFilterChange("shift", value)}
+              allowClear
+            >
+              <Option disabled value="">
+                Please select Shift
+              </Option>
+              <Option value="morning">Morning</Option>
+              <Option value="evening">Evening</Option>
+              <Option value="night">Night</Option>
+            </Select>
+
+            <Select
+              placeholder="Please select Branch"
+              value={filters.branch || undefined}
+              style={{ width: 180 }}
+              onChange={(value) => handleFilterChange("branch", value)}
+              allowClear
+            >
+              <Option disabled value="">
+                Please select Branch
+              </Option>
+              <Option value="Branch A">Branch A</Option>
+              <Option value="Branch B">Branch B</Option>
+            </Select>
+          </>
+        )}
 
         <Select
           placeholder="Please select Agent Type"
@@ -194,19 +217,6 @@ setTopPerformers(res.data.topPerformers);
           <Option value="WFH Agent">WFH Agent</Option>
         </Select>
 
-        <Select
-          placeholder="Please select Branch"
-          value={filters.branch || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("branch", value)}
-          allowClear
-        >
-          <Option disabled value="">
-            Please select Branch
-          </Option>
-          <Option value="Branch A">Branch A</Option>
-          <Option value="Branch B">Branch B</Option>
-        </Select>
         <Input
           placeholder="Search by Username"
           value={filters.username}

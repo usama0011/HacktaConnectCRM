@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/",adminSideAuthMiddleware, getQCPointsByDate); // GET /api/qcpoints?date=2025-04-07
 router.post("/", upsertQCPoint); // POST /api/qcpoints
 router.get("/monthly-summary", adminSideAuthMiddleware, getMonthlyQCPointsSummary); // ✅ new route
-router.get("/user/:username", getUserQCByMonth);
+router.get("/user/:username", adminSideAuthMiddleware, getUserQCByMonth);
 router.get("/topagents", adminSideAuthMiddleware, getTopAgentsLeaderboard);
 router.put("/update/:username/:qcId", adminSideAuthMiddleware, updateQCPointByUsernameAndId);
 

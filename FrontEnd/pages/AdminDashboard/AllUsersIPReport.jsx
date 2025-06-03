@@ -25,12 +25,14 @@ import API from "../../utils/BaseURL";
 import "../../styles/IPSubmission.css";
 import TrophyIcon from "../../src/assets/tt.png";
 import { Calendar } from "primereact/calendar";
+import { useUserContext } from "../../context/UserContext";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const AllUsersIPReport = () => {
   const navigate = useNavigate();
+  const { user } = useUserContext(); // ⬅️ Get logged-in user
   const [selectedMonth, setSelectedMonth] = useState(moment());
   const [users, setUsers] = useState([]);
   const [topUsers, setTopUsers] = useState([]);
@@ -164,25 +166,48 @@ const AllUsersIPReport = () => {
         </div>
       </div>
 
-      {/* 🔍 Filters */}
       <div
         style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
       >
-        <Select
-          placeholder="Please select Shift"
-          value={filters.shift || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("shift", value)}
-          allowClear
-        >
-          <Option disabled value="">
-            Please select Shift
-          </Option>
-          <Option value="morning">Morning</Option>
-          <Option value="evening">Evening</Option>
-          <Option value="night">Night</Option>
-        </Select>
+        {/* Conditionally render Shift & Branch filters */}
+        {!(
+          user?.role === "Team Lead" ||
+          user?.role === "Team Lead WFH" ||
+          user?.role === "QC"
+        ) && (
+          <>
+            <Select
+              placeholder="Please select Shift"
+              value={filters.shift || undefined}
+              style={{ width: 180 }}
+              onChange={(value) => handleFilterChange("shift", value)}
+              allowClear
+            >
+              <Option disabled value="">
+                Please select Shift
+              </Option>
+              <Option value="morning">Morning</Option>
+              <Option value="evening">Evening</Option>
+              <Option value="night">Night</Option>
+            </Select>
 
+            <Select
+              placeholder="Please select Branch"
+              value={filters.branch || undefined}
+              style={{ width: 180 }}
+              onChange={(value) => handleFilterChange("branch", value)}
+              allowClear
+            >
+              <Option disabled value="">
+                Please select Branch
+              </Option>
+              <Option value="Branch A">Branch A</Option>
+              <Option value="Branch B">Branch B</Option>
+            </Select>
+          </>
+        )}
+
+        {/* Agent Type filter is shown for all */}
         <Select
           placeholder="Please select Agent Type"
           value={filters.agentType || undefined}
@@ -197,19 +222,6 @@ const AllUsersIPReport = () => {
           <Option value="WFH Agent">WFH Agent</Option>
         </Select>
 
-        <Select
-          placeholder="Please select Branch"
-          value={filters.branch || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("branch", value)}
-          allowClear
-        >
-          <Option disabled value="">
-            Please select Branch
-          </Option>
-          <Option value="Branch A">Branch A</Option>
-          <Option value="Branch B">Branch B</Option>
-        </Select>
         <Input
           placeholder="Search by Username"
           value={filters.username}

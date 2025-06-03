@@ -5,6 +5,7 @@ import IP from "../models/ipmodel.js"; // ✅ Import IP model
 
 export const getQCPointsByDate = async (req, res) => {
   try {
+    console.log(req.user)
     const { date, shift, agentType, branch,username } = req.query;
     console.log(date,shift,agentType,branch)
     if (!date) {
@@ -25,13 +26,20 @@ if (username) {
   agentQuery.username = { $regex: req.query.username, $options: "i" };
 }
 
-    // Restrict Team Lead to view only their shift and agent type agents
-    if (req.user.role === "Team Lead") {
-      agentQuery.shift = req.user.shift;
-      if (req.user.agentType) {
-        agentQuery.agentType = req.user.agentType;
-      }
-    }
+if (
+  req.user.role === "Team Lead" ||
+  req.user.role === "Team Lead WFH" ||
+  req.user.role === "QC"
+) {
+  agentQuery.shift = req.user.shift;
+  agentQuery.branch = req.user.branch;
+
+  // ❌ Don't include agentType if null or undefined
+  if (req.user.agentType) {
+    agentQuery.agentType = req.user.agentType;
+  }
+}
+
 
     const agents = await User.find(agentQuery, "username userImage role shift agentType branch");
     if (!agents.length) {
@@ -275,7 +283,7 @@ export const getUserQCByMonth = async (req, res) => {
   try {
     const { username } = req.params;
     const { year, month } = req.query;
-
+    console.log(req.user)
     const start = moment(`${year}-${month}-01`).startOf("month").toDate();
     const end = moment(`${year}-${month}-01`).endOf("month").toDate();
 

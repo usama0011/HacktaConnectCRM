@@ -22,7 +22,7 @@ import {
   OpenAIFilled,
   LineChartOutlined,
   SettingOutlined,
-   FileTextOutlined,
+  FileTextOutlined,
   ClockCircleOutlined,
   DotChartOutlined,
 } from "@ant-design/icons";
@@ -185,64 +185,95 @@ const AgentDailyIPReports = () => {
         </div>
       </div>
 
-      <div
-        style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
-      >
-        <Select
-          placeholder="Please select Shift"
-          value={filters.shift || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("shift", value)}
-          allowClear
+      {user?.role === "Team Lead" || "Team Lead WFH" || "QC" ? (
+        <div
+          style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
         >
-          <Option disabled value="">
-            Please select Shift
-          </Option>
-          <Option value="morning">Morning</Option>
-          <Option value="evening">Evening</Option>
-          <Option value="night">Night</Option>
-        </Select>
+          <Select
+            placeholder="Please select Agent Type"
+            value={filters.agentType || undefined}
+            style={{ width: 180 }}
+            onChange={(value) => handleFilterChange("agentType", value)}
+            allowClear
+          >
+            <Option disabled value="">
+              Please select Agent Type
+            </Option>
+            <Option value="Office Agent">Office Agent</Option>
+            <Option value="WFH Agent">WFH Agent</Option>
+          </Select>
 
-        <Select
-          placeholder="Please select Agent Type"
-          value={filters.agentType || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("agentType", value)}
-          allowClear
+          <Input
+            placeholder="Search by Username"
+            value={filters.username}
+            onChange={(e) => handleFilterChange("username", e.target.value)}
+            style={{ width: 200 }}
+            allowClear
+          />
+
+          <Button type="primary" onClick={fetchData}>
+            Apply Filters
+          </Button>
+        </div>
+      ) : (
+        <div
+          style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
         >
-          <Option disabled value="">
-            Please select Agent Type
-          </Option>
-          <Option value="Office Agent">Office Agent</Option>
-          <Option value="WFH Agent">WFH Agent</Option>
-        </Select>
+          <Select
+            placeholder="Please select Shift"
+            value={filters.shift || undefined}
+            style={{ width: 180 }}
+            onChange={(value) => handleFilterChange("shift", value)}
+            allowClear
+          >
+            <Option disabled value="">
+              Please select Shift
+            </Option>
+            <Option value="morning">Morning</Option>
+            <Option value="evening">Evening</Option>
+            <Option value="night">Night</Option>
+          </Select>
 
-        <Select
-          placeholder="Please select Branch"
-          value={filters.branch || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("branch", value)}
-          allowClear
-        >
-          <Option disabled value="">
-            Please select Branch
-          </Option>
-          <Option value="Branch A">Branch A</Option>
-          <Option value="Branch B">Branch B</Option>
-        </Select>
-        <Input
-          placeholder="Search by Username"
-          value={filters.username}
-          onChange={(e) => handleFilterChange("username", e.target.value)}
-          style={{ width: 200 }}
-          allowClear
-        />
+          <Select
+            placeholder="Please select Agent Type"
+            value={filters.agentType || undefined}
+            style={{ width: 180 }}
+            onChange={(value) => handleFilterChange("agentType", value)}
+            allowClear
+          >
+            <Option disabled value="">
+              Please select Agent Type
+            </Option>
+            <Option value="Office Agent">Office Agent</Option>
+            <Option value="WFH Agent">WFH Agent</Option>
+          </Select>
 
-        <Button type="primary" onClick={fetchData}>
-          Apply Filters
-        </Button>
-      </div>
+          <Select
+            placeholder="Please select Branch"
+            value={filters.branch || undefined}
+            style={{ width: 180 }}
+            onChange={(value) => handleFilterChange("branch", value)}
+            allowClear
+          >
+            <Option disabled value="">
+              Please select Branch
+            </Option>
+            <Option value="Branch A">Branch A</Option>
+            <Option value="Branch B">Branch B</Option>
+          </Select>
+          <Input
+            placeholder="Search by Username"
+            value={filters.username}
+            onChange={(e) => handleFilterChange("username", e.target.value)}
+            style={{ width: 200 }}
+            allowClear
+          />
 
+          <Button type="primary" onClick={fetchData}>
+            Apply Filters
+          </Button>
+        </div>
+      )}
       <br />
       {/* 📋 Table */}
       <Table

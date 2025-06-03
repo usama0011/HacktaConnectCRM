@@ -113,7 +113,9 @@ const users = await User.find(userQuery);
       })
     );
 
-    res.status(200).json(result);
+   const filteredResult = result.filter(entry => entry.salary > 0);
+res.status(200).json(filteredResult);
+
   } catch (error) {
     console.error("Download Salary Sheet Error:", error);
     res.status(500).json({ message: "Server Error", error: error.message });

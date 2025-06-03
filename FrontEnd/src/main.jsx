@@ -91,6 +91,7 @@ import MangoProxyB from "../pages/AdminDashboard/MangoProxyB.jsx";
 import InfaticaAPIDetails from "../pages/AdminDashboard/InfaticaAPIDetails.jsx";
 import AboutUs from "../pages/generalPages/AboutUs.jsx";
 import AgentsCSVUPload from "../pages/AdminDashboard/AgentsCSVUPload.jsx";
+import UploadSalaryRecord from "../pages/AdminDashboard/UploadSalaryRecord.jsx";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -108,7 +109,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 };
 // Custom theme colors
 const primaryColor = "#1e2d7d"; // Base green
-const hoverColor = "#00291f"; // Slightly darker for hover
+const hoverColor = "#1e2d7d"; // Slightly darker for hover
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -117,18 +118,18 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         token: {
           fontFamily: "Inter, sans-serif",
           colorPrimary: "#1e2d7d",
-          colorPrimaryHover: "#00291f",
-          colorPrimaryActive: "#00291f",
+          colorPrimaryHover: "#1e2d7d",
+          colorPrimaryActive: "#1e2d7d",
           colorTextLightSolid: "#fff",
         },
         components: {
           Button: {
             colorPrimary: "#1e2d7d",
-            colorPrimaryHover: "#00291f",
-            colorPrimaryActive: "#00291f",
+            colorPrimaryHover: "#fff",
+            colorPrimaryActive: "#1e2d7d",
             defaultBg: "#1e2d7d",
-            defaultHoverBg: "#00291f",
-            defaultActiveBg: "#00291f",
+            defaultHoverBg: "#1e2d7d",
+            defaultActiveBg: "#1e2d7d",
             defaultColor: "#fff",
             defaultShadow: "none", // ✅ Remove box-shadow
             primaryShadow: "none", // ✅ Remove box-shadow on primary
@@ -198,7 +199,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 element={<AllUsersAttendance />}
               />
               <Route
-                path="attendance/user/:username/"
+                path="attendance/user/:userId/"
                 element={<SingleUserAttendance />}
               />
 
@@ -248,6 +249,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 element={<PerformanceMetrics />}
               />
               <Route path="proxy/smart" element={<SmartProxy />} />
+              <Route path="uploadSalaryRecord" element={<UploadSalaryRecord />} />
               <Route path="proxy/mango" element={<MangoProxy />} />
               <Route path="proxy/mangob" element={<MangoProxyB />} />
               <Route path="proxy/geo" element={<ProxyGeo />} />

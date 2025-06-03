@@ -31,8 +31,8 @@ const { Title, Text } = Typography;
 const { Option } = Select;
 
 const SingleUserAttendance = () => {
-  const { username } = useParams();
-
+  const { userId } = useParams();
+  console.log(userId);
   const [checkInTime, setCheckInTime] = useState(null);
   const [checkOutTime, setCheckOutTime] = useState(null);
   const { user } = useUserContext();
@@ -48,14 +48,14 @@ const SingleUserAttendance = () => {
   const [creatingStatus, setCreatingStatus] = useState("Present");
 
   useEffect(() => {
-    fetchUserAttendance(username, selectedMonth);
-  }, [username, selectedMonth]);
+    fetchUserAttendance(userId, selectedMonth);
+  }, [userId, selectedMonth]);
 
-  const fetchUserAttendance = async (username, month) => {
+  const fetchUserAttendance = async (userId, month) => {
     try {
       setLoading(true);
-      const res = await API.get(`/attendance/user/${username}`, {
-        params: { date: month.startOf("month").toISOString() },
+      const res = await API.get(`/attendance/user/${userId}`, {
+        params: { date: month.startOf("month").format("YYYY-MM-DD") },
       });
       setUserData(res.data.user);
       setStats(res.data.stats);
@@ -122,24 +122,42 @@ const SingleUserAttendance = () => {
     {
       title: "✏️ Action",
       key: "action",
-      render: (_, record) =>
-        record.checkInTime !== "-" ? (
-          <a
-            onClick={() => {
-              setEditingRecord(record);
-              setEditModalVisible(true);
-            }}
-          >
-            Edit
-          </a>
-        ) : (
-          <a
-            style={{ color: "#1890ff" }}
-            onClick={() => handleCreateAttendance(record)}
-          >
-            Create
-          </a>
-        ),
+      render: (_, record) => {
+        const today = moment().startOf("day");
+        const recordDate = moment(record.date);
+
+        const isFuture = recordDate.isAfter(today, "day");
+
+        if (record.checkInTime !== "-" && record.checkInTime) {
+          return (
+            <a
+              onClick={() => {
+                setEditingRecord(record);
+                setEditModalVisible(true);
+              }}
+            >
+              Edit
+            </a>
+          );
+        } else {
+          return (
+            <a
+              style={{
+                color: isFuture ? "#ccc" : "#1890ff",
+                pointerEvents: isFuture ? "none" : "auto",
+                cursor: isFuture ? "not-allowed" : "pointer",
+              }}
+              onClick={() => {
+                if (!isFuture) {
+                  handleCreateAttendance(record);
+                }
+              }}
+            >
+              Create
+            </a>
+          );
+        }
+      },
     },
   ];
 
@@ -163,11 +181,11 @@ const SingleUserAttendance = () => {
     scale: {
       color: {
         range: [
-          "#1e2d7d", // Dark Green (Present)
-          "#005c47", // Medium-dark Green (Absent)
-          "#007f5c", // Medium Green (Late)
-          "#00a375", // Lighter Green (Leave)
-          "#00c694", // Lightest Green (RotationOff)
+          "#1e2d7d", // Present
+          "#182368", // Absent
+          "#263a94", // Late
+          "#3f53aa", // Leave
+          "#5e6fc5", // RotationOff
         ],
       },
     },
@@ -211,7 +229,7 @@ const SingleUserAttendance = () => {
       <div className="headtopsidbarskjs">
         <Avatar src={userData?.avatar} size={64} />
         <div>
-          <div style={{marginLeft:"10px"}}>
+          <div style={{ marginLeft: "10px" }}>
             <h3 style={{ marginBottom: 0 }}>
               {userData?.name || "Unknown User"}
             </h3>
@@ -318,12 +336,12 @@ const SingleUserAttendance = () => {
           try {
             const res = await API.put("/attendance/update-status", {
               userId: editingRecord?.userId || userData?._id,
-              date: editingRecord.date,
+              date: moment(editingRecord.date).format("YYYY-MM-DD"),
               newStatus: editingRecord.newStatus,
               updatedBy: user?.username || "Admin", // dynamic username
             });
             message.success("Attendance updated");
-            fetchUserAttendance(username, selectedMonth); // Refresh data
+            fetchUserAttendance(userId, selectedMonth); // Refresh data
             setEditModalVisible(false);
           } catch (err) {
             console.log(err);
@@ -343,12 +361,17 @@ const SingleUserAttendance = () => {
             setEditingRecord((prev) => ({ ...prev, newStatus: value }))
           }
         >
-          <Option value="Present">Present</Option>
-          <Option value="Late">Late</Option>
+          <Option value="Present" disabled={editingRecord?.status === "Late"}>
+            Present
+          </Option>
+          <Option value="Late" disabled={editingRecord?.status === "Present"}>
+            Late
+          </Option>
           <Option value="Absent">Absent</Option>
           <Option value="Leave">Leave</Option>
           <Option value="RotationOff">RotationOff</Option>
         </Select>
+
         {editingRecord &&
           Array.isArray(editingRecord.editHistory) &&
           editingRecord.editHistory.length > 0 && (
@@ -380,16 +403,22 @@ const SingleUserAttendance = () => {
                     };
 
                     return (
-                      <li key={index}>
-                        <Text type="secondary">
-                          Changed from{" "}
-                          <Tag>
-                            {statusIcon[item.previousStatus] || null}{" "}
+                      <li key={index} className="edit-history-item">
+                        <div className="edit-history-text">
+                          <span className="label">Changed from </span>
+                          <Tag className="edit-status-tag">
+                            {statusIcon[item.previousStatus]}{" "}
                             {item.previousStatus}
-                          </Tag>{" "}
-                          by <b>{item.updatedBy}</b> on{" "}
-                          {moment(item.updatedAt).format("YYYY-MM-DD HH:mm")}
-                        </Text>
+                          </Tag>
+                          <span className="by-user">
+                            by <strong>{item.updatedBy}</strong>
+                          </span>
+                          <br />
+                          <span className="on-date">
+                            on{" "}
+                            {moment(item.updatedAt).format("YYYY-MM-DD HH:mm")}
+                          </span>
+                        </div>
                       </li>
                     );
                   })}
@@ -411,7 +440,7 @@ const SingleUserAttendance = () => {
               shift: userData.shift,
               agentType: userData.agentType,
               branch: userData.branch,
-              date: creatingRecord?.date,
+              date: moment(creatingRecord?.date).format("YYYY-MM-DD"),
               status: creatingStatus,
               checkInTime: checkInTime ? checkInTime.toISOString() : null,
               checkOutTime: checkOutTime ? checkOutTime.toISOString() : null,

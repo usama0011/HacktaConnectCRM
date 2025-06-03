@@ -275,25 +275,32 @@ endOfDay.setUTCHours(23, 59, 59, 999);
 
 export const getAllUsersAttendance = async (req, res) => {
   const { date, shift, agentType, branch, username } = req.query;
-
+  console.log(req.user)
   try {
+    const { date } = req.query;
     const selectedMonth = new Date(date);
     const startOfMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), 1);
     const endOfMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 0, 23, 59, 59, 999);
 
-    // Filters for table data (filtered)
+    // 🟡 Override filters for Team Leads / QC roles
+    let { shift, agentType, branch, username } = req.query;
+
+    if (
+      req.user.role === "Team Lead" ||
+      req.user.role === "Team Lead WFH" ||
+      req.user.role === "QC"
+    ) {
+      branch = req.user.branch;
+      shift = req.user.shift;
+      // ✅ agentType is NOT enforced here — as requested
+    }
+
+    // Filters for user query
     const userQuery = { role: "agent" };
     if (shift) userQuery.shift = shift;
     if (agentType) userQuery.agentType = agentType;
     if (branch) userQuery.branch = branch;
     if (username) userQuery.username = { $regex: username, $options: "i" };
-
-    if (req.user.role === "Team Lead") {
-      userQuery.shift = req.user.shift;
-      if (req.user.agentType) {
-        userQuery.agentType = req.user.agentType;
-      }
-    }
 
     // 1. Filtered Users
     const users = await User.find(userQuery, "_id username userImage shift agentType branch");
@@ -435,10 +442,11 @@ export const getAllUsersAttendance = async (req, res) => {
 };
 
 
-// ✅ Updated Controller: Get Full Month Attendance
+// ✅ Updated Controller: Get Full Month Attendance (fixed for timezone)
 export const getSingleUserAttendance = async (req, res) => {
   const { userId } = req.params;
   const { date } = req.query;
+  console.log("Requested user and date:", userId, date);
 
   try {
     const selectedMonth = new Date(date);
@@ -448,25 +456,38 @@ export const getSingleUserAttendance = async (req, res) => {
     const startOfMonth = new Date(year, month, 1);
     const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59, 999);
 
-    const user = await User.findById(userId, "username userImage shift agentType");
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await User.findById(
+      userId,
+      "username userImage shift agentType branch"
+    );
+    if (!user)
+      return res.status(404).json({ message: "User not found" });
 
-    // Optional Team Lead restrictions
+    // ✅ Restrict access if Team Lead (optional logic)
     if (req.user.role === "Team Lead") {
-      if (user.shift !== req.user.shift || (req.user.agentType && user.agentType !== req.user.agentType)) {
-        return res.status(403).json({ message: "Access denied. Team Leads can only view users of their shift and type." });
+      if (
+        user.shift !== req.user.shift ||
+        (req.user.agentType && user.agentType !== req.user.agentType)
+      ) {
+        return res.status(403).json({
+          message:
+            "Access denied. Team Leads can only view users of their shift and type.",
+        });
       }
     }
 
-    // Fetch records for the selected month
+    // ✅ Fetch all attendance records for that month
     const records = await Attendance.find({
       userId,
       date: { $gte: startOfMonth, $lte: endOfMonth },
     }).sort({ date: 1 });
 
+    // ✅ Convert records to map using Asia/Karachi timezone
     const recordMap = {};
     records.forEach((r) => {
-      const key = r.date.toISOString().slice(0, 10);
+      const key = new Date(r.date).toLocaleDateString("en-CA", {
+        timeZone: "Asia/Karachi",
+      });
       recordMap[key] = r;
     });
 
@@ -482,56 +503,73 @@ export const getSingleUserAttendance = async (req, res) => {
       total: totalDays,
     };
 
-    for (let d = 1; d <= totalDays; d++) {
-      const day = new Date(year, month, d);
-      const key = day.toISOString().slice(0, 10);
-      const record = recordMap[key];
+  for (let d = 1; d <= totalDays; d++) {
+  const day = new Date(year, month, d);
+  const dateKey = day.toLocaleDateString("en-CA", {
+    timeZone: "Asia/Karachi",
+  });
+  const record = recordMap[dateKey];
 
-      let entry;
+  const today = new Date().toLocaleDateString("en-CA", {
+    timeZone: "Asia/Karachi",
+  });
 
-      if (record) {
-  const status = record.status.toLowerCase();
+  let entry;
 
-  // Count both "Present" and "Late" as "Present" in summary stats
-  if (status === "present" || status === "late") {
-    stats.present++;
+  if (record) {
+    const status = record.status.toLowerCase();
+
+    if (status === "present" || status === "late") stats.present++;
+    if (stats[status] !== undefined) stats[status]++;
+
+    entry = {
+      userId: record.userId,
+      date: dateKey,
+      status: record.status,
+      checkInTime: record.checkInTime
+        ? new Date(record.checkInTime).toLocaleTimeString("en-US", {
+            timeZone: "Asia/Karachi",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          })
+        : "-",
+      checkOutTime: record.checkOutTime
+        ? new Date(record.checkOutTime).toLocaleTimeString("en-US", {
+            timeZone: "Asia/Karachi",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          })
+        : "-",
+      editHistory: record.editHistory || [],
+    };
+  } else {
+    // ✅ If future date → PENDING
+    const isFuture = new Date(dateKey) > new Date(today);
+    const defaultStatus = isFuture ? "Pending" : "Absent";
+
+    if (!isFuture) stats.absent++;
+
+    entry = {
+      date: dateKey,
+      status: defaultStatus,
+      checkInTime: "-",
+      checkOutTime: "-",
+    };
   }
 
-  // Still track each status individually
-  if (stats[status] !== undefined) {
-    stats[status]++;
-  }
-
-  entry = {
-      userId: record.userId, // ✅ Add this
-    date: day,
-    status: record.status,
-    checkInTime: record.checkInTime?.toLocaleTimeString() || "-",
-    checkOutTime: record.checkOutTime?.toLocaleTimeString() || "-",
-      editHistory: record.editHistory || []
-
-    
-  };
+  attendanceData.push(entry);
 }
- else {
-        stats.absent++;
-        entry = {
-          date: day,
-          status: "Absent",
-          checkInTime: "-",
-          checkOutTime: "-",
-        };
-      }
 
-      attendanceData.push(entry);
-    }
 
+    // ✅ Send final response
     return res.status(200).json({
       user: {
-          _id:  user._id, // ✅ Include this to use for PUT
-        name:   user.username,
+        _id: user._id,
+        name: user.username,
         avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
-        shift:  user.shift,
+        shift: user.shift,
         branch: user.branch,
         agentType: user.agentType || "N/A",
       },
@@ -546,6 +584,7 @@ export const getSingleUserAttendance = async (req, res) => {
     });
   }
 };
+
 
 export const adminCreateAttendance = async (req, res) => {
   const { userId, username, shift, agentType, branch, date, status, checkInTime, checkOutTime, updatedBy } = req.body;

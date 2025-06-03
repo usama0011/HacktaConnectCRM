@@ -39,6 +39,7 @@ const QCPoints = () => {
   const [loading, setLoading] = useState(false);
   const [disableAttendanceStatus, setDisableAttendanceStatus] = useState(false);
   const [users, setUsers] = useState([]);
+  const [attendanceDate, setAttendanceDate] = useState(null);
   const [attendanceStatus, setAttendanceStatus] = useState(null);
   const [attendanceCheckInTime, setAttendanceCheckInTime] = useState(null);
   const [attendanceLoading, setAttendanceLoading] = useState(false);
@@ -53,6 +54,8 @@ const QCPoints = () => {
     branch: "",
     username: "", // ✅ new
   });
+  const limitedRoles = ["Team Lead", "Team Lead WFH", "Quality Control (QC)"];
+  const showLimitedFilters = limitedRoles.includes(user?.role);
 
   const [form] = Form.useForm();
 
@@ -184,6 +187,8 @@ const QCPoints = () => {
       setCheckOutTime(
         data?.checkOutTime ? moment(data.checkOutTime).format("hh:mm A") : null
       );
+      setAttendanceDate(data?.date || data?.createdAt || null);
+
       // ✅ Add this block to update form field and dropdown default value
       if (data?.status) {
         setFieldValues((prev) => ({
@@ -348,21 +353,40 @@ const QCPoints = () => {
       <div
         style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
       >
-        <Select
-          placeholder="Please select Shift"
-          value={filters.shift || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("shift", value)}
-          allowClear
-        >
-          <Option disabled value="">
-            Please select Shift
-          </Option>
-          <Option value="morning">Morning</Option>
-          <Option value="evening">Evening</Option>
-          <Option value="night">Night</Option>
-        </Select>
+        {!showLimitedFilters && (
+          <>
+            <Select
+              placeholder="Please select Shift"
+              value={filters.shift || undefined}
+              style={{ width: 180 }}
+              onChange={(value) => handleFilterChange("shift", value)}
+              allowClear
+            >
+              <Option disabled value="">
+                Please select Shift
+              </Option>
+              <Option value="morning">Morning</Option>
+              <Option value="evening">Evening</Option>
+              <Option value="night">Night</Option>
+            </Select>
 
+            <Select
+              placeholder="Please select Branch"
+              value={filters.branch || undefined}
+              style={{ width: 180 }}
+              onChange={(value) => handleFilterChange("branch", value)}
+              allowClear
+            >
+              <Option disabled value="">
+                Please select Branch
+              </Option>
+              <Option value="Branch A">Branch A</Option>
+              <Option value="Branch B">Branch B</Option>
+            </Select>
+          </>
+        )}
+
+        {/* Agent Type (always shown) */}
         <Select
           placeholder="Please select Agent Type"
           value={filters.agentType || undefined}
@@ -377,19 +401,7 @@ const QCPoints = () => {
           <Option value="WFH Agent">WFH Agent</Option>
         </Select>
 
-        <Select
-          placeholder="Please select Branch"
-          value={filters.branch || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("branch", value)}
-          allowClear
-        >
-          <Option disabled value="">
-            Please select Branch
-          </Option>
-          <Option value="Branch A">Branch A</Option>
-          <Option value="Branch B">Branch B</Option>
-        </Select>
+        {/* Username (always shown) */}
         <Input
           placeholder="Search by Username"
           value={filters.username}
@@ -397,6 +409,7 @@ const QCPoints = () => {
           style={{ width: 200, borderRadius: "10px" }}
           allowClear
         />
+
         <Button
           type="primary"
           onClick={() => fetchUsersAndPoints(selectedDate.format("YYYY-MM-DD"))}
@@ -569,6 +582,14 @@ const QCPoints = () => {
                   <p>
                     Check-Out Time:{" "}
                     <strong>{checkOutTime || "Not available"}</strong>
+                  </p>
+                  <p>
+                    Date:{" "}
+                    <strong>
+                      {attendanceDate
+                        ? moment(attendanceDate).format("YYYY-MM-DD")
+                        : "Not available"}
+                    </strong>
                   </p>
                 </>
               ) : (

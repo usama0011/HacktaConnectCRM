@@ -183,7 +183,7 @@ const UserLayout = () => {
           <div className="header-right">
             <Dropdown overlay={avatarMenu} trigger={["click"]}>
               <Avatar
-                src="https://img.icons8.com/?size=60&id=FZQamLEORsJ1&format=png"
+                src={user.userImage}
                 className="header-avatar"
                 style={{ cursor: "pointer" }}
               />

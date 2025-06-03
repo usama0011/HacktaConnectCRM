@@ -32,6 +32,7 @@ import axios from "axios";
 import { useUserContext } from "../../context/UserContext";
 import API from "../../utils/BaseURL";
 import { Calendar } from "primereact/calendar";
+import { Link } from "react-router-dom";
 const UserDashboard = () => {
   const [selectedRange, setSelectedRange] = React.useState([]);
   const [recentTasks, setRecentTasks] = useState([]);
@@ -309,12 +310,13 @@ const UserDashboard = () => {
                 My Tasks <ArrowRightOutlined />
               </Button>
               <Button className="dash-list-btn">
-                Upload Work <ArrowRightOutlined />
+             <Link to="/user/dashboard/uploadwork">
+                Upload Work <ArrowRightOutlined /></Link>
               </Button>
             </div>
             <p className="dash-credit">
-              <img
-                src="https://img.freepik.com/free-vector/dark-analytics-concept-illustration_114360-1813.jpg?t=st=1745070569~exp=1745074169~hmac=159c0c52330d77f35d8d9b09bdbb57d707f265b2e1cc7c1f90f2418f44cf97c8&w=740"
+              <img style={{width:"100%"}}
+                src="https://img.freepik.com/free-vector/organic-flat-printing-industry-illustration_23-2148899144.jpg?uid=R36798310&ga=GA1.1.787607528.1746629726&semt=ais_hybrid&w=740"
                 alt="logo"
               />
             </p>

@@ -22,12 +22,14 @@ import moment from "moment";
 import API from "../../utils/BaseURL";
 import "../../styles/QCPoints.css";
 import { Calendar } from "primereact/calendar";
+import { useUserContext } from "../../context/UserContext";
 const { Option } = Select;
 
 const { Title, Text } = Typography;
 
 const AllUsersQCPoints = () => {
   const navigate = useNavigate();
+  const {user} = useUserContext()
   const [selectedDate, setSelectedDate] = useState(moment());
   const [topUsers, setTopUsers] = useState([]);
   const [users, setUsers] = useState([]);
@@ -157,62 +159,74 @@ const AllUsersQCPoints = () => {
         </div>
       </div>
       <br />
-      <div
-        style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
-      >
-        <Select
-          placeholder="Please select Shift"
-          value={filters.shift || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("shift", value)}
-          allowClear
-        >
-          <Option disabled value="">
-            Please select Shift
-          </Option>
-          <Option value="morning">Morning</Option>
-          <Option value="evening">Evening</Option>
-          <Option value="night">Night</Option>
-        </Select>
+    <div
+  style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
+>
+  {/* Show Shift filter only for privileged roles */}
+  {["Super Admin", "HR", "Floor Manager", "Assistant Floor Manager"].includes(user?.role) && (
+    <Select
+      placeholder="Please select Shift"
+      value={filters.shift || undefined}
+      style={{ width: 180 }}
+      onChange={(value) => handleFilterChange("shift", value)}
+      allowClear
+    >
+      <Option disabled value="">
+        Please select Shift
+      </Option>
+      <Option value="morning">Morning</Option>
+      <Option value="evening">Evening</Option>
+      <Option value="night">Night</Option>
+    </Select>
+  )}
 
-        <Select
-          placeholder="Please select Agent Type"
-          value={filters.agentType || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("agentType", value)}
-          allowClear
-        >
-          <Option disabled value="">
-            Please select Agent Type
-          </Option>
-          <Option value="Office Agent">Office Agent</Option>
-          <Option value="WFH Agent">WFH Agent</Option>
-        </Select>
+  {/* Always show Agent Type filter */}
+  <Select
+    placeholder="Please select Agent Type"
+    value={filters.agentType || undefined}
+    style={{ width: 180 }}
+    onChange={(value) => handleFilterChange("agentType", value)}
+    allowClear
+  >
+    <Option disabled value="">
+      Please select Agent Type
+    </Option>
+    <Option value="Office Agent">Office Agent</Option>
+    <Option value="WFH Agent">WFH Agent</Option>
+  </Select>
 
-        <Select
-          placeholder="Please select Branch"
-          value={filters.branch || undefined}
-          style={{ width: 180 }}
-          onChange={(value) => handleFilterChange("branch", value)}
-          allowClear
-        >
-          <Option disabled value="">
-            Please select Branch
-          </Option>
-          <Option value="Branch A">Branch A</Option>
-          <Option value="Branch B">Branch B</Option>
-        </Select>
-        <Input
-          placeholder="Search by Username"
-          value={filters.username}
-          onChange={(e) => handleFilterChange("username", e.target.value)}
-          style={{ width: 200, borderRadius: "10px" }}
-          allowClear
-        />
-        <Button type="primary" onClick={() => fetchMonthlyQC(selectedDate)}>
-          Apply Filters
-        </Button>
-      </div>
+  {/* Show Branch filter only for privileged roles */}
+  {["Super Admin", "HR", "Floor Manager", "Assistant Floor Manager"].includes(user?.role) && (
+    <Select
+      placeholder="Please select Branch"
+      value={filters.branch || undefined}
+      style={{ width: 180 }}
+      onChange={(value) => handleFilterChange("branch", value)}
+      allowClear
+    >
+      <Option disabled value="">
+        Please select Branch
+      </Option>
+      <Option value="Branch A">Branch A</Option>
+      <Option value="Branch B">Branch B</Option>
+    </Select>
+  )}
+
+  {/* Always show Username filter */}
+  <Input
+    placeholder="Search by Username"
+    value={filters.username}
+    onChange={(e) => handleFilterChange("username", e.target.value)}
+    style={{ width: 200, borderRadius: "10px" }}
+    allowClear
+  />
+
+  {/* Apply Filters Button */}
+  <Button type="primary" onClick={() => fetchMonthlyQC(selectedDate)}>
+    Apply Filters
+  </Button>
+</div>
+
       <br />
       <br />
 

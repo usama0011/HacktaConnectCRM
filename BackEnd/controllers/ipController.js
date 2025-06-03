@@ -313,23 +313,25 @@ export const getDailyAgentIPsWithHistory = async (req, res) => {
     const startOfDay = moment(date).startOf("day").toDate();
     const endOfDay = moment(date).endOf("day").toDate();
 
-    // Build base agent query
-    const agentQuery = { role: "agent" };
+   // Build base agent query
+const agentQuery = { role: "agent" };
 
-    // Team Lead restrictions
-    if (req.user.role === "Team Lead") {
-      agentQuery.shift = req.user.shift;
-      if (req.user.agentType) {
-        agentQuery.agentType = req.user.agentType;
-      }
-    }
+// Restrict Team Lead, Team Lead WFH, QC
+if (
+  req.user.role === "Team Lead" ||
+  req.user.role === "Team Lead WFH" ||
+  req.user.role === "QC"
+) {
+  agentQuery.branch = req.user.branch;
+  agentQuery.shift = req.user.shift;
+} else {
+  if (shift) agentQuery.shift = shift;
+  if (agentType) agentQuery.agentType = agentType;
+  if (branch) agentQuery.branch = branch;
+}
 
-    // Apply additional filters from query params
-    if (shift) agentQuery.shift = shift;
-    if (agentType) agentQuery.agentType = agentType;
-    if (branch) agentQuery.branch = branch;
 if (username) {
-  agentQuery.username = { $regex: req.query.username, $options: "i" };
+  agentQuery.username = { $regex: username, $options: "i" };
 }
 
     // Fetch Agents
@@ -436,19 +438,32 @@ const { year, month, shift, agentType, branch,username } = req.query;
     const startOfMonth = moment(`${year}-${month}-01`).startOf("month").toDate();
     const endOfMonth = moment(`${year}-${month}-01`).endOf("month").toDate();
 
-  const agentQuery = { role: "agent" };
-if (shift) agentQuery.shift = shift;
-if (agentType) agentQuery.agentType = agentType;
-if (branch) agentQuery.branch = branch;
-if (username) {
-  agentQuery.username = { $regex: username, $options: "i" };
-}
-    // Restrict Team Lead to view only their shift and agent type agents
-    if (req.user.role === "Team Lead") {
+ const agentQuery = { role: "agent" };
+
+    // 🌐 Apply filters from query if user is NOT restricted
+    if (
+      req.user.role !== "Team Lead" &&
+      req.user.role !== "Team Lead WFH" &&
+      req.user.role !== "QC"
+    ) {
+      if (shift) agentQuery.shift = shift;
+      if (agentType) agentQuery.agentType = agentType;
+      if (branch) agentQuery.branch = branch;
+    }
+
+    // 🔒 Restrict Team Lead / QC roles to their shift and branch only
+    if (
+      req.user.role === "Team Lead" ||
+      req.user.role === "Team Lead WFH" ||
+      req.user.role === "QC"
+    ) {
       agentQuery.shift = req.user.shift;
-      if (req.user.agentType) {
-        agentQuery.agentType = req.user.agentType;
-      }
+      agentQuery.branch = req.user.branch;
+      // agentType restriction removed as requested
+    }
+
+    if (username) {
+      agentQuery.username = { $regex: username, $options: "i" };
     }
 
     // Fetch Agents based on query

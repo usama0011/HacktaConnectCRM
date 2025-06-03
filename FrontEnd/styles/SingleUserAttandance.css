@@ -122,6 +122,7 @@
   border-radius: 10px;
 }
 
+
 /* Small devices (phones, less than 576px) */
 @media (max-width: 575.98px) {
   .attendance-user-header {
