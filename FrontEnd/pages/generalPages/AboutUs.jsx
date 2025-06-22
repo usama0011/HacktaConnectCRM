@@ -1,6 +1,10 @@
 import React from "react";
 import { Button } from "antd";
 import { EnvironmentOutlined } from "@ant-design/icons";
+import HacktaOne from "../../src/assets/hacktaone.jpg";
+import HacktaTwo from "../../src/assets/hacktatwo.jpg";
+import HacktaThree from "../../src/assets/hacktathree.jpg";
+import HacktaImageFour from "../../src/assets/hacktfour.jpg";
 import "../../styles/AboutUs.css";
 
 const AboutUs = () => {
@@ -9,32 +13,20 @@ const AboutUs = () => {
       <div className="aboutus-left">
         <div className="aboutus-gallery">
           <div className="aboutus-image portrait">
-            <img
-              src="https://images.pexels.com/photos/2528118/pexels-photo-2528118.jpeg?auto=compress&cs=tinysrgb&w=600"
-              alt="Left Portrait"
-            />
+            <img src={HacktaThree} />
           </div>
 
           <div className="aboutus-center-column">
             <div className="aboutus-image square">
-              <img
-                src="https://images.pexels.com/photos/1181622/pexels-photo-1181622.jpeg?auto=compress&cs=tinysrgb&w=600"
-                alt="Top Center"
-              />
+              <img src={HacktaImageFour} />
             </div>
             <div className="aboutus-image square">
-              <img
-                src="https://images.pexels.com/photos/4240586/pexels-photo-4240586.jpeg?auto=compress&cs=tinysrgb&w=600"
-                alt="Bottom Center"
-              />
+              <img src={HacktaOne} />
             </div>
           </div>
 
           <div className="aboutus-image portrait">
-            <img
-              src="https://images.pexels.com/photos/3183172/pexels-photo-3183172.jpeg?auto=compress&cs=tinysrgb&w=600"
-              alt="Right Portrait"
-            />
+            <img src={HacktaTwo} />
           </div>
         </div>
       </div>

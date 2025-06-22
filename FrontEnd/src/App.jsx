@@ -10,6 +10,7 @@ import Image5 from "../src/assets/slack.png";
 import Image6 from "../src/assets/amazon.png";
 import AdminLogo from "../src/assets/mainlogo.png";
 import NetworkLogo from "../src/assets/network.png";
+import BuildingIcon from "../src/assets/buildingicon.png";
 import { UserOutlined, IdcardOutlined } from "@ant-design/icons";
 import TeamCollobration from "../src/assets/Collaburatoin.jpg";
 import { Link, useNavigate } from "react-router-dom";
@@ -70,7 +71,7 @@ const App = () => {
             maximize revenue.
           </p>
           <div className="crm-hero-buttons">
-            <button className="get-started">Get Started</button>
+            <button  onClick={() => navigate("/login")} className="get-started">Get Started</button>
             <button className="learn-more">Learn More</button>
           </div>
           <div className="crm-rating">
@@ -117,7 +118,7 @@ const App = () => {
       <section className="crm-feature-section">
         <h2>Smart Automation, Limitless Possibilities</h2>
         <p className="crm-featuersectiontext">
-          WithHackta Connect, you get a powerful automation platform designed to
+          With Hackta Connect, you get a powerful automation platform designed to
           optimize your workflow and scale your business effortlessly.
         </p>
         <div className="crm-feature-cards">
@@ -275,7 +276,7 @@ const App = () => {
       <section className="crm-cta">
         <div className="crm-cta-left">
           <div className="crm-icon-box">
-            <img src={NetworkLogo} alt="" />
+            <img src={BuildingIcon} alt="" />
           </div>
           <h3>Boost Your Business with Hackta Connect CRM!</h3>
           <p>

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
-import "primereact/resources/themes/lara-light-indigo/theme.css";  // or any other theme
+import "primereact/resources/themes/lara-light-indigo/theme.css"; // or any other theme
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
@@ -125,16 +125,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         components: {
           Button: {
             colorPrimary: "#1e2d7d",
-            colorPrimaryHover: "#fff",
+            colorPrimaryHover: "#172266", // fix: not white
             colorPrimaryActive: "#1e2d7d",
             defaultBg: "#1e2d7d",
-            defaultHoverBg: "#1e2d7d",
-            defaultActiveBg: "#1e2d7d",
             defaultColor: "#fff",
-            defaultShadow: "none", // ✅ Remove box-shadow
-            primaryShadow: "none", // ✅ Remove box-shadow on primary
-            lineWidth: 0, // ✅ Optional: remove border
-            borderRadius: 6, // Optional: rounded buttons
+            defaultShadow: "none",
+            primaryShadow: "none",
+            lineWidth: 0,
+            borderRadius: 6,
           },
         },
       }}
@@ -208,7 +206,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 element={<SingleUserIPReport />}
               />
               <Route path="addqcpointform" element={<QCPoints />} />
-              <Route path="infaticaldashobard" element={<InfaticaAPIDetails />} />
+              <Route
+                path="infaticaldashobard"
+                element={<InfaticaAPIDetails />}
+              />
               <Route path="announcements" element={<Announcements />} />
               <Route path="attendance" element={<AttendanceManagement />} />
               <Route path="newtask" element={<UserTaskCreation />} />
@@ -249,7 +250,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 element={<PerformanceMetrics />}
               />
               <Route path="proxy/smart" element={<SmartProxy />} />
-              <Route path="uploadSalaryRecord" element={<UploadSalaryRecord />} />
+              <Route
+                path="uploadSalaryRecord"
+                element={<UploadSalaryRecord />}
+              />
               <Route path="proxy/mango" element={<MangoProxy />} />
               <Route path="proxy/mangob" element={<MangoProxyB />} />
               <Route path="proxy/geo" element={<ProxyGeo />} />
@@ -264,7 +268,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Route path="salaryformula" element={<SalaryFormulaForm />} />
               <Route path="salarymanagement" element={<SalaryManagement />} />
               <Route path="settings" element={<SettingsAdmin />} />
-              <Route path="termsandpolicies" element={<TermsAndPoliciesUser />} />
+              <Route
+                path="termsandpolicies"
+                element={<TermsAndPoliciesUser />}
+              />
 
               <Route
                 path="downloadsalaryreports"
@@ -315,3 +322,56 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </ConfigProvider>
   </React.StrictMode>
 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

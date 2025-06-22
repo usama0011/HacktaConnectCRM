@@ -99,3 +99,58 @@
   margin-top: 50px;
   margin-bottom: 30px;
 }
+
+
+@media (max-width: 768px) {
+  .csv-upload-container {
+    padding: 20px 0px;
+    text-align: left;
+  }
+.titlanddescsv{
+  padding: 0px 5px !important;
+}
+  .csv-upload-title {
+    font-size: 18px !important;
+    text-align: center;
+  }
+
+  .csv-upload-description {
+    font-size: 14px !important;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .csv-upload-card {
+    padding: 16px;
+  }
+
+  .csv-guide-list {
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: auto;
+  }
+
+  .csv-guide-list li {
+    margin-bottom: 6px;
+  }
+
+  .ant-card-head-title {
+    font-size: 15px;
+    text-align: center;
+  }
+
+  .csv-note-text,
+  .csv-ensure-text {
+    font-size: 13px;
+  }
+
+  .ant-divider-horizontal {
+    margin-top: 32px;
+    margin-bottom: 24px;
+  }
+
+  .upload-loading-wave {
+    text-align: center;
+  }
+}
+

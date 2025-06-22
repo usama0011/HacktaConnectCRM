@@ -9,6 +9,8 @@ import {
   Row,
   Col,
   Divider,
+  Modal,
+  Input,
 } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import "../../styles/AgentsCSVUpload.css";
@@ -22,7 +24,15 @@ import {
 const { Dragger } = Upload;
 const { Title, Paragraph } = Typography;
 
-const UploadCard = ({ title, file, setFile, uploading, handleUpload }) => {
+const UploadCard = ({
+  title,
+  file,
+  setFile,
+  uploading,
+  handleUpload,
+  setUploadTarget,
+  setIsPasswordModalVisible
+}) => {
   const props = {
     name: "file",
     multiple: false,
@@ -47,7 +57,10 @@ const UploadCard = ({ title, file, setFile, uploading, handleUpload }) => {
       <Button
         type="primary"
         icon={<InboxOutlined />}
-        onClick={handleUpload}
+        onClick={() => {
+          setUploadTarget(title.includes("Without") ? "noBank" : "withBank");
+          setIsPasswordModalVisible(true);
+        }}
         disabled={!file || uploading}
         loading={uploading}
         block
@@ -65,14 +78,17 @@ const UploadCard = ({ title, file, setFile, uploading, handleUpload }) => {
 };
 
 const AgentsCSVUpload = () => {
-  const defaultImageURL = "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg";
+  const defaultImageURL =
+    "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg";
 
   const { user } = useUserContext();
 
   // With bank states
   const [fileWithBank, setFileWithBank] = useState(null);
   const [uploadingWithBank, setUploadingWithBank] = useState(false);
-
+  const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [uploadTarget, setUploadTarget] = useState("");
   // Without bank states
   const [fileNoBank, setFileNoBank] = useState(null);
   const [uploadingNoBank, setUploadingNoBank] = useState(false);
@@ -130,6 +146,19 @@ const AgentsCSVUpload = () => {
       setUploadingNoBank(false);
     }
   };
+  const confirmPasswordAndUpload = () => {
+    if (passwordInput === "muix@123") {
+      if (uploadTarget === "withBank") {
+        handleUploadWithBank();
+      } else if (uploadTarget === "noBank") {
+        handleUploadNoBank();
+      }
+      setIsPasswordModalVisible(false);
+      setPasswordInput("");
+    } else {
+      message.error("Incorrect password.");
+    }
+  };
 
   return (
     <div className="csv-upload-container">
@@ -148,6 +177,8 @@ const AgentsCSVUpload = () => {
             setFile={setFileWithBank}
             uploading={uploadingWithBank}
             handleUpload={handleUploadWithBank}
+            setUploadTarget={setUploadTarget}
+            setIsPasswordModalVisible={setIsPasswordModalVisible}
           />
         </Col>
         <Col xs={24} sm={12} md={10}>
@@ -157,11 +188,14 @@ const AgentsCSVUpload = () => {
             setFile={setFileNoBank}
             uploading={uploadingNoBank}
             handleUpload={handleUploadNoBank}
+            setUploadTarget={setUploadTarget}
+            setIsPasswordModalVisible={setIsPasswordModalVisible}
           />
         </Col>
       </Row>
       <Divider style={{ marginTop: 40 }} />
-      <Title level={4}>
+       <div className="titlanddescsv">
+        <Title level={4}>
         <FileTextOutlined style={{ marginRight: 8 }} />
         CSV Upload Instructions
       </Title>
@@ -170,6 +204,7 @@ const AgentsCSVUpload = () => {
         Please follow the format guidelines below to ensure a successful CSV
         upload.
       </Paragraph>
+       </div>
 
       <Row gutter={[16, 16]}>
         <Col xs={24} md={12}>
@@ -245,6 +280,22 @@ const AgentsCSVUpload = () => {
           </ul>
         </Paragraph>
       </Card>
+      <Modal
+        title="Enter Upload Password"
+        open={isPasswordModalVisible}
+        onCancel={() => {
+          setIsPasswordModalVisible(false);
+          setPasswordInput("");
+        }}
+        onOk={confirmPasswordAndUpload}
+        okText="Upload"
+      >
+        <Input.Password
+          placeholder="Enter password"
+          value={passwordInput}
+          onChange={(e) => setPasswordInput(e.target.value)}
+        />
+      </Modal>
     </div>
   );
 };

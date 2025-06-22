@@ -11,6 +11,7 @@ const ProxyUsage = () => {
   const [smartStats, setSmartStats] = useState(null);
   const [mangoAStats, setMangoAStats] = useState(null);
   const [mangoBStats, setMangoBStats] = useState(null);
+  const [infaticaStats, setInfaticaStats] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -38,6 +39,15 @@ const ProxyUsage = () => {
             available: (mangoBRes.data.availableMB || 0) / 1024,
           });
         }
+        const infaticaRes = await API.get("/infatica/traffic-usage");
+        if (infaticaRes.data) {
+          const trafficLeftBytes = Number(infaticaRes.data.traffic_left) || 0;
+          const trafficLeftGB = trafficLeftBytes / (1024 * 1024 * 1024); // convert to GB
+
+          setInfaticaStats({
+            valueGB: parseFloat(trafficLeftGB.toFixed(2)), // Round to 2 decimals
+          });
+        }
       } catch (err) {
         console.error("Proxy API error:", err);
       }
@@ -45,7 +55,7 @@ const ProxyUsage = () => {
 
     fetchStats();
   }, []);
-
+  console.log(infaticaStats);
   const proxies = [
     {
       platform: "SmartProxy",
@@ -55,7 +65,7 @@ const ProxyUsage = () => {
       route: "/admin/dashboard/proxy/smart",
       proxyURL: "",
       image:
-        "https://img.freepik.com/free-vector/wireframe-chain-with-digital-code-lock-blockchain-cyber-security-safe-privacy-concept_127544-953.jpg",
+        "https://img.freepik.com/free-vector/watercolor-winter-solstice-background_23-2149167187.jpg?uid=R36798310&ga=GA1.1.787607528.1746629726&semt=ais_hybrid&w=740",
       proxyavataermsla:
         "https://s3-eu-west-1.amazonaws.com/tpd/logos/5d89308558ce38000114f334/0x0.png",
     },
@@ -67,7 +77,7 @@ const ProxyUsage = () => {
       route: "/admin/dashboard/proxy/mango",
       proxyURL: "",
       image:
-        "https://img.freepik.com/free-vector/wireframe-chain-with-digital-code-lock-blockchain-cyber-security-safe-privacy-concept_127544-953.jpg",
+        "https://img.freepik.com/free-vector/watercolor-winter-solstice-background_23-2149167187.jpg?uid=R36798310&ga=GA1.1.787607528.1746629726&semt=ais_hybrid&w=740",
       proxyavataermsla:
         "https://s3-eu-west-1.amazonaws.com/tpd/logos/643b8f60746aa1e4120197d4/0x0.png",
     },
@@ -80,22 +90,21 @@ const ProxyUsage = () => {
       route: "/admin/dashboard/proxy/mangob",
       proxyURL: "",
       image:
-        "https://img.freepik.com/free-vector/wireframe-chain-with-digital-code-lock-blockchain-cyber-security-safe-privacy-concept_127544-953.jpg",
+        "https://img.freepik.com/free-vector/watercolor-winter-solstice-background_23-2149167187.jpg?uid=R36798310&ga=GA1.1.787607528.1746629726&semt=ais_hybrid&w=740",
       proxyavataermsla:
         "https://s3-eu-west-1.amazonaws.com/tpd/logos/643b8f60746aa1e4120197d4/0x0.png",
     },
 
     {
       platform: "Infatica",
-      totalUsage: mangoBStats?.total?.toFixed(2) || 0,
-      trafficLimit: mangoBStats?.available?.toFixed(2) || 0,
-      color: "#facc15",
+      trafficLimit: infaticaStats?.valueGB || 0,
+      color: "#1e2d7d",
       route: "/admin/dashboard/infaticaldashobard",
       proxyURL: "",
       image:
-        "https://img.freepik.com/free-vector/wireframe-chain-with-digital-code-lock-blockchain-cyber-security-safe-privacy-concept_127544-953.jpg",
+        "https://img.freepik.com/free-vector/watercolor-winter-solstice-background_23-2149167187.jpg?uid=R36798310&ga=GA1.1.787607528.1746629726&semt=ais_hybrid&w=740",
       proxyavataermsla:
-        "https://scontent.flhe3-1.fna.fbcdn.net/v/t39.30808-1/299680699_490686989728619_2940728633824879805_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=108&ccb=1-7&_nc_sid=2d3e12&_nc_eui2=AeGeJgXDlhUFJaTVKAbfQxZHCfxzGTwa_BUJ_HMZPBr8FSQ-qufCLZnZOJGs495I265nk7nGBnlX8BlPoX2rw1LK&_nc_ohc=pNlbxbUS4u4Q7kNvwE-bF5H&_nc_oc=Adlm7jwtoSEHGmJ2VQ09qmtn1H-s0Gn2CxwnczCmpIYpywhRZE0oPfFgfoSszybQcV8&_nc_zt=24&_nc_ht=scontent.flhe3-1.fna&_nc_gid=kNfvlviAXtgX6xZ0HEYyBw&oh=00_AfLqwOjYBsQPdr7-7uZ8maoccsNm8wIoW_MlulYKjBUf0Q&oe=6831141D",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTbactc1rPTQ93nTHfLw9098bRtBZTWcbA1A&s", // same avatar
     },
     // {
     //   platform: "Geonode",
@@ -104,7 +113,7 @@ const ProxyUsage = () => {
     //   route: "/admin/dashboard/proxy/geo",
     //   proxyURL: "",
     //   image:
-    //     "https://img.freepik.com/free-vector/wireframe-chain-with-digital-code-lock-blockchain-cyber-security-safe-privacy-concept_127544-953.jpg",
+    //     "https://img.freepik.com/free-vector/watercolor-winter-solstice-background_23-2149167187.jpg?uid=R36798310&ga=GA1.1.787607528.1746629726&semt=ais_hybrid&w=740",
     //   proxyavataermsla:
     //     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRco0Wy93F0phwqJqWh3-a3Ld0ZZ95TG3mEug&s",
     // },

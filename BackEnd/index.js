@@ -38,7 +38,14 @@ try {
   process.exit(1); // Exit the process if unable to connect to MongoDB
 }
 
-app.use(cors());
+// Enable CORS for specific domain
+app.use(
+  cors({
+    origin: "https://crm.hacktaconnect.com",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Basic Route

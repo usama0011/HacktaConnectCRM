@@ -69,13 +69,22 @@ a {
   display: flex;
   gap: 10px;
 }
+
 .btncmrlldfd {
   background: #1e2d7d;
   border: 1px solid #1e2d7d;
   color: white;
   padding: 8px 16px;
   border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
+
+.btncmrlldfd:hover {
+  background: #172266; /* Darker shade on hover */
+  transform: scale(1.05);
+}
+
 .signup-btn {
   background: #1e2d7d;
   color: #fff;
@@ -96,8 +105,8 @@ a {
   max-width: 60%;
 }
 .crm-tag {
-  background: #e6f4ef;
-  color: #198754;
+  background: #1e2d7d;
+  color: white  ;
   padding: 6px 12px;
   font-size: 12px;
   border-radius: 20px;
@@ -120,12 +129,23 @@ a {
   gap: 16px;
   margin-bottom: 20px;
 }
+
+
+
 .get-started {
   background: #1e2d7d;
   color: #fff;
   padding: 10px 20px;
   border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
+
+.get-started:hover {
+  background: #172266; /* Slightly darker shade */
+  transform: scale(1.05);
+}
+
 .learn-more {
   border: 1px solid #ccc;
   background: #fff;
@@ -371,7 +391,7 @@ a {
 /* =================== CTA =================== */
 .crm-cta {
   position: relative;
-  background-image: url("https://images.unsplash.com/photo-1739056105219-6b524c74ade8?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-image: url("../src/assets/landingmain.jpg");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

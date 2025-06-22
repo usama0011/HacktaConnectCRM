@@ -26,14 +26,19 @@
   object-fit: cover;
   border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
+  transition: transform 0.3s ease; /* Add smooth transition */
 }
 
 .aboutus-image.portrait img {
   width: 220px;
   height: 320px;
+  object-fit: cover;
+  background-size: cover;
+  background-position: center;
 }
-
+.aboutus-image img:hover {
+  transform: scale(1.05); /* Slight zoom effect */
+}
 .aboutus-center-column {
   display: flex;
   flex-direction: column;
@@ -42,7 +47,7 @@
 
 .aboutus-center-column .aboutus-image.square img {
   width: 220px;
-  height: 230px;
+  height: 260px;
 }
 
 
@@ -69,7 +74,7 @@
 
 .aboutus-desc {
   color: #444;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.6;
   margin-bottom: 24px;
 }
@@ -139,3 +144,49 @@
     justify-content: center;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
