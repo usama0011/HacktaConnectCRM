@@ -41,7 +41,7 @@ try {
 // Enable CORS for specific domain
 app.use(
   cors({
-    origin: "https://crm.hacktaconnect.com",
+    origin: ["http://localhost:5173","https://crm.hacktaconnect.com"],
     credentials: true,
   })
 );

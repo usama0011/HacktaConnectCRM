@@ -398,11 +398,19 @@ const AllAgentsRegistraction = () => {
               }
               setEditLoading(true);
 
-              await API.put(`/auth/edit/${editingUser._id}`, {
-                ...values,
-                editorUsername: "Admin",
-                editorAvatar: "https://via.placeholder.com/40",
-              });
+             const updatedData = {
+  ...values,
+  editorUsername: "Admin",
+  editorAvatar: "https://via.placeholder.com/40",
+};
+
+// Only include password if user filled it
+if (!values.password) {
+  delete updatedData.password;
+}
+
+await API.put(`/auth/edit/${editingUser._id}`, updatedData);
+
 
               message.success("User updated successfully!");
               setIsModalOpen(false);
@@ -484,6 +492,21 @@ const AllAgentsRegistraction = () => {
                 </Select>
               </Form.Item>
             </Col>
+            <Col xs={24} md={8}>
+  <Form.Item
+    name="password"
+    label="New Password"
+    rules={[
+      {
+        min: 6,
+        message: "Password must be at least 6 characters",
+      },
+    ]}
+  >
+    <Input.Password placeholder="Leave blank to keep current password" />
+  </Form.Item>
+</Col>
+
             {selectedRole === "agent" && (
               <Col xs={24} md={8}>
                 <Form.Item
