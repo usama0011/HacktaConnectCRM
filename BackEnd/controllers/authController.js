@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/usermodel.js";
 import Attendance from "../models/attendanceModel.js";
-import moment from 'moment'
+import moment from 'moment-timezone'; // ✅ Correct import for timezone support
 import { Readable } from "stream";
 import csv from "csv-parser";
 
