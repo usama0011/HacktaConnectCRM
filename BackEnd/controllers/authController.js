@@ -97,23 +97,28 @@ export const loginUser = async (req, res) => {
       const now = moment();
       const today = moment().format("YYYY-MM-DD");
 
-      let shiftStart = moment(`${today} ${user.shiftStartTime}`, "YYYY-MM-DD hh:mm A");
-      let shiftEnd = moment(`${today} ${user.shiftEndTime}`, "YYYY-MM-DD hh:mm A");
+     let shiftStart = moment(`${today} ${user.shiftStartTime.trim()}`, "YYYY-MM-DD hh:mm A", true);
+let shiftEnd = moment(`${today} ${user.shiftEndTime.trim()}`, "YYYY-MM-DD hh:mm A", true);
 
-      // Handle overnight (e.g., 12 AM to 8 AM)
-      if (shiftEnd.isBefore(shiftStart)) {
-        shiftEnd.add(1, "day");
-      }
+  if (!shiftStart.isValid() || !shiftEnd.isValid()) {
+  return res.status(400).json({ message: "Invalid shift timings" });
+}
 
-      // ✅ Add 30-minute grace before shift and after shift
-      const allowedStart = shiftStart.clone().subtract(30, "minutes");
-      const allowedEnd = shiftEnd.clone().add(30, "minutes");
+if (shiftEnd.isBefore(shiftStart)) {
+  shiftEnd.add(1, "day");
+}
 
-      if (!now.isBetween(allowedStart, allowedEnd)) {
-        return res.status(403).json({
-          message: `Login only allowed from ${allowedStart.format("hh:mm A")} to ${allowedEnd.format("hh:mm A")}`,
-        });
-      }
+
+  const allowedStart = shiftStart.clone().subtract(30, "minutes");
+const allowedEnd = shiftEnd.clone().add(30, "minutes");
+
+
+   if (!now.isBetween(allowedStart, allowedEnd)) {
+  return res.status(403).json({
+    message: `Login only allowed from ${allowedStart.format("hh:mm A")} to ${allowedEnd.format("hh:mm A")}`,
+  });
+}
+
     }
 
     const token = jwt.sign(
