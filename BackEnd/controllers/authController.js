@@ -94,11 +94,20 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
 
     if (user.role === "agent") {
-      const now = moment();
+            const now = moment().tz("Asia/Karachi");
       const today = moment().format("YYYY-MM-DD");
 
-     let shiftStart = moment(`${today} ${user.shiftStartTime.trim()}`, "YYYY-MM-DD hh:mm A", true);
-let shiftEnd = moment(`${today} ${user.shiftEndTime.trim()}`, "YYYY-MM-DD hh:mm A", true);
+    
+      let shiftStart = moment.tz(
+        `${today} ${user.shiftStartTime.trim()}`,
+        "YYYY-MM-DD hh:mm A",
+        "Asia/Karachi"
+      );
+      let shiftEnd = moment.tz(
+        `${today} ${user.shiftEndTime.trim()}`,
+        "YYYY-MM-DD hh:mm A",
+        "Asia/Karachi"
+      );
 
   if (!shiftStart.isValid() || !shiftEnd.isValid()) {
   return res.status(400).json({ message: "Invalid shift timings" });
