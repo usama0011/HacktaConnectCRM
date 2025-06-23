@@ -41,6 +41,8 @@ const DownloadSalaryWokers = () => {
     shift: "",
     agentType: "",
     month: moment().startOf("month"), // Default to the current month
+    bankName: "", // ✅ Add this
+
   });
   const [formValues, setFormValues] = useState({
     date: moment(),
@@ -98,6 +100,7 @@ const DownloadSalaryWokers = () => {
           month: filters.month, // Use extracted month
           branch: filters.branch, // ✅ Added
           hasBankAccount: filters.hasBankAccount, // ✅ Added
+            bankName: filters.bankName, // ✅ Add this line
         },
       });
 
@@ -423,6 +426,25 @@ const DownloadSalaryWokers = () => {
             </Select>
           </Col>
         </Row>
+        <br />
+<Col xs={24} sm={8}>
+  <label>Filter Bank Name</label>
+  <Input
+    value={filters.bankName}
+    onChange={(e) => {
+      const bankName = e.target.value;
+      setFilters((prev) => ({
+        ...prev,
+        bankName,
+      }));
+      setFormValues((prev) => ({
+        ...prev,
+        bankName, // Sync with Bank Details input
+      }));
+    }}
+    placeholder="Enter Bank Name to Filter"
+  />
+</Col>
 
         {/* ✅ Bank Details Section */}
         <Divider

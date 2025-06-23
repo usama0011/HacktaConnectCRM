@@ -9,7 +9,7 @@ import moment from "moment";
 
 export const downloadSalarySheet = async (req, res) => {
   try {
-const { shift, agentType, year, month, branch, hasBankAccount } = req.query;
+const { shift, agentType, year, month, branch, hasBankAccount,bankName } = req.query;
 
     if (!shift || !agentType || !year || !month) {
       return res.status(400).json({ message: "Missing required parameters" });
@@ -27,6 +27,7 @@ let userQuery = {
 if (branch) userQuery.branch = branch;
 if (hasBankAccount === "true") userQuery.bankaccountstatus = true;
 else if (hasBankAccount === "false") userQuery.bankaccountstatus = false;
+if (bankName) userQuery.bankName = { $regex: bankName, $options: "i" }; // ✅ Add this line
 
 const users = await User.find(userQuery);
     let salaryFormula = null;
