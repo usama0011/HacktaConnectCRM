@@ -49,7 +49,7 @@ const AboutUs = () => {
             icon={<EnvironmentOutlined />}
             onClick={() =>
               window.open(
-                "https://www.google.com/maps/place/Hackta+Connect,+Chandani,+Lower+Ground,+silk+bank.+Next+to+D-Watson+,+Chandani+Chwok,+Chowk,+Rawalpindi,+46000",
+                "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3321.954690380083!2d73.0711438!3d33.6324168!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df9329dc74dc29%3A0x4c673150f0360381!2sHackta%20Connect!5e0!3m2!1sen!2s!4v1750946462001!5m2!1sen!2s",
                 "_blank"
               )
             }
@@ -72,3 +72,6 @@ const AboutUs = () => {
 };
 
 export default AboutUs;
+
+
+

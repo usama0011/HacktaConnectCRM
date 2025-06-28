@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Form, Input, Button, Typography, Checkbox, message } from "antd";
 import { LockOutlined, UserOutlined, GoogleOutlined } from "@ant-design/icons";
 import "../../styles/Login.css";
@@ -13,13 +13,27 @@ const { Title, Text } = Typography;
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
+  const [remember, setRemember] = useState(false);
+  const [formValues, setFormValues] = useState({
+  email: "",
+  password: "",
+});
+
   const navigate = useNavigate();
   const { login } = useUserContext();
 
   const handleLogin = async (values) => {
     try {
       setLoading(true);
-
+ if (remember) {
+      // Save to localStorage
+      localStorage.setItem("savedEmail", values.email);
+      localStorage.setItem("savedPassword", values.password);
+    } else {
+      // Clear if not remembered
+      localStorage.removeItem("savedEmail");
+      localStorage.removeItem("savedPassword");
+    }
       // ✅ API Call to login
       const res = await API.post("/auth/login", {
         username: values.email,
@@ -72,6 +86,7 @@ const Login = () => {
     }
   };
 
+
   return (
     <div className="login-container">
       {/* Left Section - Login Form */}
@@ -88,6 +103,13 @@ const Login = () => {
             layout="vertical"
             className="login-form"
             onFinish={handleLogin}
+            initialValues={{
+    email: localStorage.getItem("savedEmail") || "",
+    password: localStorage.getItem("savedPassword") || "",
+  }}
+  onValuesChange={(changedValues, allValues) => {
+    setFormValues(allValues);
+  }}
           >
             {/* Email Input */}
             <Form.Item
@@ -114,7 +136,13 @@ const Login = () => {
 
             {/* Remember Me & Forgot Password */}
             <div className="login-options">
-              <Checkbox>Remember for 30 days</Checkbox>
+             <Checkbox
+  checked={remember}
+  onChange={(e) => setRemember(e.target.checked)}
+>
+  Remember for 30 days
+</Checkbox>
+
               <Text className="forgot-password">Forgot password?</Text>
             </div>
 

@@ -39,17 +39,13 @@ const AddNewUser = () => {
   const [superAdminExists, setSuperAdminExists] = useState(false);
   const [hasBankAccount, setHasBankAccount] = useState(false);
 
-  const handleSubmit = async (values) => {
-    setLoading(true);
-    try {
-      const imageFile = values.userImage?.[0]?.originFileObj;
-      if (!imageFile) {
-        message.error("Please upload a user image");
-        setLoading(false);
-        return;
-      }
+const handleSubmit = async (values) => {
+  setLoading(true);
+  try {
+    let imageUrl = ""; // default empty
 
-      // Upload image to backend for S3
+    const imageFile = values.userImage?.[0]?.originFileObj;
+    if (imageFile) {
       const formData = new FormData();
       formData.append("image", imageFile);
 
@@ -58,52 +54,55 @@ const AddNewUser = () => {
         formData
       );
 
-      const imageUrl = uploadRes.data.url;
+      imageUrl = uploadRes.data.url;
       if (!imageUrl) {
         message.error("Image upload failed. Please try again.");
         setLoading(false);
         return;
       }
-
-      const userData = {
-        username: values.username,
-        password: values.password,
-        role: values.role,
-        shift: values.shift,
-        agentType: values.agentType,
-        agentName: values.agentName,
-        branch: values.branch,
-        joiningDate: values.joiningDate,
-        cnic: values.cnic,
-        userImage: imageUrl,
-        CreatedBy: user?.agentName,
-        bankaccountstatus: hasBankAccount,
-      };
-      if (hasBankAccount) {
-        userData.accountTitle = values.accountTitle;
-        userData.bankName = values.bankName;
-        userData.bankNumber = values.bankNumber;
-      }
-
-      await API.post("/auth/signup", userData);
-
-      message.success(`User "${values.username}" added successfully!`);
-      form.resetFields();
-      setHasBankAccount(false); // ✅ this is the correct state setter function
-    } catch (err) {
-      console.error("Submission Error:", err); // <-- Add this
-
-      if (err.response) {
-        message.error(`Error: ${err.response.data.message}`);
-      } else if (err.request) {
-        message.error("No response from server. Please check your connection.");
-      } else {
-        message.error("Something went wrong. Please try again.");
-      }
-    } finally {
-      setLoading(false);
     }
-  };
+
+    const userData = {
+      username: values.username,
+      password: values.password,
+      role: values.role,
+      shift: values.shift,
+      agentType: values.agentType,
+      agentName: values.agentName,
+      branch: values.branch,
+      joiningDate: values.joiningDate,
+      cnic: values.cnic,
+      userImage: imageUrl, // optional field
+      CreatedBy: user?.agentName,
+      bankaccountstatus: hasBankAccount,
+    };
+
+    if (hasBankAccount) {
+      userData.accountTitle = values.accountTitle;
+      userData.bankName = values.bankName;
+      userData.bankNumber = values.bankNumber;
+    }
+
+    await API.post("/auth/signup", userData);
+
+    message.success(`User "${values.username}" added successfully!`);
+    form.resetFields();
+    setHasBankAccount(false);
+  } catch (err) {
+    console.error("Submission Error:", err);
+
+    if (err.response) {
+      message.error(`Error: ${err.response.data.message}`);
+    } else if (err.request) {
+      message.error("No response from server. Please check your connection.");
+    } else {
+      message.error("Something went wrong. Please try again.");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     const checkSuperAdmin = async () => {
@@ -195,9 +194,7 @@ const AddNewUser = () => {
                 label="Upload User Image"
                 valuePropName="fileList"
                 getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-                rules={[
-                  { required: true, message: "Please upload a user image" },
-                ]}
+              
               >
                 <Dragger
                   name="file"

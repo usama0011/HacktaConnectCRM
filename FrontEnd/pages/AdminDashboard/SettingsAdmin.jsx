@@ -1,61 +1,114 @@
-import React, { useState } from "react";
-import { Card, Form, Select, Typography, Row, Col } from "antd";
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  Avatar,
+  Button,
+  Upload,
+  message,
+  Spin,
+} from "antd";
+import { InboxOutlined, UserOutlined } from "@ant-design/icons";
+import { useUserContext } from "../../context/UserContext";
+import API from "../../utils/BaseURL";
+import axios from "axios";
 import "../../styles/SettingsAdmin.css";
 
-const { Title, Text } = Typography;
-const { Option } = Select;
+const { Dragger } = Upload;
 
 const SettingsAdmin = () => {
-  const [filters, setFilters] = useState({
-    branch: "Branch A",
-    shift: "Morning",
-  });
+  const { user } = useUserContext();
+  const [profileImage, setProfileImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleFilterChange = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+  useEffect(() => {
+    if (user?.userImage) {
+      setProfileImage(user.userImage);
+    }
+  }, [user]);
+
+  const handleImageUpload = async () => {
+    if (!selectedFile) {
+      message.warning("Please select an image first.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+
+      const uploadRes = await axios.post(
+        "https://hackta-connect-crm-client.vercel.app/api/upload",
+        formData
+      );
+
+      const uploadedUrl = uploadRes.data?.url;
+
+      if (!uploadedUrl) {
+        message.error("Image upload failed.");
+        return;
+      }
+
+      await API.put(`/auth/edit/${user._id}`, {
+        userImage: uploadedUrl,
+      });
+
+      setProfileImage(uploadedUrl);
+      setSelectedFile(null);
+      message.success("Profile image updated!");
+    } catch (error) {
+      console.error("Upload error:", error);
+      message.error("Failed to update image.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="settings-admin-container">
-      <Title level={3} className="settings-title">
-        ⚙️ Admin Settings Panel
-      </Title>
+    <div className="settings-container">
+      <Card className="settings-card" bordered>
+        <h2>My Profile</h2>
 
-      <Row gutter={24}>
-        <Col xs={24} sm={12} md={8}>
-          <Form.Item label="Select Branch">
-            <Select
-              defaultValue={filters.branch}
-              onChange={(value) => handleFilterChange("branch", value)}
-            >
-              <Option value="Branch A">Branch A</Option>
-              <Option value="Branch B">Branch B</Option>
-            </Select>
-          </Form.Item>
-        </Col>
+        <div className="profile-image-section">
+          <Avatar
+            size={120}
+            src={profileImage}
+            icon={!profileImage && <UserOutlined />}
+          />
+        </div>
 
-        <Col xs={24} sm={12} md={8}>
-          <Form.Item label="Select Shift">
-            <Select
-              defaultValue={filters.shift}
-              onChange={(value) => handleFilterChange("shift", value)}
-            >
-              <Option value="Morning">Morning</Option>
-              <Option value="Evening">Evening</Option>
-              <Option value="Night">Night</Option>
-              <Option value="All Shifts">All Shifts</Option>
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row>
+        <Dragger
+          multiple={false}
+          accept="image/*"
+          showUploadList={false}
+          beforeUpload={(file) => {
+            const isImage = file.type.startsWith("image/");
+            if (!isImage) {
+              message.error("Only image files are allowed!");
+              return Upload.LIST_IGNORE;
+            }
+            setSelectedFile(file);
+            return false;
+          }}
+          className="upload-box"
+        >
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">
+            Click or drag to upload a new profile picture
+          </p>
+        </Dragger>
 
-      <Card className="json-code-card" title="Current Filters">
-        <pre className="json-output">
-          {`{
-  "branch": "${filters.branch}",
-  "shift": "${filters.shift}"
-}`}
-        </pre>
+        <Button
+          type="primary"
+          style={{ marginTop: 16 }}
+          onClick={handleImageUpload}
+          loading={loading}
+        >
+          Update Image
+        </Button>
       </Card>
     </div>
   );

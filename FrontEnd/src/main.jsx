@@ -92,6 +92,9 @@ import InfaticaAPIDetails from "../pages/AdminDashboard/InfaticaAPIDetails.jsx";
 import AboutUs from "../pages/generalPages/AboutUs.jsx";
 import AgentsCSVUPload from "../pages/AdminDashboard/AgentsCSVUPload.jsx";
 import UploadSalaryRecord from "../pages/AdminDashboard/UploadSalaryRecord.jsx";
+import UploadIPCSV from "../pages/AdminDashboard/UploadIPCSV.jsx";
+import UploadAttendanceCSV from "../pages/AdminDashboard/UploadAttendanceCSV.jsx";
+import UploadQCPointsCSV from "../pages/AdminDashboard/UploadQCPointsCSV.jsx";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -190,6 +193,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             >
               <Route index element={<AdminDashboard />} />
               <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="uploSIPCSV" element={<UploadIPCSV />} />
+              <Route path="uploadAttendanceCSV" element={<UploadAttendanceCSV />} />
+              <Route path="qcpointscsv" element={<UploadQCPointsCSV />} />
 
               <Route path="ipreportsusers" element={<AllUsersIPReport />} />
               <Route

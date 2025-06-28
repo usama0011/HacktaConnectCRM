@@ -15,6 +15,7 @@ import {
   Select,
   DatePicker,
   Form,
+  Upload,
 } from "antd";
 
 import {
@@ -27,11 +28,15 @@ import {
   BankOutlined,
   NumberOutlined,
   ExclamationCircleOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
 import "../../styles/ManagerUsers.css";
+const { Dragger } = Upload;
 import moment from "moment"; // Make sure this is imported at the top
 import { useNavigate } from "react-router-dom";
 import API from "../../utils/BaseURL";
+import { useUserContext } from "../../context/UserContext";
+import axios from "axios";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -39,24 +44,29 @@ const AllManagementRecord = () => {
   const [selectedRole, setSelectedRole] = useState("");
 
   const navigate = useNavigate();
+    const { user } = useUserContext();
   const [users, setUsers] = useState([]);
+  const [profileImage, setProfileImage] = useState(null);
+const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [editLoading, setEditLoading] = useState(false);
   const [form] = Form.useForm();
-  const handleEditUser = (user) => {
-    setEditingUser(user);
+const handleEditUser = (user) => {
+  setEditingUser(user);
+  setProfileImage(user.avatar || null);
+  setSelectedFile(null); // Reset previously selected file
 
-    // Fix joiningDate field
-    const formValues = {
-      ...user,
-      joiningDate: user.joiningDate ? moment(user.joiningDate) : null,
-    };
-
-    form.setFieldsValue(formValues);
-    setIsModalOpen(true);
+  const formValues = {
+    ...user,
+    joiningDate: user.joiningDate ? moment(user.joiningDate) : null,
   };
+
+  form.setFieldsValue(formValues);
+  setIsModalOpen(true);
+};
+
   const fetchUsers = async (filters = {}) => {
     setLoading(true);
     try {
@@ -192,12 +202,13 @@ const AllManagementRecord = () => {
       key: "role",
       render: (role) => {
         const roleColors = {
-          superadmin: "volcano",
+          "Super Admin": "volcano",
+          "Assistant Floor Manager":"orange",
           hr: "geekblue",
           floormanager: "cyan",
-          teamlead: "green",
-          teamleadwfh: "lime",
-          qc: "purple",
+          "Team Lead": "green",
+          "Team Lead WFH": "lime",
+          QC: "purple",
           agent: "gold",
           user: "magenta",
         };
@@ -212,26 +223,89 @@ const AllManagementRecord = () => {
         );
       },
     },
+{
+  title: "",
+  key: "action",
+  render: (text, record) => {
+    const currentUserId = user?._id;
+    const currentUserRole = user?.role;
+    const targetUserId = record._id;
+    const targetUserRole = record.role;
 
-    {
-      title: "", // For actions (no header icon)
-      key: "action",
-      render: (text, record) => (
-        <Dropdown
-          overlay={
-            <Menu>
-              <Menu.Item onClick={() => handleEditUser(record)}>Edit</Menu.Item>
-              <Menu.Item onClick={() => handleDeleteUser(record)}>
-                Delete
-              </Menu.Item>
-            </Menu>
-          }
-          trigger={["click"]}
-        >
-          <Button shape="circle" icon={<MoreOutlined />} />
-        </Dropdown>
-      ),
-    },
+    const isSelf = currentUserId === targetUserId;
+
+    const isSuperAdmin = currentUserRole === "Super Admin";
+    const isHR = currentUserRole === "HR";
+    const isFloorManager = currentUserRole === "Floor Manager";
+    const isManagement = isSuperAdmin || isHR || isFloorManager;
+
+    const isTargetSuperAdmin = targetUserRole === "Super Admin";
+
+    let canEdit = false;
+    let canDelete = false;
+
+    // --- Edit Rules ---
+    if (isSuperAdmin) {
+      canEdit = true; // Super Admin can edit everyone
+    } else if ((isHR || isFloorManager) && !isTargetSuperAdmin) {
+      canEdit = true; // HR/Floor Manager can edit all except Super Admin
+    } else if (isSelf) {
+      canEdit = true; // Others can only edit themselves
+    }
+
+    // --- Delete Rules ---
+    if (!isSelf) {
+      if (isSuperAdmin) {
+        canDelete = true; // Super Admin can delete others
+      } else if ((isHR || isFloorManager) && !isTargetSuperAdmin) {
+        canDelete = true; // HR/Floor Manager can delete others except Super Admin
+      }
+    } else {
+      // No one can delete themselves now (including Others)
+      canDelete = false;
+    }
+
+    const menuItems = [];
+
+    if (canEdit) {
+      menuItems.push(
+        <Menu.Item key="edit" onClick={() => handleEditUser(record)}>
+          Edit
+        </Menu.Item>
+      );
+    }
+
+    if (canDelete) {
+      menuItems.push(
+        <Menu.Item key="delete" onClick={() => handleDeleteUser(record)}>
+          Delete
+        </Menu.Item>
+      );
+    }
+
+    if (menuItems.length === 0) {
+      return (
+        <Button
+          shape="circle"
+          icon={<MoreOutlined />}
+          disabled
+          title="No actions available"
+        />
+      );
+    }
+
+    return (
+      <Dropdown overlay={<Menu>{menuItems}</Menu>} trigger={["click"]}>
+        <Button shape="circle" icon={<MoreOutlined />} />
+      </Dropdown>
+    );
+  },
+}
+
+
+
+
+
   ];
   //two cards one for the Agents and one the Management.
   return (
@@ -283,7 +357,7 @@ const AllManagementRecord = () => {
           <Table
             columns={columns}
             dataSource={users}
-            pagination={{ pageSize: 5 }}
+            pagination={{ pageSize: 50 }}
             className="user-table"
           />
         </div>
@@ -294,27 +368,130 @@ const AllManagementRecord = () => {
         onCancel={() => setIsModalOpen(false)}
         footer={null}
       >
+<div style={{ textAlign: "center", marginBottom: 20 }}>
+  {profileImage ? (
+  <div style={{ textAlign: "center", marginBottom: 20 }}>
+  {profileImage ? (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Avatar
+        size={100}
+        src={profileImage}
+        icon={!profileImage && <UserOutlined />}
+        style={{ borderRadius: "50%", marginBottom: 8 }}
+      />
+      <Button
+        type="link"
+        onClick={() => {
+          setProfileImage(null);
+          setSelectedFile(null);
+        }}
+      >
+        Change Image
+      </Button>
+    </div>
+  ) : (
+    <Upload
+      accept="image/*"
+      showUploadList={false}
+      beforeUpload={(file) => {
+        const isImage = file.type.startsWith("image/");
+        if (!isImage) {
+          message.error("Only image files are allowed!");
+          return Upload.LIST_IGNORE;
+        }
+
+        const previewUrl = URL.createObjectURL(file);
+        setProfileImage(previewUrl);
+        setSelectedFile(file);
+        return false; // prevent auto upload
+      }}
+    >
+      <Button icon={<InboxOutlined />}>Click or Drag Image to Upload</Button>
+    </Upload>
+  )}
+</div>
+
+  ) : (
+    <Dragger
+  name="file"
+  multiple={false}
+  showUploadList={false}
+  accept="image/*"
+  beforeUpload={(file) => {
+    const isImage = file.type.startsWith("image/");
+    if (!isImage) {
+      message.error("Only image files are allowed!");
+      return Upload.LIST_IGNORE;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    setProfileImage(previewUrl);
+    setSelectedFile(file);
+    return false; // Prevent automatic upload
+  }}
+  style={{
+    padding: 10,
+    borderRadius: 8,
+    background: "#fafafa",
+  }}
+>
+  <p className="ant-upload-drag-icon">
+    <InboxOutlined />
+  </p>
+  <p className="ant-upload-text">Click or drag user image to upload</p>
+</Dragger>
+
+  )}
+</div>
+
         <Form
           requiredMark={false}
           layout="vertical"
           form={form}
-          onFinish={async (values) => {
-            try {
-              if (!editingUser || !editingUser._id) {
-                message.error("User ID is missing. Cannot update.");
-                return;
-              }
-              setEditLoading(true);
-              await API.put(`/auth/edit/${editingUser._id}`, values);
-              message.success("User updated successfully!");
-              setIsModalOpen(false);
-              fetchUsers();
-            } catch (err) {
-              message.error("Update failed. Try again.");
-            } finally {
-              setEditLoading(false);
-            }
-          }}
+         onFinish={async (values) => {
+  try {
+    if (!editingUser || !editingUser._id) {
+      message.error("User ID is missing. Cannot update.");
+      return;
+    }
+
+    setEditLoading(true);
+    let uploadedImageUrl = profileImage;
+
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+
+      const uploadRes = await axios.post(
+        "https://hackta-connect-crm-client.vercel.app/api/upload",
+        formData
+      );
+
+      console.log("Upload Response:", uploadRes.data);
+      uploadedImageUrl = uploadRes.data.url;
+
+      if (!uploadedImageUrl) {
+        message.error("Image upload failed.");
+        return;
+      }
+    }
+
+    await API.put(`/auth/edit/${editingUser._id}`, {
+      ...values,
+      userImage: uploadedImageUrl,
+    });
+
+    message.success("User updated successfully!");
+    setIsModalOpen(false);
+    fetchUsers();
+  } catch (err) {
+    console.error("Update error:", err);
+    message.error("Update failed. Try again.");
+  } finally {
+    setEditLoading(false);
+  }
+}}
+
         >
           <Row gutter={16}>
             <Col xs={24} md={12}>

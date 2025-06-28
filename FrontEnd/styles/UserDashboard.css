@@ -478,7 +478,9 @@
   background-color: #032212 !important;
   color: white !important;
 }
-
+.chart-placeholder{
+  min-width:885px !important ;
+}
 /* Hide sidebar on mobile */
 @media (max-width: 768px) {
   .bitrix-sidebar {

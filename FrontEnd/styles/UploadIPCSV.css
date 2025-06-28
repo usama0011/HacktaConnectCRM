@@ -1,0 +1,43 @@
+.upload-ipcsv-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.upload-ipcsv-heading {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.ipcsv-dragger {
+  margin-bottom: 40px;
+  padding: 24px 0;
+  background-color: #fafafa;
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
+}
+
+.ipcsv-info-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.ipcsv-fields-table th,
+.ipcsv-fields-table td {
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+  .upload-ipcsv-heading {
+    font-size: 20px;
+  }
+
+  .ipcsv-fields-table {
+    font-size: 12px;
+  }
+
+  .ipcsv-dragger {
+    padding: 16px 0;
+  }
+}

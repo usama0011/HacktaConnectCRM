@@ -4,6 +4,7 @@ import { Calendar } from "primereact/calendar";
 import "../../styles/UploadSalaryRecord.css";
 import API from "../../utils/BaseURL";
 import { Column } from "@ant-design/plots"; // ✅ New import for chart
+import { DualAxes } from "@ant-design/plots";
 
 const { Title } = Typography;
 
@@ -59,24 +60,67 @@ const UploadSalaryRecord = () => {
     });
   }
 
-  const config = {
-    data: branchCostData,
-    xField: "branch",
-    yField: "cost",
-    colorField: "branch", // ✅ Important
-    color: ["#1e2d7d", "#10274a"], // ✅ Colors for each branch in order
-    label: {
-      position: "middle",
-      style: { fill: "#fff" },
+// Prepare data for the dual axes chart
+
+// Step 1 - Prepare stacked bar data per shift
+const uvBillData = [];
+
+branches.forEach((branch) => {
+  shifts.forEach((shift) => {
+    // sum costs for all agent types for this shift
+    const cost = summary
+      .filter(
+        (item) =>
+          item.branch === branch &&
+          item.shift === shift
+      )
+      .reduce((sum, item) => sum + parseFloat(item.cost || 0), 0);
+
+    uvBillData.push({
+      time: branch,
+      value: cost,
+      type: shift,
+    });
+  });
+});
+
+// Step 2 - Prepare line data for total cost
+const transformData = [];
+
+branches.forEach((branch) => {
+  const totalCost = uvBillData
+    .filter((d) => d.time === branch)
+    .reduce((sum, d) => sum + d.value, 0);
+
+  transformData.push({
+    time: branch,
+    count: totalCost,
+  });
+});
+
+const dualAxesConfig = {
+  xField: "time",
+  legend: true,
+  children: [
+    {
+      data: uvBillData,
+      type: "interval",
+      yField: "value",
+      stack: true,
+      colorField: "type",
+      style: { maxWidth: 80 },
+      interaction: { elementHighlight: { background: true } },
     },
-    xAxis: {
-      label: { autoHide: false, autoRotate: false },
+    {
+      data: transformData,
+      type: "line",
+      yField: "count",
+      style: { lineWidth: 2, stroke: "#FE911E" },
     },
-    meta: {
-      branch: { alias: "Branch Name" },
-      cost: { alias: "Total Salary Cost (Rs)" },
-    },
-  };
+  ],
+};
+
+
 
   return (
     <div className="upload-salary-container">
@@ -190,7 +234,8 @@ const UploadSalaryRecord = () => {
         <Divider orientation="center">
           <Title level={4}>Branch-wise Total Salary Cost (Rs)</Title>
         </Divider>
-        <Column {...config} />
+         <DualAxes {...dualAxesConfig} />
+
       </div>
     </div>
   );

@@ -132,7 +132,10 @@ if (branch) userQuery.branch = branch; // ✅ Add branch filter
       })
     );
 
-    res.status(200).json(salaryData);
+      // ✅ NEW STEP: Filter only agents with salary > 0
+    const filteredData = salaryData.filter((agent) => agent.salary > 0);
+
+    res.status(200).json(filteredData);
   } catch (error) {
     console.error("Error calculating salaries:", error);
     res.status(500).json({ message: "Server Error" });
@@ -150,29 +153,37 @@ export const getMonthlyBranchSalarySummary = async (req, res) => {
     const agentTypes = ["Office Agent", "WFH Agent"];
 
     // Fetch latest formulas
-    const officeFormula = await SalaryFormulaOfficeAgents.findOne().sort({ createdAt: -1 });
-    const wfhFormula = await WFHSalaryFormula.findOne().sort({ createdAt: -1 });
+    const officeFormula = await SalaryFormulaOfficeAgents.findOne().sort({
+      createdAt: -1,
+    });
+    const wfhFormula = await WFHSalaryFormula.findOne().sort({
+      createdAt: -1,
+    });
 
     const summary = [];
 
     for (const branch of branches) {
       for (const agentType of agentTypes) {
         for (const shift of shifts) {
+          // Find users for this combination
           const users = await User.find({
-            branch,
-            agentType,
-            shift: new RegExp(`^${shift}$`, "i"), // case-insensitive shift match
-            role: "agent",
+            branch: new RegExp(`^${branch}$`, "i"),
+            agentType: new RegExp(`^${agentType}$`, "i"),
+            shift: new RegExp(`^${shift}$`, "i"),
+            role: { $regex: /^agent$/i },
           });
 
           let totalSessions = 0;
           let totalClicks = 0;
 
-          for (const user of users) {
-            const ipData = await IP.aggregate([
+          if (users.length > 0) {
+            const userIds = users.map((u) => u._id);
+
+            // ✅ Bulk aggregate IP data for all users at once
+            const ipAgg = await IP.aggregate([
               {
                 $match: {
-                  userId: user._id,
+                  userId: { $in: userIds },
                   date: { $gte: start, $lte: end },
                 },
               },
@@ -185,9 +196,8 @@ export const getMonthlyBranchSalarySummary = async (req, res) => {
               },
             ]);
 
-       
-            totalSessions += ipData[0]?.totalSessions || 0;
-            totalClicks += ipData[0]?.totalClicks || 0;
+            totalSessions = ipAgg[0]?.totalSessions || 0;
+            totalClicks = ipAgg[0]?.totalClicks || 0;
           }
 
           let sessionCost = 0;
@@ -201,12 +211,15 @@ export const getMonthlyBranchSalarySummary = async (req, res) => {
             clickCost = wfhFormula.clickCost || 0;
           }
 
-          const cost = (totalSessions * sessionCost + totalClicks * clickCost).toFixed(2);
+          const cost = (
+            totalSessions * sessionCost +
+            totalClicks * clickCost
+          ).toFixed(2);
 
           summary.push({
             branch,
             agentType,
-            shift: shift.charAt(0).toUpperCase() + shift.slice(1), // Capitalized for UI
+            shift: shift.charAt(0).toUpperCase() + shift.slice(1),
             totalSessions,
             totalClicks,
             totalIPs: totalSessions + totalClicks,

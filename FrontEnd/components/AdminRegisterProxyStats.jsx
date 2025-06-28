@@ -10,6 +10,7 @@ import {
   BankOutlined,
 } from "@ant-design/icons";
 import API from "../utils/BaseURL";
+import { Link } from "react-router-dom";
 
 const AdminRegisterProxyStats = () => {
   const [users, setUsers] = useState([]);
@@ -122,7 +123,7 @@ const AdminRegisterProxyStats = () => {
     angleField: "value",
     colorField: "type",
     radius: 0.8,
-    height: 220,
+    height: 500,
     // ✅ Custom color scale
     scale: {
       color: {
@@ -158,7 +159,12 @@ const AdminRegisterProxyStats = () => {
     <div className="CRM-stats-orders-wrapper">
       <div className="CRM-statistics-card donatgraphcharforme">
         <h2>
-          Statistics <span className="CRM-more-link">More ➔</span>
+          Statistics <span className="CRM-more-link">
+            <Link to="/admin/dashboard/allmangemenrerecord">
+          More ➔
+          
+          </Link>
+          </span>
         </h2>
         {loading ? (
           <Skeleton active paragraph={{ rows: 4 }} />
@@ -171,7 +177,11 @@ const AdminRegisterProxyStats = () => {
 
       <div className="CRM-orders-card">
         <h2>
-          Management List <span className="CRM-more-link">More ➔</span>
+          Management List <span className="CRM-more-link"> <Link to="/admin/dashboard/allmangemenrerecord">
+          More ➔
+          
+          </Link>
+          </span>
         </h2>
         {loading ? (
           <Skeleton active paragraph={{ rows: 5 }} />
@@ -181,7 +191,7 @@ const AdminRegisterProxyStats = () => {
             columns={columns}
             dataSource={users}
             rowKey="_id"
-            pagination={false}
+            pagination={true}
           />
         )}
       </div>

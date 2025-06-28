@@ -430,20 +430,31 @@ const DownloadSalaryWokers = () => {
 <Col xs={24} sm={8}>
   <label>Filter Bank Name</label>
   <Input
-    value={filters.bankName}
-    onChange={(e) => {
-      const bankName = e.target.value;
-      setFilters((prev) => ({
+  value={filters.bankName}
+  onChange={(e) => {
+    const bankName = e.target.value;
+
+    setFilters((prev) => ({
+      ...prev,
+      bankName,
+    }));
+
+    // ✅ Only auto-fill Bank Details if NOT typing "Other Bank"
+    if (bankName.toLowerCase() !== "other bank") {
+      setFormValues((prev) => ({
         ...prev,
         bankName,
       }));
+    } else {
       setFormValues((prev) => ({
         ...prev,
-        bankName, // Sync with Bank Details input
+        bankName: "",
       }));
-    }}
-    placeholder="Enter Bank Name to Filter"
-  />
+    }
+  }}
+  placeholder="Enter Bank Name to Filter"
+/>
+
 </Col>
 
         {/* ✅ Bank Details Section */}

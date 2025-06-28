@@ -213,6 +213,38 @@ const AllAgentsRegistraction = () => {
     {
       title: (
         <span>
+          <IdcardOutlined style={{ marginRight: 6 }} />
+          Role
+        </span>
+      ),
+      dataIndex: "agentType",
+      key: "agentType",
+      width: 200, // ✅
+      render: (role) => {
+        const roleColors = {
+          superadmin: "volcano",
+          hr: "geekblue",
+          floormanager: "cyan",
+          teamlead: "green",
+          teamleadwfh: "lime",
+          qc: "purple",
+          agent: "gold",
+          user: "magenta",
+        };
+
+        return (
+          <Tag
+            color={roleColors[role] || "default"}
+            style={{ textTransform: "capitalize" }}
+          >
+            {role}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: (
+        <span>
           <BankOutlined style={{ marginRight: 6 }} />
           Branch
         </span>

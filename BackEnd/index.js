@@ -13,6 +13,7 @@ import salaryCalculatorOfficeAgents from "./routes/salaryFormulaOfficeagentsrout
 import mangoProxyRoutes from "./routes/mangoproxy.js";
 import mangoProxyRoutesb from "./routes/mangoproxyb.js";
 import DownloadSalaryReport from "./routes/downloadsalaryroute.js";
+import threeTierMainRoute from './routes/threetierCSVRoute.js'
 // Import all route files
 import taskRoutes from "./routes/taskRoutes.js";
 
@@ -22,6 +23,8 @@ import ipRoutes from "./routes/ipRoutes.js";
 import salaryRoutes from "./routes/salaryRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import attendanceRoutes from "./routes/attendanceRoutes.js"; // Ensure this file is created for attendance management
+import threeTierMainRouteAttendance from "./routes/threetierAttendanceCSV.js"; // Ensure this file is created for attendance management
+import threeTierMainRouteQC from "./routes/qcpointsuploadcsvroute.js"; // Ensure this file is created for attendance management
 import { calculateGeneralSalary } from "./routes/salarySessionsClicks.js";
 
 // Load environment variables
@@ -69,6 +72,10 @@ app.use("/api/mangoproxy", mangoProxyRoutes);
 app.use("/api/mangoproxyb", mangoProxyRoutesb);
 app.use("/api/salarycalculator", calculateGeneralSalary);
 app.use("/api/downloadslarayreport", DownloadSalaryReport);
+app.use("/api/threetiercsv", threeTierMainRoute);
+app.use("/api/threetiercsvattendance", threeTierMainRouteAttendance);
+app.use("/api/threetiercsvqc", threeTierMainRouteQC);
+
 
 app.use("/api/salary", salaryRoutes); // Salary Management (Draft, Edit, Finalize)
 app.use("/api/reports", reportRoutes); // User Reports (By Year, Month, Day)

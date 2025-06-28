@@ -9,6 +9,7 @@ import {
   DatePicker,
   Progress,
   Table,
+  Skeleton,
 } from "antd";
 import dayjs from "dayjs";
 
@@ -35,9 +36,12 @@ import { Calendar } from "primereact/calendar";
 import { Link } from "react-router-dom";
 const UserDashboard = () => {
   const [selectedRange, setSelectedRange] = React.useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(null);
   const [recentTasks, setRecentTasks] = useState([]);
   const [cardStats, setCardStats] = useState(null);
   const [monthlyIPs, setMonthlyIPs] = useState([]);
+  const [loadingCards, setLoadingCards] = useState(false);
+const [loadingChart, setLoadingChart] = useState(false);
 
   const { user } = useUserContext();
   console.log(user._id);
@@ -201,105 +205,132 @@ const UserDashboard = () => {
           }}
         >
           <Calendar
-            value={selectedRange[0]?.toDate?.() || null}
-            onChange={(e) =>
-              setSelectedRange([dayjs(e.value), selectedRange?.[1] || null])
-            }
-            maxDate={new Date()}
-            dateFormat="M dd, yy"
-            placeholder="Start Date"
-            showIcon
-            className="range-calendar"
-          />
-          <span style={{ alignSelf: "center" }}>→</span>
-          <Calendar
-            value={selectedRange[1]?.toDate?.() || null}
-            onChange={(e) =>
-              setSelectedRange([selectedRange?.[0] || null, dayjs(e.value)])
-            }
-            minDate={selectedRange?.[0]?.toDate?.() || null}
-            maxDate={new Date()}
-            dateFormat="M dd, yy"
-            placeholder="End Date"
-            showIcon
-            className="range-calendar"
-          />
+  view="month"
+  dateFormat="yy-mm"
+  showIcon
+  value={selectedMonth?.toDate?.() || null}
+  onChange={(e) => setSelectedMonth(dayjs(e.value))}
+  maxDate={new Date()}
+  placeholder="Select Month"
+  className="range-calendar"
+/>
+<Button
+  type="primary"
+    disabled={!selectedMonth}
+  onClick={() => {
+    if (!selectedMonth) return;
+
+    const year = selectedMonth.format("YYYY");
+    const month = selectedMonth.format("MM");
+
+    setLoadingCards(true);
+    setLoadingChart(true);
+
+    Promise.all([
+      API.get(`/ip/getcardssummery/${user._id}`, { params: { year, month } }),
+      API.get(`/ip/monthlyips/${user._id}`, { params: { year, month } }),
+    ])
+      .then(([cardRes, ipRes]) => {
+        setCardStats(cardRes.data);
+        setMonthlyIPs(ipRes.data);
+      })
+      .catch((error) => {
+        console.error("Apply error:", error);
+      })
+      .finally(() => {
+        setLoadingCards(false);
+        setLoadingChart(false);
+      });
+  }}
+>
+  Apply
+</Button>
+
+
         </div>
       </div>
       <Row gutter={[24, 24]}>
         <Col xs={24} sm={12} md={8}>
           <Card className="dash-card dash-purple">
-            <div className="dash-stat-flex">
-              <img src={ComputerIcon} alt="icon" className="dash-stat-icon" />
-              <Statistic
-                title="Total Sessions"
-                value={cardStats ? cardStats.sessions.current : 0}
-              />
-            </div>
-            <p className="dash-sub">
-              last month {cardStats?.sessions.lastMonth || 0}{" "}
-              {cardStats?.sessions.up ? (
-                <RiseOutlined style={{ color: "green" }} />
-              ) : (
-                <BarChartOutlined style={{ color: "red" }} />
-              )}
-            </p>
-          </Card>
+  <Skeleton loading={loadingCards} active round>
+    <div className="dash-stat-flex">
+      <img src={ComputerIcon} alt="icon" className="dash-stat-icon" />
+      <Statistic
+        title="Total Sessions"
+        value={cardStats ? cardStats.sessions.current : 0}
+      />
+    </div>
+    <p className="dash-sub">
+      last month {cardStats?.sessions.lastMonth || 0}{" "}
+      {cardStats?.sessions.up ? (
+        <RiseOutlined style={{ color: "green" }} />
+      ) : (
+        <BarChartOutlined style={{ color: "red" }} />
+      )}
+    </p>
+  </Skeleton>
+</Card>
         </Col>
 
         <Col xs={24} sm={12} md={8}>
           <Card className="dash-card dash-blue">
-            <div className="dash-stat-flex">
-              <img src={ComputerClick} alt="icon" className="dash-stat-icon" />
-              <Statistic
-                title="Total Clicks"
-                value={cardStats ? cardStats.clicks.current : 0}
-              />
-            </div>
-            <p className="dash-sub">
-              last month {cardStats?.clicks.lastMonth || 0}{" "}
-              {cardStats?.clicks.up ? (
-                <RiseOutlined style={{ color: "green" }} />
-              ) : (
-                <BarChartOutlined style={{ color: "red" }} />
-              )}
-            </p>
-          </Card>
+  <Skeleton loading={loadingCards} active round>
+    <div className="dash-stat-flex">
+      <img src={ComputerClick} alt="icon" className="dash-stat-icon" />
+      <Statistic
+        title="Total Clicks"
+        value={cardStats ? cardStats.clicks.current : 0}
+      />
+    </div>
+    <p className="dash-sub">
+      last month {cardStats?.clicks.lastMonth || 0}{" "}
+      {cardStats?.clicks.up ? (
+        <RiseOutlined style={{ color: "green" }} />
+      ) : (
+        <BarChartOutlined style={{ color: "red" }} />
+      )}
+    </p>
+  </Skeleton>
+</Card>
+
         </Col>
 
         <Col xs={24} sm={12} md={8}>
-          <Card className="dash-card dash-green">
-            <div className="dash-stat-flex">
-              <img src={ComputerPoints} alt="icon" className="dash-stat-icon" />
-              <Statistic
-                title="Total IPs"
-                value={cardStats ? cardStats.ips.current : 0}
-              />
-            </div>
-            <p className="dash-sub">
-              last month {cardStats?.ips.lastMonth || 0}{" "}
-              {cardStats?.ips.up ? (
-                <RiseOutlined style={{ color: "green" }} />
-              ) : (
-                <BarChartOutlined style={{ color: "red" }} />
-              )}
-            </p>
-          </Card>
+         <Card className="dash-card dash-green">
+  <Skeleton loading={loadingCards} active round>
+    <div className="dash-stat-flex">
+      <img src={ComputerPoints} alt="icon" className="dash-stat-icon" />
+      <Statistic
+        title="Total IPs"
+        value={cardStats ? cardStats.ips.current : 0}
+      />
+    </div>
+    <p className="dash-sub">
+      last month {cardStats?.ips.lastMonth || 0}{" "}
+      {cardStats?.ips.up ? (
+        <RiseOutlined style={{ color: "green" }} />
+      ) : (
+        <BarChartOutlined style={{ color: "red" }} />
+      )}
+    </p>
+  </Skeleton>
+</Card>
+
         </Col>
       </Row>
 
       <Row gutter={[24, 24]} style={{ marginTop: 20 }}>
-        <Col xs={24} md={16}>
-          <Card className="dash-card">
-            <div className="card-header">
-              <span style={{ fontWeight: "bold" }}>Monthly IPs</span>
-              <Button className="dash-export-btn">Export</Button>
-            </div>
-            <div className="chart-placeholder" style={{ height: 300 }}>
-              <Column {...ipConfig} />
-            </div>
-          </Card>
-        </Col>
+        <Card className="dash-card">
+  <div className="card-header">
+    <span style={{ fontWeight: "bold" }}>Monthly IPs</span>
+    <Button className="dash-export-btn">Export</Button>
+  </div>
+  <Skeleton loading={loadingChart} active round>
+    <div className="chart-placeholder" style={{ height: 300,minWidth:"100%" }}>
+      <Column  {...ipConfig} />
+    </div>
+  </Skeleton>
+</Card>
 
         <Col xs={24} md={8}>
           <Card className="dash-card">

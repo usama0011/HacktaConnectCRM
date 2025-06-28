@@ -1,0 +1,43 @@
+.upload-qcpoints-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.upload-qcpoints-heading {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.qcpoints-dragger {
+  margin-bottom: 40px;
+  padding: 24px 0;
+  background-color: #fafafa;
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
+}
+
+.qcpoints-info-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.qcpoints-fields-table th,
+.qcpoints-fields-table td {
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+  .upload-qcpoints-heading {
+    font-size: 20px;
+  }
+
+  .qcpoints-fields-table {
+    font-size: 12px;
+  }
+
+  .qcpoints-dragger {
+    padding: 16px 0;
+  }
+}

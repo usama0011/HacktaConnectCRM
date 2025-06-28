@@ -355,7 +355,7 @@ const AgentsSalaryRecord = () => {
           dataSource={visibleData}
           columns={columns}
           loading={loading}
-          pagination={{ pageSize: 6 }}
+          pagination={{ pageSize: 100 }}
           rowKey="key"
           scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
         />

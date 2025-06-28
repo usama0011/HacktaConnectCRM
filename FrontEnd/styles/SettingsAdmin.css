@@ -1,28 +1,31 @@
-.settings-admin-container {
-  padding: 40px 24px;
-  max-width: 1000px;
-  margin: auto;
+.settings-container {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  background-color: #f4f6f8;
 }
 
-.settings-title {
-  font-weight: 600;
-  margin-bottom: 24px;
-  color: #1e2d7d;
-}
-
-.json-code-card {
-  margin-top: 32px;
-  background-color: #f9fafb;
+.settings-card {
+  max-width: 480px;
+  width: 100%;
+  background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 60, 47, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 24px;
 }
 
-.json-output {
-  background-color: #1e1e1e;
-  color: #dcdcdc;
-  padding: 16px;
-  font-size: 14px;
+.profile-image-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.upload-box {
+  margin-bottom: 16px;
+  background-color: #fafafa;
   border-radius: 8px;
-  font-family: "Courier New", Courier, monospace;
-  overflow-x: auto;
+  padding: 16px;
 }

@@ -207,14 +207,14 @@ const MyProfile = () => {
                 </Form.Item>
 
                 <Form.Item label="Bank Account Name" name="bankName">
-                  <Input
+                  <Input disabled
                     prefix={<BankOutlined />}
                     placeholder="Enter your bank name"
                   />
                 </Form.Item>
 
                 <Form.Item label="Bank Account Number" name="bankNumber">
-                  <Input
+                  <Input disabled
                     prefix={<BankOutlined />}
                     placeholder="Enter your account number"
                   />

@@ -208,6 +208,14 @@ const Sidebar = ({ visible, onClose }) => {
                 Terms & Policies
               </Link>
             </Menu.Item>
+            <Menu.Item
+              key="/admin/dashboard/settings"
+              icon={<SettingOutlined className="sidebariconspecial" />}
+            >
+              <Link to="/admin/dashboard/settings">
+                Settings
+              </Link>
+            </Menu.Item>
           </Menu>
         </div>
 

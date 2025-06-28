@@ -41,8 +41,8 @@ const salaryCards = [
     buttonText: "Manage Calculator",
   },
   {
-    title: "Upload Salary Record",
-    subtitle: "Add or upload new salary data",
+    title: "Salary Aggrigation",
+    subtitle: "Monthly Baisc Salary by Branch",
     icon: "",
     iconComponent: <UploadOutlined />,
     image:

@@ -93,7 +93,7 @@ const AllUsersIPReport = () => {
 
   const columns = [
     {
-      title: "User",
+      title: "Full Name",
       dataIndex: "username",
       key: "username",
       render: (text, record) => (
@@ -107,6 +107,8 @@ const AllUsersIPReport = () => {
       title: "Shift",
       dataIndex: "shift",
       key: "shift",
+      render: (text) => text ? text.charAt(0).toUpperCase() + text.slice(1) : "",
+
     },
     {
       title: "Agent Type",

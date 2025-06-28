@@ -112,17 +112,15 @@ const UserLayout = () => {
             <Menu.Item key="2" icon={<UserOutlined />}>
               <Link to="/user/dashboard/myprofile">My Profile</Link>
             </Menu.Item>
-            <Menu.Item key="3" icon={<FileTextOutlined />}>
-              <Link to="/user/dashboard/myrecord">My Records</Link>
-            </Menu.Item>
+           
             <Menu.Item key="7" icon={<UploadOutlined />}>
               <Link to="/user/dashboard/uploadwork">Upload Work</Link>
             </Menu.Item>
-            <Menu.Item key="8" icon={<CalculatorOutlined />}>
+            {/* <Menu.Item key="8" icon={<CalculatorOutlined />}>
               <Link to="/user/dashboard/generalsalarycalculator">
                 Salary Calculator
               </Link>
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item key="9" icon={<SettingOutlined />}>
               <Link to="/user/dashboard/settings">Settings</Link>
             </Menu.Item>
@@ -131,9 +129,9 @@ const UserLayout = () => {
                 Terms & Policies
               </Link>
             </Menu.Item>
-            <Menu.Item key="11" icon={<QuestionCircleOutlined />}>
+            {/* <Menu.Item key="11" icon={<QuestionCircleOutlined />}>
               <Link to="/user/dashboard/faqs">Faqs</Link>
-            </Menu.Item>
+            </Menu.Item> */}
           </Menu>
           <div className="user-sidebar-footer">
             <Button
@@ -169,7 +167,7 @@ const UserLayout = () => {
             )}
           </div>
           <div className="header-left">
-            <h2>Welcome {user?.username}!</h2>
+            <h2 style={{color:"#283883"}}>Welcome {user?.username}!</h2>
           </div>
 
           <div className="header-center">

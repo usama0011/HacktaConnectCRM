@@ -33,6 +33,27 @@ const RecordsDashboard = () => {
       buttonText: "Upload CSV",
       route: "/admin/dashboard/agentcsv",
     },
+    {
+      title: "Upload IPs Data CSV",
+      description: "Upload IP data via CSV for shift-based login tracking and IP assignment.",
+      image: <img src={FileUPloadAgent} />,
+      buttonText: "Upload IPs CSV",
+      route: "/admin/dashboard/uploSIPCSV",
+    },
+    {
+      title: "Upload QCPoints CSV",
+      description: "Bulk upload QC Points data using CSV format for performance analysis.",
+      image: <img src={FileUPloadAgent} />,
+      buttonText: "Upload QCPoints CSV",
+      route: "/admin/dashboard/qcpointscsv",
+    },
+    {
+      title: "Upload Attendance CSV",
+      description: "Upload daily or monthly attendance data via CSV for automated recordkeeping.",
+      image: <img src={FileUPloadAgent} />,
+      buttonText: "Upload Attendance CSV",
+      route: "/admin/dashboard/uploadAttendanceCSV",
+    },
   ];
 
   return (

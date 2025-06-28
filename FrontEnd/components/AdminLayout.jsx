@@ -28,13 +28,25 @@ const AdminLayout = () => {
     setIsMobileSidebarVisible(!isMobileSidebarVisible);
   };
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
+     const savedEmail = localStorage.getItem("savedEmail");
+  const savedPassword = localStorage.getItem("savedPassword");
+
+  localStorage.clear();
+
+  if (savedEmail) {
+    localStorage.setItem("savedEmail", savedEmail);
+  }
+  if (savedPassword) {
+    localStorage.setItem("savedPassword", savedPassword);
+  }
+
+   window.location.href = "/login";
+
   };
   const menu = (
     <Menu>
       <Menu.Item key="settings" icon={<SettingOutlined />}>
-        <span onClick={() => navigate("/admin/settings")}>Settings</span>
+        <span onClick={() => navigate("/admin/dashboard/settings")}>Settings</span>
       </Menu.Item>
       <Menu.Item key="logout" icon={<LogoutOutlined />}>
         <span onClick={handleLogout}>Logout</span>
