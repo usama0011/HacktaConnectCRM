@@ -5,7 +5,7 @@ import { uploadQCPointsCSV } from "../controllers/uploadqcPointControllercsv.js"
 const router = express.Router();
 
 // Store uploaded CSV temporarily in "uploads" folder
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.post("/upload-csv", upload.single("file"), uploadQCPointsCSV);
 

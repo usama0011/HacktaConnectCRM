@@ -3,6 +3,11 @@ import csv from "csv-parser";
 import User from "../models/usermodel.js"
 import IP from "../models/ipmodel.js";
 
+import { Readable } from "stream";
+import csv from "csv-parser";
+import User from "../models/usermodel.js";
+import IP from "../models/ipmodel.js";
+
 export const uploadIPCSV = async (req, res) => {
   try {
     if (!req.file) {
@@ -11,8 +16,9 @@ export const uploadIPCSV = async (req, res) => {
 
     const results = [];
 
-    // Stream CSV
-    fs.createReadStream(req.file.path)
+    const stream = Readable.from(req.file.buffer);
+
+    stream
       .pipe(csv())
       .on("data", (data) => {
         results.push(data);
@@ -25,15 +31,13 @@ export const uploadIPCSV = async (req, res) => {
 
           if (!username) continue;
 
-          // Find user by username
           const user = await User.findOne({ username });
 
           if (!user) {
             console.log(`⚠️ User not found: ${username}`);
-            continue; // Skip rows without matching user
+            continue;
           }
 
-          // Build IP record
           ipDocs.push({
             userId: user._id,
             username: user.username,
@@ -56,9 +60,6 @@ export const uploadIPCSV = async (req, res) => {
         } else {
           res.status(400).json({ message: "No valid records found in CSV" });
         }
-
-        // Delete temp file after reading
-        fs.unlinkSync(req.file.path);
       });
   } catch (error) {
     console.error(error);

@@ -1,4 +1,4 @@
-import fs from "fs";
+import { Readable } from "stream";
 import csv from "csv-parser";
 import User from "../models/usermodel.js";
 import QCPoint from "../models/qcPointModel.js";
@@ -11,7 +11,9 @@ export const uploadQCPointsCSV = async (req, res) => {
 
     const results = [];
 
-    fs.createReadStream(req.file.path)
+    const stream = Readable.from(req.file.buffer);
+
+    stream
       .pipe(csv())
       .on("data", (data) => {
         results.push(data);
@@ -24,7 +26,6 @@ export const uploadQCPointsCSV = async (req, res) => {
 
           if (!username) continue;
 
-          // Find user by username
           const user = await User.findOne({ username });
 
           if (!user) {
@@ -32,7 +33,6 @@ export const uploadQCPointsCSV = async (req, res) => {
             continue;
           }
 
-          // Convert values from string "0"/"1" to numbers
           const time = Number(row.time || 0);
           const profilePattern = Number(row.profilePattern || 0);
           const pacePerHour = Number(row.pacePerHour || 0);
@@ -74,8 +74,6 @@ export const uploadQCPointsCSV = async (req, res) => {
         } else {
           res.status(400).json({ message: "No valid records found in CSV" });
         }
-
-        fs.unlinkSync(req.file.path);
       });
   } catch (error) {
     console.error(error);

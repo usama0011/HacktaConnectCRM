@@ -4,7 +4,8 @@ import { uploadAttendanceCSV } from "../controllers/threetierattendanceControlle
 
 const router = express.Router();
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ storage: multer.memoryStorage() });
+
 
 router.post("/upload-csv", upload.single("file"), uploadAttendanceCSV);
 

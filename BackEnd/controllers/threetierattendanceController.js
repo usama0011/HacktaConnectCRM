@@ -1,4 +1,4 @@
-import fs from "fs";
+import { Readable } from "stream";
 import csv from "csv-parser";
 import User from "../models/usermodel.js";
 import Attendance from "../models/attendanceModel.js";
@@ -11,7 +11,9 @@ export const uploadAttendanceCSV = async (req, res) => {
 
     const results = [];
 
-    fs.createReadStream(req.file.path)
+    const stream = Readable.from(req.file.buffer);
+
+    stream
       .pipe(csv())
       .on("data", (data) => {
         results.push(data);
@@ -53,10 +55,10 @@ export const uploadAttendanceCSV = async (req, res) => {
             recordsInserted: attendanceDocs.length,
           });
         } else {
-          res.status(400).json({ message: "No valid records found in CSV" });
+          res
+            .status(400)
+            .json({ message: "No valid records found in CSV" });
         }
-
-        fs.unlinkSync(req.file.path);
       });
   } catch (error) {
     console.error(error);

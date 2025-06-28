@@ -27,7 +27,16 @@ let userQuery = {
 if (branch) userQuery.branch = branch;
 if (hasBankAccount === "true") userQuery.bankaccountstatus = true;
 else if (hasBankAccount === "false") userQuery.bankaccountstatus = false;
-if (bankName) userQuery.bankName = { $regex: bankName, $options: "i" }; // ✅ Add this line
+if (bankName) {
+  if (bankName.toLowerCase() === "other bank") {
+    userQuery.bankName = {
+      $nin: ["Habib Metro Bank", "Bank Alfalah"],
+    };
+  } else {
+    userQuery.bankName = { $regex: bankName, $options: "i" };
+  }
+}
+
 
 const users = await User.find(userQuery);
     let salaryFormula = null;
