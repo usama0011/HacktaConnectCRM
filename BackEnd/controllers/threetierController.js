@@ -1,8 +1,3 @@
-import fs from "fs";
-import csv from "csv-parser";
-import User from "../models/usermodel.js"
-import IP from "../models/ipmodel.js";
-
 import { Readable } from "stream";
 import csv from "csv-parser";
 import User from "../models/usermodel.js";
