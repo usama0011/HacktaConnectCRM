@@ -6,8 +6,7 @@ import IP from "../models/ipmodel.js"; // ✅ Import IP model
 export const getQCPointsByDate = async (req, res) => {
   try {
     console.log(req.user)
-    const { date, shift, agentType, branch,username } = req.query;
-    console.log(date,shift,agentType,branch)
+    const { date, shift, agentType, branch,agentName } = req.query;
     if (!date) {
       return res.status(400).json({ message: "Date is required" });
     }
@@ -22,8 +21,8 @@ export const getQCPointsByDate = async (req, res) => {
     if (shift) agentQuery.shift = shift;
     if (agentType) agentQuery.agentType = agentType;
     if (branch) agentQuery.branch = branch;
-if (username) {
-  agentQuery.username = { $regex: req.query.username, $options: "i" };
+if (agentName) {
+  agentQuery.agentName = { $regex: req.query.agentName, $options: "i" };
 }
 
 if (
@@ -41,7 +40,7 @@ if (
 }
 
 
-    const agents = await User.find(agentQuery, "username userImage role shift agentType branch");
+    const agents = await User.find(agentQuery, "agentName userImage role shift agentType branch");
     if (!agents.length) {
       return res.status(404).json({ message: "No agents found" });
     }
@@ -56,7 +55,7 @@ if (
       const point = points.find((p) => p.userId.toString() === agent._id.toString());
       return {
         _id: agent._id,
-        name: agent.username,
+        name: agent.agentName,
         avatar: agent.userImage || "https://i.pravatar.cc/50?u=default",
         role: agent.role,
         shift: agent.shift,
@@ -157,7 +156,7 @@ export const upsertQCPoint = async (req, res) => {
 
 export const getMonthlyQCPointsSummary = async (req, res) => {
   try {
-    const { year, month, shift, agentType, branch,username } = req.query;
+    const { year, month, shift, agentType, branch,agentName } = req.query;
 
     if (!year || !month) {
       return res.status(400).json({ message: "Year and Month are required" });
@@ -171,8 +170,8 @@ export const getMonthlyQCPointsSummary = async (req, res) => {
     if (shift) userQuery.shift = shift;
     if (agentType) userQuery.agentType = agentType;
     if (branch) userQuery.branch = branch;
-    if (username) {
-  userQuery.username = { $regex: username, $options: "i" };
+    if (agentName) {
+  userQuery.agentName = { $regex: agentName, $options: "i" };
 }
     if (req.user.role === "Team Lead") {
       userQuery.shift = req.user.shift;

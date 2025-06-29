@@ -303,41 +303,44 @@ export const getMonthlyIPCounts = async (req, res) => {
     });
   }
 };
-// ✅ Controller to Get Daily Agent IPs with History
 export const getDailyAgentIPsWithHistory = async (req, res) => {
   try {
-    const { date, shift, agentType, branch,username } = req.query;
-    console.log(date)
-    if (!date) return res.status(400).json({ message: "Date is required" });
+    const { date, shift, agentType, branch, agentName } = req.query;
+
+    console.log(date);
+
+    if (!date) {
+      return res.status(400).json({ message: "Date is required" });
+    }
 
     const startOfDay = moment(date).startOf("day").toDate();
     const endOfDay = moment(date).endOf("day").toDate();
 
-   // Build base agent query
-const agentQuery = { role: "agent" };
+    // Build base agent query
+    const agentQuery = { role: "agent" };
 
-// Restrict Team Lead, Team Lead WFH, QC
-if (
-  req.user.role === "Team Lead" ||
-  req.user.role === "Team Lead WFH" ||
-  req.user.role === "QC"
-) {
-  agentQuery.branch = req.user.branch;
-  agentQuery.shift = req.user.shift;
-} else {
-  if (shift) agentQuery.shift = shift;
-  if (agentType) agentQuery.agentType = agentType;
-  if (branch) agentQuery.branch = branch;
-}
+    // Restrict Team Lead, Team Lead WFH, QC
+    if (
+      req.user.role === "Team Lead" ||
+      req.user.role === "Team Lead WFH" ||
+      req.user.role === "QC"
+    ) {
+      agentQuery.branch = req.user.branch;
+      agentQuery.shift = req.user.shift;
+    } else {
+      if (shift) agentQuery.shift = shift;
+      if (agentType) agentQuery.agentType = agentType;
+      if (branch) agentQuery.branch = branch;
+    }
 
-if (username) {
-  agentQuery.username = { $regex: username, $options: "i" };
-}
+    if (agentName) {
+      agentQuery.agentName = { $regex: agentName, $options: "i" };
+    }
 
     // Fetch Agents
     const agents = await User.find(
       agentQuery,
-      "_id username userImage shift agentType branch"
+      "_id agentName userImage shift agentType branch"
     );
 
     if (!agents.length) {
@@ -356,17 +359,16 @@ if (username) {
 
     // Prepare final response
     const response = agents.map((agent) => {
-  const ipRecord = records.find(
-  (record) =>
-    record.userId &&
-    record.userId._id.toString() === agent._id.toString()
-);
-
+      const ipRecord = records.find(
+        (record) =>
+          record.userId &&
+          record.userId._id.toString() === agent._id.toString()
+      );
 
       return {
         _id: agent._id,
-        userId: agent._id,          // ✅ User ID
-        username: agent.username,
+        userId: agent._id,
+        agentName: agent.agentName,
         avatar: agent.userImage || "https://i.pravatar.cc/50?u=default",
         shift: agent.shift,
         agentType: agent.agentType || "N/A",
@@ -381,9 +383,12 @@ if (username) {
     res.status(200).json(response);
   } catch (error) {
     console.error("Error fetching daily agent IPs:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };
+
 
 export const updateAgentIPWithHistory = async (req, res) => {
   try {
@@ -428,7 +433,7 @@ export const updateAgentIPWithHistory = async (req, res) => {
 // ✅ Controller to Get Agents' Monthly IPs
 export const getAgentsMonthlyIPs = async (req, res) => {
   try {
-const { year, month, shift, agentType, branch,username } = req.query;
+const { year, month, shift, agentType, branch,agentName } = req.query;
     if (!year || !month) {
       return res
         .status(400)
@@ -462,12 +467,12 @@ const { year, month, shift, agentType, branch,username } = req.query;
       // agentType restriction removed as requested
     }
 
-    if (username) {
-      agentQuery.username = { $regex: username, $options: "i" };
+    if (agentName) {
+      agentQuery.agentName = { $regex: agentName, $options: "i" };
     }
 
     // Fetch Agents based on query
-    const agents = await User.find(agentQuery, "username userImage shift agentType branch");
+    const agents = await User.find(agentQuery, "agentName userImage shift agentType branch");
     if (!agents.length) {
       return res
         .status(404)
@@ -504,7 +509,7 @@ const { year, month, shift, agentType, branch,username } = req.query;
 
       return {
         id: agent._id,
-        username: agent.username,
+        username: agent.agentName,
         avatar: agent.userImage || "https://i.pravatar.cc/50?u=default",
         shift: agent.shift,
         agentType: agent.agentType || "N/A",
@@ -542,10 +547,10 @@ const globalTop3Raw = await IP.aggregate([
 // Enrich with user info
 const top3 = await Promise.all(
   globalTop3Raw.map(async (record) => {
-    const user = await User.findById(record.userId, "username userImage shift agentType");
+    const user = await User.findById(record.userId, "agentName userImage shift agentType");
     return {
       id: user._id,
-      username: user.username,
+      username: user.agentName,
       avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
       shift: user.shift,
       agentType: user.agentType || "N/A",

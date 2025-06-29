@@ -274,8 +274,6 @@ endOfDay.setUTCHours(23, 59, 59, 999);
 
 
 export const getAllUsersAttendance = async (req, res) => {
-  const { date, shift, agentType, branch, username } = req.query;
-  console.log(req.user)
   try {
     const { date } = req.query;
     const selectedMonth = new Date(date);
@@ -283,7 +281,7 @@ export const getAllUsersAttendance = async (req, res) => {
     const endOfMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 0, 23, 59, 59, 999);
 
     // 🟡 Override filters for Team Leads / QC roles
-    let { shift, agentType, branch, username } = req.query;
+    let { shift, agentType, branch, agentName } = req.query;
 
     if (
       req.user.role === "Team Lead" ||
@@ -300,10 +298,10 @@ export const getAllUsersAttendance = async (req, res) => {
     if (shift) userQuery.shift = shift;
     if (agentType) userQuery.agentType = agentType;
     if (branch) userQuery.branch = branch;
-    if (username) userQuery.username = { $regex: username, $options: "i" };
+if (agentName) userQuery.agentName = { $regex: agentName, $options: "i" };
 
     // 1. Filtered Users
-    const users = await User.find(userQuery, "_id username userImage shift agentType branch");
+    const users = await User.find(userQuery, "_id agentName userImage shift agentType branch");
 
     // 2. Attendance records for filtered users
     const attendanceRecords = await Attendance.aggregate([
@@ -354,7 +352,10 @@ export const getAllUsersAttendance = async (req, res) => {
         userAttendance.records.forEach((record) => {
           if (record.status === "Present") monthSummary.present++;
           else if (record.status === "Absent") monthSummary.absent++;
-          else if (record.status === "Late") monthSummary.late++;
+          else if (record.status === "Late") {
+  monthSummary.present++;
+  monthSummary.late++;
+}
           else if (record.status === "Leave") monthSummary.leave++;
           else if (record.status === "RotationOff") monthSummary.rotationOff++;
         });
@@ -363,7 +364,7 @@ export const getAllUsersAttendance = async (req, res) => {
       return {
         id: user._id,
         user: {
-          name: user.username,
+          name: user.agentName,
           avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
         },
         shift: user.shift,
@@ -458,7 +459,7 @@ export const getSingleUserAttendance = async (req, res) => {
 
     const user = await User.findById(
       userId,
-      "username userImage shift agentType branch"
+      "agentName userImage shift agentType branch"
     );
     if (!user)
       return res.status(404).json({ message: "User not found" });
@@ -567,7 +568,7 @@ export const getSingleUserAttendance = async (req, res) => {
     return res.status(200).json({
       user: {
         _id: user._id,
-        name: user.username,
+        name: user.agentName,
         avatar: user.userImage || "https://i.pravatar.cc/50?u=default",
         shift: user.shift,
         branch: user.branch,

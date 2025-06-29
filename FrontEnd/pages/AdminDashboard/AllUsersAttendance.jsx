@@ -53,16 +53,18 @@ const AllUsersAttendance = () => {
     shift: "",
     agentType: "",
     branch: "",
-    username: "", // <-- new field
+      agentName: "",
+
   });
   const navigate = useNavigate();
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
-  useEffect(() => {
-    const date = dayjs(selectedDate).startOf("month");
-    fetchAttendanceData(date);
-  }, [selectedDate, filters]);
+useEffect(() => {
+  const date = dayjs(selectedDate).startOf("month");
+  fetchAttendanceData(date);
+}, [selectedDate]);
+
 
   const fetchAttendanceData = async (month) => {
     try {
@@ -73,7 +75,8 @@ const AllUsersAttendance = () => {
           shift: filters.shift || undefined,
           agentType: filters.agentType || undefined,
           branch: filters.branch || undefined,
-          username: filters.username || undefined, // <-- added
+         agentName: filters.agentName || undefined,
+
         },
       });
       setAttendanceData(res.data.attendanceData);
@@ -217,21 +220,37 @@ const AllUsersAttendance = () => {
           <Option value="WFH Agent">WFH Agent</Option>
         </Select>
 
-        <Input
-          placeholder="Search by Username"
-          value={filters.username}
-          onChange={(e) => handleFilterChange("username", e.target.value)}
-          style={{ width: 200, borderRadius: "10px" }}
-          allowClear
-        />
+      <Input
+  placeholder="Search by Agent Name"
+  value={filters.agentName}
+  onChange={(e) => handleFilterChange("agentName", e.target.value)}
+  style={{ width: 200, borderRadius: "10px" }}
+  allowClear
+/>
+
+       <Button
+  type="primary"
+  onClick={() =>
+    fetchAttendanceData(dayjs(selectedDate).startOf("month"))
+  }
+>
+  Apply Filters
+</Button>
+
         <Button
-          type="primary"
-          onClick={() =>
-            fetchAttendanceData(dayjs(selectedDate).startOf("month"))
-          }
-        >
-          Apply Filters
-        </Button>
+  onClick={() => {
+    setFilters({
+      shift: "",
+      agentType: "",
+      branch: "",
+      agentName: "",
+    });
+    fetchAttendanceData(dayjs(selectedDate).startOf("month"));
+  }}
+>
+  Reset Filters
+</Button>
+
       </div>
 
       {/* Top Performers Section */}
@@ -275,7 +294,12 @@ const AllUsersAttendance = () => {
             columns={columns}
             dataSource={attendanceData}
             rowKey="id"
-            pagination={{ pageSize: 50 }}
+            pagination={{
+  defaultPageSize: 50,
+  showSizeChanger: true,
+  pageSizeOptions: ["10", "20", "50", "100"],
+}}
+
             bordered
             className="attendance-table"
           />

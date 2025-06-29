@@ -41,7 +41,8 @@ const AllUsersIPReport = () => {
     shift: "",
     agentType: "",
     branch: "",
-    username: "", // ✅ Add this
+    agentName: "",
+
   });
 
   const fetchUsers = async () => {
@@ -57,7 +58,7 @@ const AllUsersIPReport = () => {
           shift: filters.shift || undefined,
           agentType: filters.agentType || undefined,
           branch: filters.branch || undefined,
-          username: filters.username || undefined, // ✅ Include username
+ agentName: filters.agentName || undefined,
         },
       });
 
@@ -85,7 +86,7 @@ const AllUsersIPReport = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [selectedMonth]);
+  }, []);
 
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -225,15 +226,29 @@ const AllUsersIPReport = () => {
         </Select>
 
         <Input
-          placeholder="Search by Username"
+         placeholder="Search by Agent Name"
           value={filters.username}
-          onChange={(e) => handleFilterChange("username", e.target.value)}
+          onChange={(e) => handleFilterChange("agentName", e.target.value)}
           style={{ width: 200, borderRadius: "10px" }}
           allowClear
         />
         <Button type="primary" onClick={fetchUsers}>
           Apply Filters
         </Button>
+        <Button
+  onClick={() => {
+    setFilters({
+      shift: "",
+      agentType: "",
+      branch: "",
+      agentName: "",
+    });
+    fetchUsers(); // fetch everything again
+  }}
+>
+  Reset Filters
+</Button>
+
       </div>
 
       <br />
@@ -278,7 +293,11 @@ const AllUsersIPReport = () => {
         columns={columns}
         dataSource={users}
         rowKey="id"
-        pagination={{ pageSize: 50 }}
+       pagination={{
+  defaultPageSize: 50,
+  showSizeChanger: true,
+  pageSizeOptions: ["10", "20", "50", "100"],
+}}
         bordered
         loading={loading}
         className="user-table-ppwork"

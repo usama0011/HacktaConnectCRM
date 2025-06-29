@@ -52,7 +52,7 @@ const QCPoints = () => {
     shift: "",
     agentType: "",
     branch: "",
-    username: "", // ✅ new
+    agentName: "", // ✅ new
   });
   const limitedRoles = ["Team Lead", "Team Lead WFH", "Quality Control (QC)"];
   const showLimitedFilters = limitedRoles.includes(user?.role);
@@ -154,7 +154,8 @@ const QCPoints = () => {
         shift: filters.shift || undefined,
         agentType: filters.agentType || undefined,
         branch: filters.branch || undefined,
-        username: filters.username || undefined, // ✅ added
+        agentName: filters.agentName || undefined,
+
       };
 
       const res = await API.get("/qcpoints", { params });
@@ -403,9 +404,9 @@ const QCPoints = () => {
 
         {/* Username (always shown) */}
         <Input
-          placeholder="Search by Username"
-          value={filters.username}
-          onChange={(e) => handleFilterChange("username", e.target.value)}
+           placeholder="Search by Agent Name"
+  value={filters.agentName}
+           onChange={(e) => handleFilterChange("agentName", e.target.value)}
           style={{ width: 200, borderRadius: "10px" }}
           allowClear
         />

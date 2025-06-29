@@ -29,7 +29,6 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import "../../styles/ManagerUsers.css";
-import ProjectInfoCard from "../../components/ProjectInfoCard";
 import API from "../../utils/BaseURL";
 import moment from "moment"; // Make sure this is imported at the top
 import { useNavigate } from "react-router-dom";
@@ -45,6 +44,12 @@ const AllAgentsRegistraction = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [editLoading, setEditLoading] = useState(false);
+  const [filters, setFilters] = useState({
+  agentName: "",
+  shift: "",
+  agentType: "",
+  branch: "",
+});
   const [form] = Form.useForm();
   const handleEditUser = (user) => {
     setEditingUser(user);
@@ -134,7 +139,7 @@ const AllAgentsRegistraction = () => {
       title: (
         <span>
           <UserOutlined style={{ marginRight: 6 }} />
-          User
+          Full Name
         </span>
       ),
       dataIndex: "username",
@@ -145,7 +150,7 @@ const AllAgentsRegistraction = () => {
           <Avatar src={record.avatar} />
           <div style={{ display: "flex", alignItems: "center" }}>
             <span className="user-name" style={{ textTransform: "capitalize" }}>
-              {text}
+              {record?.agentName}
             </span>
           </div>
         </div>
@@ -358,15 +363,23 @@ const AllAgentsRegistraction = () => {
       </div>
       <Row gutter={16} className="filter-section-registractions">
         <Col>
-          <Input
-            placeholder="Search by Username"
-            onChange={(e) => fetchUsers({ username: e.target.value })}
-          />
+<Input
+  placeholder="Search by Full Name"
+  value={filters.agentName}
+  onChange={(e) =>
+    setFilters((prev) => ({ ...prev, agentName: e.target.value }))
+  }
+/>
+
+
         </Col>
         <Col>
           <Select
             placeholder="Shift"
-            onChange={(value) => fetchUsers({ shift: value })}
+           value={filters.shift || undefined}
+  onChange={(value) =>
+    setFilters((prev) => ({ ...prev, shift: value }))
+  }
           >
             <Option value="morning">Morning</Option>
             <Option value="evening">Evening</Option>
@@ -376,7 +389,10 @@ const AllAgentsRegistraction = () => {
         <Col>
           <Select
             placeholder="Agent Type"
-            onChange={(value) => fetchUsers({ agentType: value })}
+            value={filters.agentType || undefined}
+  onChange={(value) =>
+    setFilters((prev) => ({ ...prev, agentType: value }))
+  }
           >
             <Option value="Office Agent">Office Agent</Option>
             <Option value="WFH Agent">Work From Home Agent</Option>
@@ -385,18 +401,39 @@ const AllAgentsRegistraction = () => {
         <Col>
           <Select
             placeholder="Branch"
-            onChange={(value) => fetchUsers({ branch: value })}
+           value={filters.branch || undefined}
+  onChange={(value) =>
+    setFilters((prev) => ({ ...prev, branch: value }))
+  }
           >
             <Option value="Branch A">Branch A</Option>
             <Option value="Branch B">Branch B</Option>
           </Select>
         </Col>
+        <Button
+  type="primary"
+  icon={<SearchOutlined />}
+  onClick={() => fetchUsers(filters)}
+>
+  Search
+</Button>
+<Button
+  onClick={() => {
+    setFilters({
+      agentName: "",
+      shift: "",
+      agentType: "",
+      branch: "",
+    });
+    fetchUsers({});
+  }}
+>
+  Reset Filters
+</Button>
+
       </Row>
       <br />
-      {/* <ProjectInfoCard
-        titleproject="User Management"
-        projectdes="Manage all registered users from the system."
-      /> */}
+    
 
       {loading ? (
         <Skeleton active paragraph={{ rows: 6 }} />
@@ -406,7 +443,11 @@ const AllAgentsRegistraction = () => {
             columns={columns}
             dataSource={users}
             scroll={{ x: "max-content" }} // ✅ Allow horizontal scroll
-            pagination={{ pageSize: 30 }}
+            pagination={{
+    defaultPageSize: 30,
+    showSizeChanger: true,
+    pageSizeOptions: ["10", "20", "30", "50", "100"],
+  }}
             className="user-table"
           />
         </div>

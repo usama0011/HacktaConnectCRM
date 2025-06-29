@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/usermodel.js";
 import Attendance from "../models/attendanceModel.js";
+import QCPoint from "../models/qcPointModel.js";
 import moment from 'moment-timezone'; // ✅ Correct import for timezone support
 import { Readable } from "stream";
 import csv from "csv-parser";
@@ -127,7 +128,47 @@ const allowedEnd = shiftEnd.clone().add(30, "minutes");
     message: `Login only allowed from ${allowedStart.format("hh:mm A")} to ${allowedEnd.format("hh:mm A")}`,
   });
 }
+// Check if user is late
+      const graceTime = shiftStart.clone().add(30, "minutes");
 
+      if (now.isAfter(graceTime)) {
+        console.log("User is late, creating QCPoint...");
+
+        // Check if already created for today (avoid duplicate record)
+        const alreadyCreated = await QCPoint.findOne({
+          userId: user._id,
+          date: {
+            $gte: moment(today).startOf("day").toDate(),
+            $lte: moment(today).endOf("day").toDate(),
+          },
+        });
+
+        if (!alreadyCreated) {
+          const qcPoint = new QCPoint({
+            userId: user._id,
+            date: now.toDate(),
+            avatar: user.userImage || null,
+            name: user.username,
+            time: "0", // String "0" as required
+            profilePattern: "",
+            pacePerHour: "",
+            perHourReport: "",
+            workingBehavior: "",
+            editedBy: null,
+            shift: user.shift || null,
+            agentType: user.agentType || null,
+            branch: user.branch || null,
+          });
+
+          await qcPoint.save();
+
+          console.log(`QCPoint created for late user: ${user.username}`);
+        } else {
+          console.log(
+            `QCPoint for ${user.username} already exists for today. Skipping.`
+          );
+        }
+      }
     }
 
     const token = jwt.sign(
@@ -292,7 +333,7 @@ export const CheckSuperAdiminUser = async (req, res) => {
 // For fetching only Agents
 export const getAllAgents = async (req, res) => {
   try {
-    const { username, shift, agentType, branch } = req.query;
+    const { agentName, shift, agentType, branch } = req.query;
     const query = { role: "agent" };
        console.log(req.user)
     // Restrict Team Lead to view only their shift agents
@@ -300,10 +341,10 @@ export const getAllAgents = async (req, res) => {
       query.shift = req.user.shift; // Only show agents with the Team Lead's shift
     }
 
-    // Apply query filters if provided
-    if (username) {
-      query.username = { $regex: username, $options: "i" };
-    }
+if (agentName) {
+  query.agentName = { $regex: agentName, $options: "i" };
+}
+
     if (shift) {
       query.shift = shift;
     }

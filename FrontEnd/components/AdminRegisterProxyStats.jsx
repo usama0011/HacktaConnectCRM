@@ -27,7 +27,7 @@ const AdminRegisterProxyStats = () => {
         // ✅ Sort by creation date (latest first) and take only 5 users
         const latestUsers = userData
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .slice(0, 5);
+          .slice(0, 7);
 
         setUsers(latestUsers);
 
@@ -123,7 +123,7 @@ const AdminRegisterProxyStats = () => {
     angleField: "value",
     colorField: "type",
     radius: 0.8,
-    height: 500,
+    height: 530,
     // ✅ Custom color scale
     scale: {
       color: {
@@ -191,7 +191,7 @@ const AdminRegisterProxyStats = () => {
             columns={columns}
             dataSource={users}
             rowKey="_id"
-            pagination={true}
+            pagination={false}
           />
         )}
       </div>

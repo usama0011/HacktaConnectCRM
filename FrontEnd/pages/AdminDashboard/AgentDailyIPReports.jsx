@@ -36,11 +36,12 @@ const { Title, Text } = Typography;
 const AgentDailyIPReports = () => {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [filters, setFilters] = useState({
-    shift: "",
-    agentType: "",
-    branch: "",
-    username: "", // ✅ new
+   shift: "",
+  agentType: "",
+  branch: "",
+  agentName: "",
   });
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editHistory, setEditHistory] = useState([]);
   const [editingRecord, setEditingRecord] = useState(null);
@@ -54,13 +55,16 @@ const AgentDailyIPReports = () => {
 
   const fetchData = async () => {
     try {
+          setLoading(true);
+
       const res = await API.get(`/ip/daily-reports`, {
         params: {
           date: selectedDate.format("YYYY-MM-DD"),
-          shift: filters.shift || undefined,
-          agentType: filters.agentType || undefined,
-          branch: filters.branch || undefined,
-          username: filters.username || undefined, // ✅ add this
+    shift: filters.shift || undefined,
+    agentType: filters.agentType || undefined,
+    branch: filters.branch || undefined,
+        agentName: filters.agentName || undefined,
+
         },
       });
       setData(res.data || []);
@@ -74,6 +78,9 @@ const AgentDailyIPReports = () => {
         message.error("Failed to fetch IP reports!");
       }
     }
+    finally {
+    setLoading(false);
+  }
   };
 
   useEffect(() => {
@@ -107,20 +114,21 @@ const AgentDailyIPReports = () => {
 
   const columns = [
     {
-      title: (
-        <>
-          <UserOutlined /> Profile
-        </>
-      ),
-      dataIndex: "username",
-      key: "username",
-      render: (text, record) => (
-        <span className="user-cell">
-          <Avatar src={record.avatar} />
-          <span className="user-name">{text}</span>
-        </span>
-      ),
-    },
+  title: (
+    <>
+      <UserOutlined /> Profile
+    </>
+  ),
+  dataIndex: "agentName",
+  key: "agentName",
+  render: (text, record) => (
+    <span className="user-cell">
+      <Avatar src={record.avatar} />
+      <span className="user-name">{text}</span>
+    </span>
+  ),
+},
+
     {
       title: (
         <>
@@ -190,6 +198,34 @@ const AgentDailyIPReports = () => {
           style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}
         >
           <Select
+    placeholder="Please select Shift"
+    value={filters.shift || undefined}
+    style={{ width: 180 }}
+    onChange={(value) => handleFilterChange("shift", value)}
+    allowClear
+  >
+    <Option disabled value="">
+      Please select Shift
+    </Option>
+    <Option value="morning">Morning</Option>
+    <Option value="evening">Evening</Option>
+    <Option value="night">Night</Option>
+  </Select>
+   <Select
+    placeholder="Please select Branch"
+    value={filters.branch || undefined}
+    style={{ width: 180 }}
+    onChange={(value) => handleFilterChange("branch", value)}
+    allowClear
+  >
+    <Option disabled value="">
+      Please select Branch
+    </Option>
+    <Option value="Branch A">Branch A</Option>
+    <Option value="Branch B">Branch B</Option>
+  </Select>
+
+          <Select
             placeholder="Please select Agent Type"
             value={filters.agentType || undefined}
             style={{ width: 180 }}
@@ -203,17 +239,32 @@ const AgentDailyIPReports = () => {
             <Option value="WFH Agent">WFH Agent</Option>
           </Select>
 
-          <Input
-            placeholder="Search by Username"
-            value={filters.username}
-            onChange={(e) => handleFilterChange("username", e.target.value)}
-            style={{ width: 200 }}
-            allowClear
-          />
+<Input
+  placeholder="Search by Agent Name"
+  value={filters.agentName}
+  onChange={(e) => handleFilterChange("agentName", e.target.value)}
+  style={{ width: 200 }}
+  allowClear
+/>
+
 
           <Button type="primary" onClick={fetchData}>
             Apply Filters
           </Button>
+          <Button
+  onClick={() => {
+    setFilters({
+      shift: "",
+      agentType: "",
+      branch: "",
+      agentName: "",
+    });
+    fetchData();
+  }}
+>
+  Reset Filters
+</Button>
+
         </div>
       ) : (
         <div
@@ -282,7 +333,12 @@ const AgentDailyIPReports = () => {
         scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
         rowKey="_id"
         className="user-table-singipoidsfisodf"
-        pagination={{ pageSize: 50 }}
+                    pagination={{
+  defaultPageSize: 50,
+  showSizeChanger: true,
+  pageSizeOptions: ["10", "20", "50", "100"],
+}}  loading={loading}
+
         bordered
       />
 
@@ -297,7 +353,7 @@ const AgentDailyIPReports = () => {
         <div className="modal-user">
           <Avatar src={editingRecord?.avatar} />
           <Text strong style={{ marginLeft: 10 }}>
-            {editingRecord?.username}
+           {editingRecord?.agentName}
           </Text>
         </div>
 

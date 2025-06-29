@@ -38,7 +38,7 @@ const AllUsersQCPoints = () => {
     shift: "",
     agentType: "",
     branch: "",
-    username: "", // ✅ Add this
+    agentName: "",
   });
 
   // Handle Date Change (Year & Month)
@@ -58,7 +58,7 @@ const AllUsersQCPoints = () => {
           shift: filters.shift || undefined,
           agentType: filters.agentType || undefined,
           branch: filters.branch || undefined,
-          username: filters.username || undefined, // ✅ Add this
+          agentName: filters.agentName || undefined,
         },
       });
 
@@ -139,7 +139,7 @@ const AllUsersQCPoints = () => {
   ];
   useEffect(() => {
     fetchMonthlyQC(selectedDate);
-  }, [filters]);
+  }, []);
 
   return (
     <div className="qcpoints-container">
@@ -214,9 +214,9 @@ const AllUsersQCPoints = () => {
 
   {/* Always show Username filter */}
   <Input
-    placeholder="Search by Username"
-    value={filters.username}
-    onChange={(e) => handleFilterChange("username", e.target.value)}
+    placeholder="Search by Agent Name"
+    value={filters.agentName}
+    onChange={(e) => handleFilterChange("agentName", e.target.value)}
     style={{ width: 200, borderRadius: "10px" }}
     allowClear
   />
@@ -225,6 +225,21 @@ const AllUsersQCPoints = () => {
   <Button type="primary" onClick={() => fetchMonthlyQC(selectedDate)}>
     Apply Filters
   </Button>
+  <Button
+  onClick={() => {
+    setFilters({
+      shift: "",
+      agentType: "",
+      branch: "",
+      agentName: "",
+    });
+ 
+    fetchMonthlyQC(selectedDate, 1, 50);
+  }}
+>
+  Reset Filters
+</Button>
+
 </div>
 
       <br />
@@ -283,7 +298,11 @@ const AllUsersQCPoints = () => {
         dataSource={users}
         loading={loading}
         rowKey={(record) => record.name}
-        pagination={{ pageSize: 50 }}
+                    pagination={{
+  defaultPageSize: 50,
+  showSizeChanger: true,
+  pageSizeOptions: ["10", "20", "50", "100"],
+}}
         bordered
         className="qupointsAddTable"
         scroll={{ x: "max-content" }} // ✅ Enables horizontal scroll
